@@ -107486,3 +107486,5 @@ LIMIT 60
 2026-07-28 00:47:23,851 - traffic_ai - INFO - [main.py:965] - ======================================================================
 2026-07-28 00:50:34,418 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
 2026-07-28 00:50:38,727 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
+2026-07-28 00:52:07,564 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
+2026-07-28 00:52:10,510 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
