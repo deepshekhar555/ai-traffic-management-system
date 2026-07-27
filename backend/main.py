@@ -700,8 +700,8 @@ class TrafficManagementApp:
             )
             cv2.imshow("AI Traffic Digital Twin (2D Spatial Map)", twin_frame)
 
-            # Render 3rd OpenCV Window: SUMO / 51WORLD Micro-Simulation Physics Engine
-            self.sim_engine.update_physics(signal_state, lane_data)
+            # Render 3rd OpenCV Window: 1-to-1 Physical-to-Virtual 24GHz Radar & CNN Digital Twin Mirror Engine
+            self.sim_engine.update_physics(signal_state, lane_data, tracked_vehicles)
             sim_frame = self.sim_engine.render_simulation_frame(signal_state, lane_data, system_telemetry)
             cv2.imshow("AI Traffic Micro-Simulation Engine (SUMO/51WORLD Physics)", sim_frame)
             # Update HSR status
