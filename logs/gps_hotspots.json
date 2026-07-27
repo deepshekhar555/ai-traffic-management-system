@@ -1,0 +1,16 @@
+{
+  "location": "Traffic Management Center",
+  "coordinates": {
+    "lat": 40.7128,
+    "lon": -74.006
+  },
+  "hotspots": [
+    {
+      "name": "Traffic Management Center - Zone 1",
+      "lat": 40.7128,
+      "lon": -74.006,
+      "count": 1,
+      "level": "HIGH"
+    }
+  ]
+}

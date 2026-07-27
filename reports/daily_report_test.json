@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-07-27T20:57:35.384294",
+  "statistics": {
+    "date": "2026-07-27",
+    "vehicles_detected": 2,
+    "avg_speed_kmh": 58.8,
+    "max_speed_kmh": 72.5,
+    "speeding_violations": 2,
+    "accidents": 2,
+    "emergency_calls": 2
+  },
+  "recent_violations": [
+    {
+      "id": 2,
+      "vehicle_id": 1,
+      "violation_type": "SPEEDING",
+      "speed_kmh": 72.5,
+      "speed_limit": 60.0,
+      "excess_speed": 12.5,
+      "location": "Unknown",
+      "timestamp": "2026-07-27 15:27:35"
+    },
+    {
+      "id": 1,
+      "vehicle_id": 1,
+      "violation_type": "SPEEDING",
+      "speed_kmh": 72.5,
+      "speed_limit": 60.0,
+      "excess_speed": 12.5,
+      "location": "Unknown",
+      "timestamp": "2026-07-27 15:06:11"
+    }
+  ],
+  "top_violators": [
+    {
+      "vehicle_id": 1,
+      "violations": 2,
+      "avg_excess": 12.5
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+
+:root {
+  --bg-dark: #0b0f19;
+  --panel-bg: #111827;
+  --card-bg: #1f2937;
+  --accent-cyan: #00a2e8;
+  --accent-green: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-purple: #8b5cf6;
+  --border-color: #1f2937;
+  --text-main: #f3f4f6;
+  --text-sub: #9ca3af;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.dashboard-root {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.glass-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.metric-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 18px;
+  border-left: 4px solid var(--accent-cyan);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 162, 232, 0.2);
+}
+
+.metric-card .label {
+  font-size: 11px;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.metric-card .value {
+  font-size: 30px;
+  font-weight: 900;
+  color: #ffffff;
+  margin-top: 6px;
+}
+
+.btn-action {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-emergency {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.btn-green {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--accent-green);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 10px var(--accent-green);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.violation-badge {
+  background: var(--accent-red);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 900;
+}
