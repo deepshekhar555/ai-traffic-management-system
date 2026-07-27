@@ -702,7 +702,7 @@ class TrafficManagementApp:
 
             # Render 3rd OpenCV Window: SUMO / 51WORLD Micro-Simulation Physics Engine
             self.sim_engine.update_physics(signal_state, lane_data)
-            sim_frame = self.sim_engine.render_simulation_frame(signal_state, lane_data)
+            sim_frame = self.sim_engine.render_simulation_frame(signal_state, lane_data, system_telemetry)
             cv2.imshow("AI Traffic Micro-Simulation Engine (SUMO/51WORLD Physics)", sim_frame)
             # Update HSR status
             is_incident = traffic_analysis["level"] == "HIGH"

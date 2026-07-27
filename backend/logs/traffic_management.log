@@ -96606,3 +96606,5 @@ LIMIT 60
 2026-07-27 23:44:17,157 - traffic_ai - INFO - [sensor_fusion.py:28] - [SensorFusion] 24GHz Doppler Radar & Environmental Air Quality Sensor Fusion Manager initialized!
 2026-07-27 23:53:24,926 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
 2026-07-27 23:53:33,400 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
+2026-07-27 23:57:10,192 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
+2026-07-27 23:57:17,056 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
