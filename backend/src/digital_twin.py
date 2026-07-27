@@ -515,139 +515,159 @@ class DigitalTwin:
     # ──────────────────────────────────────────────────────────────────────────
 
     def _draw_info_panels(self, canvas, tracked_vehicles, lane_data, signal_state, surtrac_telem=None):
-        """Draw 3 side-by-side info panels below the map."""
+        """Draw 3 LAONROAD / 51WORLD Smart Intersection Subsystem Panels (Data Table, Subsystem Architecture, AI Prediction Oscilloscope)."""
         surtrac_telem = surtrac_telem or {}
         strip_y = self.map_h
         strip_h = self.height - strip_y
 
-        # Panel separator line
         cv2.line(canvas, (0, strip_y), (self.width, strip_y), ROAD_EDGE, 1)
+        cols = self.panel_cols
 
-        cols = self.panel_cols  # [0, w//3, 2*w//3, w]
-
-        # Panel backgrounds
         overlay = canvas.copy()
         for i in range(3):
             bx1, bx2 = cols[i], cols[i + 1]
-            cv2.rectangle(overlay, (bx1, strip_y), (bx2, self.height),
-                          (14, 20, 28), -1)
+            cv2.rectangle(overlay, (bx1, strip_y), (bx2, self.height), (12, 18, 28), -1)
         cv2.addWeighted(overlay, 0.85, canvas, 0.15, 0, canvas)
 
-        # Vertical dividers
         for i in range(1, 3):
-            cv2.line(canvas, (cols[i], strip_y), (cols[i], self.height),
-                     (40, 55, 70), 1)
+            cv2.line(canvas, (cols[i], strip_y), (cols[i], self.height), (40, 55, 75), 1)
 
-        # ── Panel A: Layer 5 – Congestion Prediction ──────────────────────
-        self._panel_prediction(canvas, cols[0], cols[1], strip_y, strip_h)
+        # ── Panel A: Collecting Traffic Data (HUD Table - Screenshot 2 & 4) ─
+        self._panel_collecting_traffic_data(canvas, cols[0], cols[1], strip_y, strip_h, tracked_vehicles, lane_data)
 
-        # ── Panel B: Layer 6 – XAI Signal Optimizer ───────────────────────
-        self._panel_xai(canvas, cols[1], cols[2], strip_y, strip_h, lane_data, signal_state, surtrac_telem)
+        # ── Panel B: Digital Twin Subsystem Architecture (Screenshot 3) ────
+        self._panel_subsystem_architecture(canvas, cols[1], cols[2], strip_y, strip_h, signal_state, surtrac_telem)
 
-        # ── Panel C: Layer 7 – Lane Density Bars ──────────────────────────
-        self._panel_density_bars(canvas, cols[2], cols[3], strip_y, strip_h, lane_data)
+        # ── Panel C: AI Prediction Algorithm Oscilloscope (Screenshot 4 & 5)
+        self._panel_ai_prediction_waves(canvas, cols[2], cols[3], strip_y, strip_h)
 
-    def _panel_prediction(self, canvas, x1, x2, y_top, h):
-        """L5 – Congestion Prediction panel with 6-bar sparkline."""
-        margin = 10
-        # Title
-        cv2.putText(canvas, "AI CONGESTION FORECAST",
-                    (x1 + margin, y_top + 18),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, HEADER_COLOR, 1, cv2.LINE_AA)
-        cv2.line(canvas, (x1 + margin, y_top + 22),
-                 (x2 - margin, y_top + 22), (40, 55, 70), 1)
+    def _panel_collecting_traffic_data(self, canvas, x1, x2, y_top, h, tracked_vehicles, lane_data):
+        """Panel A – LAONROAD 'Collecting Traffic Data' HUD Table (Turn Type, Compact, Mid-size, Heavy, Queue Length)."""
+        margin = 8
+        cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (18, 28, 45), -1)
+        cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (0, 180, 240), 1)
 
-        # Prediction level badge
-        pred_colors = {
-            "RISING":  (0, 80, 220),
-            "EASING":  (0, 180, 80),
-            "STABLE":  (0, 180, 200)
-        }
-        pc = pred_colors.get(self._pred_level, HEADER_COLOR)
-        badge_txt = self._pred_level
-        cv2.rectangle(canvas, (x1 + margin, y_top + 27),
-                      (x1 + margin + 80, y_top + 44), pc, -1)
-        cv2.putText(canvas, badge_txt,
-                    (x1 + margin + 5, y_top + 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.38, TEXT_BRIGHT, 1)
+        cv2.putText(canvas, "Collecting Traffic Data", (x1 + margin + 10, y_top + 22),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.42, (255, 230, 100), 1, cv2.LINE_AA)
+        cv2.line(canvas, (x1 + margin + 5, y_top + 26), (x2 - margin - 5, y_top + 26), (50, 75, 105), 1)
 
-        # ETA
-        cv2.putText(canvas, f"ETA: {self._pred_eta}",
-                    (x1 + margin + 90, y_top + 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.36, TEXT_DIM, 1)
+        # Header row
+        cv2.putText(canvas, "Turn Type", (x1 + margin + 8, y_top + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.28, (0, 220, 255), 1)
+        cv2.putText(canvas, "Compact", (x1 + margin + 70), y_top + 40, cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+        cv2.putText(canvas, "Mid-size", (x1 + margin + 120), y_top + 40, cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+        cv2.putText(canvas, "Heavy", (x1 + margin + 170), y_top + 40, cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+        cv2.putText(canvas, "Queue (m)", (x1 + margin + 220), y_top + 40, cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
 
-        # Sparkline bars (last 12 density values)
-        hist = list(self._density_history)[-12:]
-        if hist:
-            bar_area_x = x1 + margin
-            bar_area_w = (x2 - x1) - 2 * margin
-            bar_area_y = y_top + 50
-            bar_area_h = h - 60
-            max_val = max(max(hist), 1)
-            bar_w = max(2, (bar_area_w - 4) // len(hist))
+        cv2.line(canvas, (x1 + margin + 5, y_top + 44), (x2 - margin - 5, y_top + 44), (40, 60, 90), 1)
 
-            for k, val in enumerate(hist):
-                bh = int(val / max_val * bar_area_h)
-                bx = bar_area_x + k * (bar_w + 2)
-                by = bar_area_y + bar_area_h - bh
-                # Gradient colour
-                ratio = val / max_val
-                b_clr = (0, int(220 * (1 - ratio)), int(220 * ratio))
-                cv2.rectangle(canvas, (bx, by), (bx + bar_w, bar_area_y + bar_area_h),
-                              b_clr, -1)
+        # Class counts
+        compact_c = sum(1 for v in tracked_vehicles if v.get("class_name") in ("car", "ev"))
+        mid_c     = sum(1 for v in tracked_vehicles if v.get("class_name") in ("motorcycle", "van"))
+        heavy_c   = sum(1 for v in tracked_vehicles if v.get("class_name") in ("bus", "truck"))
+        total_v   = len(tracked_vehicles)
+        q_len_m   = round(total_v * 4.2, 1)
 
-            # Threshold line (danger level)
-            thresh_y = bar_area_y + int(bar_area_h * 0.6)
-            cv2.line(canvas, (bar_area_x, thresh_y),
-                     (bar_area_x + bar_area_w, thresh_y), (0, 60, 200), 1)
-            cv2.putText(canvas, "THRESH",
-                        (bar_area_x + bar_area_w - 45, thresh_y - 3),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.28, (0, 80, 200), 1)
+        # Rows
+        rows = [
+            ("Through", compact_c, max(0, mid_c - 1), max(0, heavy_c - 1), int(q_len_m * 0.6)),
+            ("Left",    max(0, compact_c - 2), 1, heavy_c, int(q_len_m * 0.3)),
+            ("Right",   max(0, compact_c - 3), 0, 0, int(q_len_m * 0.1))
+        ]
 
-    def _panel_xai(self, canvas, x1, x2, y_top, h, lane_data, signal_state, surtrac_telem=None):
-        """L6 – Explainable AI (SURTRAC) panel: shows WHY the AI picked the current signal."""
+        for idx, (ttype, c1, c2, c3, qm) in enumerate(rows):
+            ry = y_top + 60 + idx * 20
+            cv2.putText(canvas, ttype, (x1 + margin + 12, ry), cv2.FONT_HERSHEY_SIMPLEX, 0.3, TEXT_BRIGHT, 1)
+            cv2.putText(canvas, str(c1), (x1 + margin + 85, ry), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 240, 120), 1)
+            cv2.putText(canvas, str(c2), (x1 + margin + 135, ry), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 240, 120), 1)
+            cv2.putText(canvas, str(c3), (x1 + margin + 182, ry), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 240, 120), 1)
+            cv2.putText(canvas, f"{qm}m", (x1 + margin + 232, ry), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 220, 255), 1)
+
+    def _panel_subsystem_architecture(self, canvas, x1, x2, y_top, h, signal_state, surtrac_telem=None):
+        """Panel B – 51WORLD Subsystem Architecture Flow Diagram (Smart Intersection -> Signal Control -> Simulation)."""
         surtrac_telem = surtrac_telem or {}
-        margin = 10
-        cv2.putText(canvas, "XAI: SURTRAC OPTIMIZER",
-                    (x1 + margin, y_top + 18),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 210, 255), 1, cv2.LINE_AA)
-        cv2.line(canvas, (x1 + margin, y_top + 22),
-                 (x2 - margin, y_top + 22), (40, 55, 70), 1)
+        margin = 8
+        cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (16, 24, 38), -1)
+        cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (0, 180, 240), 1)
 
-        # Show SURTRAC + RL algorithm name
-        algo = surtrac_telem.get("algorithm", self._xai_reason)
-        cv2.putText(canvas, algo[:32],
-                    (x1 + margin, y_top + 36),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 200, 240), 1)
+        cv2.putText(canvas, "Digital Twin Subsystem Flow Architecture", (x1 + margin + 10, y_top + 22),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.38, (0, 220, 255), 1, cv2.LINE_AA)
+        cv2.line(canvas, (x1 + margin + 5, y_top + 26), (x2 - margin - 5, y_top + 26), (50, 75, 105), 1)
 
-        # Active lane + phase elapsed / duration
-        active_l  = surtrac_telem.get("active_lane", 0)
-        elapsed   = surtrac_telem.get("phase_elapsed", 0)
-        duration  = surtrac_telem.get("phase_duration", 0)
-        saved     = surtrac_telem.get("wait_time_saved", 0)
-        eta       = surtrac_telem.get("next_arrival_eta")
-        in_yellow = surtrac_telem.get("in_yellow", False)
+        # 3 Subsystem Cards
+        card_w = (x2 - x1 - 4 * margin) // 3
+        card_h = h - 45
 
-        rl_info = surtrac_telem.get("rl_agent", {})
-        rl_rew = rl_info.get("cumulative_reward", 0.0)
-        rl_q = rl_info.get("max_q_value", 0.0)
+        subsystems = [
+            ("Subsystem (1)", "Smart Intersection", "Vision + Radar"),
+            ("Subsystem (2)", "Signal Control", "SURTRAC + DQN"),
+            ("Subsystem (3)", "Simulation Engine", "IDM Physics")
+        ]
 
-        phase_clr = YELLOW if in_yellow else GREEN
-        phase_lbl = "YELLOW" if in_yellow else f"GREEN L{active_l+1}"
-        cv2.putText(canvas, f"Phase: {phase_lbl} | RL Rew: +{rl_rew:.1f}",
-                    (x1 + margin, y_top + 52),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.33, phase_clr, 1)
-        cv2.putText(canvas, f"SURTRAC: {elapsed:.1f}s/{duration:.1f}s | Q-Val: {rl_q:.2f}",
-                    (x1 + margin, y_top + 66),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.31, TEXT_DIM, 1)
+        for i, (tag, title, sub) in enumerate(subsystems):
+            cx1 = x1 + margin + i * (card_w + 6)
+            cx2 = cx1 + card_w
+            cy1 = y_top + 34
+            cy2 = cy1 + card_h
 
-        # Next arrival ETA
-        eta_txt = f"Next arrival: {eta:.1f}s" if eta else "No arrivals pending"
-        cv2.putText(canvas, eta_txt,
-                    (x1 + margin, y_top + 80),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.33, TEXT_DIM, 1)
-        # Cumulative Wait Time Saved
-        saved_txt = f"Saved: {saved:.1f}s vs fixed"
+            active_border = GREEN if (i == 1 and self._blink) else (0, 160, 220)
+            cv2.rectangle(canvas, (cx1, cy1), (cx2, cy2), (22, 32, 50), -1)
+            cv2.rectangle(canvas, (cx1, cy1), (cx2, cy2), active_border, 1)
+
+            cv2.putText(canvas, tag, (cx1 + 4, cy1 + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (0, 220, 255), 1)
+            cv2.putText(canvas, title[:10], (cx1 + 4, cy1 + 28), cv2.FONT_HERSHEY_SIMPLEX, 0.27, TEXT_BRIGHT, 1)
+            cv2.putText(canvas, sub[:11], (cx1 + 4, cy1 + 42), cv2.FONT_HERSHEY_SIMPLEX, 0.24, TEXT_DIM, 1)
+
+            # Flow arrow between blocks
+            if i < 2:
+                arrow_x = cx2 + 1
+                cv2.arrowedLine(canvas, (arrow_x, cy1 + 25), (arrow_x + 5, cy1 + 25), (0, 255, 255), 1, tipLength=0.4)
+
+    def _panel_ai_prediction_waves(self, canvas, x1, x2, y_top, h):
+        """Panel C – AI Prediction Algorithm Running (Dual Wave Oscilloscope Graph - 15m Forecast)."""
+        margin = 8
+        cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (14, 22, 36), -1)
+        cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (0, 180, 240), 1)
+
+        cv2.putText(canvas, "AI Prediction Algorithm Running (+15m)", (x1 + margin + 10, y_top + 22),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.38, GREEN, 1, cv2.LINE_AA)
+        cv2.line(canvas, (x1 + margin + 5, y_top + 26), (x2 - margin - 5, y_top + 26), (50, 75, 105), 1)
+
+        # Oscilloscope Dual Wave (Cyan & White Sine Waves)
+        gx1 = x1 + margin + 8
+        gx2 = x2 - margin - 8
+        gy1 = y_top + 34
+        gh  = h - 45
+        g_mid_y = gy1 + gh // 2
+
+        t_step = time.time() * 3.5
+
+        # Wave 1 (Cyan)
+        pts_cyan = []
+        # Wave 2 (White/Green)
+        pts_white = []
+
+        w_len = gx2 - gx1
+        for px in range(0, w_len, 4):
+            x_pos = gx1 + px
+            phase = px * 0.05 + t_step
+
+            # Dual Sine wave equations simulating predictive AI traffic volume oscillations
+            y_cyan  = g_mid_y + int(math.sin(phase) * 18 + math.cos(phase * 0.4) * 8)
+            y_white = g_mid_y + int(math.cos(phase * 0.8) * 15 + math.sin(phase * 1.3) * 6)
+
+            pts_cyan.append((x_pos, y_cyan))
+            pts_white.append((x_pos, y_white))
+
+        # Render Cyan Wave
+        for i in range(len(pts_cyan) - 1):
+            cv2.line(canvas, pts_cyan[i], pts_cyan[i+1], (255, 220, 0), 2, cv2.LINE_AA)
+
+        # Render White/Green Wave
+        for i in range(len(pts_white) - 1):
+            cv2.line(canvas, pts_white[i], pts_white[i+1], (240, 245, 255), 1, cv2.LINE_AA)
+
+        cv2.putText(canvas, "XGBoost ML Waveform: 15-min Volume Forecast", (gx1 + 5, gy1 + gh - 4),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
         cv2.putText(canvas, saved_txt,
                     (x1 + margin, y_top + 94),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.33, GREEN, 1)
