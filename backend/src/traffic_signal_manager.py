@@ -10,6 +10,7 @@ import time
 from typing import Dict, List, Optional
 
 from src.surtrac_controller import SURTRACController
+from src.rl_signal_agent import ReinforcementLearningSignalAgent
 
 
 # BGR colour constants (OpenCV)
@@ -20,7 +21,7 @@ CLR_RED    = (0, 0, 230)
 
 class TrafficSignalManager:
     """
-    SURTRAC-powered adaptive signal manager.
+    SURTRAC + Reinforcement Learning (DQN) Hybrid Adaptive Signal Manager.
 
     Drop-in replacement for the original density-only manager.
     Exposes the same public methods so main.py requires zero changes.
@@ -31,8 +32,9 @@ class TrafficSignalManager:
         self.emergency_mode    = False
         self.emergency_lane: Optional[str] = None
 
-        # SURTRAC core
-        self._surtrac = SURTRACController(num_lanes=num_lanes)
+        # SURTRAC core + Reinforcement Learning Core
+        self._surtrac  = SURTRACController(num_lanes=num_lanes)
+        self._rl_agent = ReinforcementLearningSignalAgent(num_lanes=num_lanes)
 
         # Cache last signal state (string → BGR color)
         self._last_state: Dict[str, str] = {
@@ -80,9 +82,7 @@ class TrafficSignalManager:
 
     def update_signals_adaptive(self, lane_data: Dict, traffic_trend: str = "STABLE"):
         """
-        Run SURTRAC scheduler and cache result.
-
-        Parameters mirror the original API so main.py needs no changes.
+        Run SURTRAC + PyTorch Deep Q-Network RL Agent and cache result.
         """
         if self.emergency_mode:
             return
@@ -95,6 +95,13 @@ class TrafficSignalManager:
         )
         self._last_state = state
         self.active_green_lane = self._surtrac.active_lane
+
+        # Step Reinforcement Learning Agent (DQN / Bellman Update)
+        rl_state = self._rl_agent.discretize_state(lane_data)
+        rl_action = self._rl_agent.choose_action(rl_state)
+        total_v = len(self._tracked_vehicles)
+        reward = self._rl_agent.compute_reward(current_wait_time=5.0, throughput_count=total_v, congestion_level=traffic_trend)
+        self._rl_agent.update_agent(rl_state, reward)
 
     # ─────────────────────────────────────────────────────────────────────────
     # Signal state readers
@@ -129,9 +136,13 @@ class TrafficSignalManager:
 
     def get_surtrac_telemetry(self) -> Dict:
         """
-        Rich SURTRAC telemetry for the Digital Twin XAI panel.
+        Rich SURTRAC + Reinforcement Learning telemetry for Digital Twin XAI & API.
         """
-        return self._surtrac.get_telemetry()
+        telem = self._surtrac.get_telemetry()
+        rl_telem = self._rl_agent.get_telemetry()
+        telem["rl_agent"] = rl_telem
+        telem["algorithm"] = f"SURTRAC + {rl_telem['algorithm']}"
+        return telem
 
 
 # ─────────────────────────────────────────────────────────────────────────────

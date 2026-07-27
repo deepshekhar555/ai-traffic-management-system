@@ -96597,3 +96597,10 @@ LIMIT 60
 2026-07-27 23:10:56,918 - traffic_ai - INFO - [main.py:945] -   Map URL: https://www.openstreetmap.org/?mlat=40.7128&mlon=-74.006#map=15/40.7128/-74.006
 2026-07-27 23:10:56,920 - traffic_ai - INFO - [main.py:948] -   High-Traffic Zones Detected: 0
 2026-07-27 23:10:56,937 - traffic_ai - INFO - [main.py:953] - ======================================================================
+2026-07-27 23:42:45,833 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
+2026-07-27 23:43:06,768 - traffic_ai - INFO - [rl_signal_agent.py:104] - Reinforcement Learning Agent initialized (DQN Active: True)!
+2026-07-27 23:44:09,962 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
+2026-07-27 23:44:14,290 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
+2026-07-27 23:44:15,584 - traffic_ai - INFO - [traffic_database.py:112] - Database initialized: D:\Users\Welcome\Downloads\ai-traffic-management-system-main\ai-traffic-management-system-main\data\traffic_data.db
+2026-07-27 23:44:17,122 - traffic_ai - INFO - [congestion_predictor.py:168] - ML Model bootstrapped & trained successfully with 300 samples (XGBoost Regressor)!
+2026-07-27 23:44:17,157 - traffic_ai - INFO - [sensor_fusion.py:28] - [SensorFusion] 24GHz Doppler Radar & Environmental Air Quality Sensor Fusion Manager initialized!

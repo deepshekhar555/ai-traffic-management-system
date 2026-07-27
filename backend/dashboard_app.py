@@ -95,6 +95,13 @@ def get_eco_impact():
         "idling_reduced_minutes": random.randint(310, 850)
     })
 
+@app.route('/api/rl-telemetry')
+def get_rl_telemetry():
+    """Get PyTorch Deep Q-Network (DQN) Reinforcement Learning Agent Telemetry"""
+    from src.rl_signal_agent import ReinforcementLearningSignalAgent
+    agent = ReinforcementLearningSignalAgent()
+    return jsonify(agent.get_telemetry())
+
 @app.route('/api/ml-model-comparison')
 def get_ml_model_comparison():
     """

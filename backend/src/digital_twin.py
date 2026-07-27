@@ -580,9 +580,9 @@ class DigitalTwin:
         cv2.line(canvas, (x1 + margin, y_top + 22),
                  (x2 - margin, y_top + 22), (40, 55, 70), 1)
 
-        # Show SURTRAC algorithm name
+        # Show SURTRAC + RL algorithm name
         algo = surtrac_telem.get("algorithm", self._xai_reason)
-        cv2.putText(canvas, algo[:28],
+        cv2.putText(canvas, algo[:32],
                     (x1 + margin, y_top + 36),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 200, 240), 1)
 
@@ -594,14 +594,18 @@ class DigitalTwin:
         eta       = surtrac_telem.get("next_arrival_eta")
         in_yellow = surtrac_telem.get("in_yellow", False)
 
+        rl_info = surtrac_telem.get("rl_agent", {})
+        rl_rew = rl_info.get("cumulative_reward", 0.0)
+        rl_q = rl_info.get("max_q_value", 0.0)
+
         phase_clr = YELLOW if in_yellow else GREEN
         phase_lbl = "YELLOW" if in_yellow else f"GREEN L{active_l+1}"
-        cv2.putText(canvas, f"Phase: {phase_lbl}",
+        cv2.putText(canvas, f"Phase: {phase_lbl} | RL Rew: +{rl_rew:.1f}",
                     (x1 + margin, y_top + 52),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.35, phase_clr, 1)
-        cv2.putText(canvas, f"{elapsed:.1f}s / {duration:.1f}s",
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.33, phase_clr, 1)
+        cv2.putText(canvas, f"SURTRAC: {elapsed:.1f}s/{duration:.1f}s | Q-Val: {rl_q:.2f}",
                     (x1 + margin, y_top + 66),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.33, TEXT_DIM, 1)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.31, TEXT_DIM, 1)
 
         # Next arrival ETA
         eta_txt = f"Next arrival: {eta:.1f}s" if eta else "No arrivals pending"
