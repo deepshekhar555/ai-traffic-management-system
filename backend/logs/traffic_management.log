@@ -102816,3 +102816,5 @@ LIMIT 60
 2026-07-28 00:13:47,270 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
 2026-07-28 00:13:47,309 - traffic_ai - INFO - [main.py:919] - Keyboard interrupt received
 2026-07-28 00:13:47,348 - traffic_ai - INFO - [main.py:928] - Cleaning up resources...
+2026-07-28 00:39:26,961 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
+2026-07-28 00:39:32,072 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
