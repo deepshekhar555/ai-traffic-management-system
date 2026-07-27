@@ -223,12 +223,19 @@ class DigitalTwin:
     # ──────────────────────────────────────────────────────────────────────────
 
     def _draw_grid(self, canvas):
-        """Subtle grid for digital aesthetic."""
-        step = 30
+        """Iron Man Holographic AR/VR Sci-Fi Grid & Hologram Depth Rays."""
+        step = 35
         for x in range(0, self.width, step):
-            cv2.line(canvas, (x, 0), (x, self.height), GRID_COLOR, 1)
+            cv2.line(canvas, (x, 0), (x, self.height), (35, 24, 14), 1)
         for y in range(0, self.height, step):
-            cv2.line(canvas, (0, y), (self.width, y), GRID_COLOR, 1)
+            cv2.line(canvas, (0, y), (self.width, y), (35, 24, 14), 1)
+
+        # Iron Man Holographic JARVIS AR Corner Target Reticles
+        for (cx, cy) in [(40, 50), (self.width - 40, 50), (40, self.map_h - 20), (self.width - 40, self.map_h - 20)]:
+            cv2.circle(canvas, (cx, cy), 18, (255, 220, 0), 1, cv2.LINE_AA)
+            cv2.circle(canvas, (cx, cy), 4, (0, 240, 120), -1)
+            cv2.line(canvas, (cx - 24, cy), (cx + 24, cy), (255, 220, 0), 1)
+            cv2.line(canvas, (cx, cy - 24), (cx, cy + 24), (255, 220, 0), 1)
 
     def _draw_road(self, canvas, signal_state, system_telemetry: Dict = None):
         """L1 – Realistic 2-lane road with markings, crosswalks, 24GHz Doppler Radar sweeps & hardware circuit telemetry."""
@@ -409,6 +416,13 @@ class DigitalTwin:
                          (min(255, vc[0] + alpha),
                           min(255, vc[1] + alpha),
                           min(255, vc[2] + alpha)), 1)
+
+            # Iron Man Holographic AR Target Brackets around vehicle
+            bw, bh = 14, 10
+            cv2.line(canvas, (tx - bw, ty - bh), (tx - bw + 5, ty - bh), (0, 220, 255), 1)
+            cv2.line(canvas, (tx - bw, ty - bh), (tx - bw, ty - bh + 5), (0, 220, 255), 1)
+            cv2.line(canvas, (tx + bw, ty + bh), (tx + bw - 5, ty + bh), (0, 220, 255), 1)
+            cv2.line(canvas, (tx + bw, ty + bh), (tx + bw, ty + bh - 5), (0, 220, 255), 1)
 
             # Vehicle icon (different shapes per class)
             if cls in ("bus", "truck"):

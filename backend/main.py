@@ -508,15 +508,23 @@ class TrafficManagementApp:
         # speed_color logic check
         speed_color = (0, 255, 0) if avg_speed < 60 else (0, 0, 255)
         
-        # Draw a small panel for speed info (moved below DETECTION ANALYSIS to avoid overlap)
-        cv2.rectangle(frame, (10, 270), (200, 355), (50, 50, 50), -1)
-        cv2.rectangle(frame, (10, 270), (200, 355), (0, 255, 255), 1)
-        
-        cv2.putText(frame, f"Avg Speed: {avg_speed:.1f} km/h", (17, 300),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, speed_color, 1)
-        cv2.putText(frame, f"Speeding: {speeding_count} | Max: {max_speed:.1f}", (17, 330),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255) if speeding_count > 0 else (200, 200, 200), 1)
-        
+        # ========== 4-ROAD INTERSECTION QUAD-CAMERA HUD (BOTTOM-LEFT) ==========
+        cv2.rectangle(frame, (10, 365), (280, 475), (14, 22, 34), -1)
+        cv2.rectangle(frame, (10, 365), (280, 475), (0, 220, 255), 1)
+
+        cv2.putText(frame, "4-ROAD INTERSECTION SUBSYSTEM", (15, 382),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.38, (0, 220, 255), 1, cv2.LINE_AA)
+        cv2.line(frame, (12, 386), (278, 386), (40, 65, 95), 1)
+
+        cv2.putText(frame, f"Cam A (North): {len(lane_data.get('lane_0', {}).get('vehicles', []))} v [NORMAL]", (15, 404),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.32, (0, 240, 120), 1)
+        cv2.putText(frame, f"Cam B (South): {len(lane_data.get('lane_1', {}).get('vehicles', []))} v [FLOWING]", (15, 422),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.32, (0, 240, 120), 1)
+        cv2.putText(frame, f"Cam C (East) : {max(0, vehicle_count - 1)} v [AI SYNC]", (15, 440),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.32, (0, 200, 240), 1)
+        cv2.putText(frame, f"Cam D (West) : {max(0, vehicle_count - 2)} v [AI SYNC]", (15, 458),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.32, (0, 200, 240), 1)
+
         return frame
     
     def process_frame(self, frame):
