@@ -25,6 +25,7 @@ LIGHT_BLUE    = (255, 190, 60)     # Neon Light Blue
 NEON_GREEN    = (0, 240, 120)      # High-Vibe Green
 WARNING_RED   = (0, 100, 255)      # Warning Orange/Red Accent
 TEXT_CYAN     = (255, 230, 100)    # Bright Cyan Text
+TEXT_BRIGHT   = (240, 245, 255)    # High Brightness Text
 TEXT_DIM      = (170, 140, 90)     # Muted Text
 
 

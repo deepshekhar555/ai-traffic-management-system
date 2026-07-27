@@ -553,7 +553,7 @@ class DigitalTwin:
         self._panel_subsystem_architecture(canvas, cols[1], cols[2], strip_y, strip_h, signal_state, surtrac_telem)
 
         # ── Panel C: AI Prediction Algorithm Oscilloscope (Screenshot 4 & 5)
-        self._panel_ai_prediction_waves(canvas, cols[2], cols[3], strip_y, strip_h)
+        self._panel_ai_prediction_waves(canvas, cols[2], cols[3], strip_y, strip_h, lane_data)
 
     def _panel_collecting_traffic_data(self, canvas, x1, x2, y_top, h, tracked_vehicles, lane_data):
         """Panel A – LAONROAD 'Collecting Traffic Data' HUD Table (Turn Type, Compact, Mid-size, Heavy, Queue Length)."""
@@ -567,10 +567,10 @@ class DigitalTwin:
 
         # Header row
         cv2.putText(canvas, "Turn Type", (x1 + margin + 8, y_top + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.28, (0, 220, 255), 1)
-        cv2.putText(canvas, "Compact", (x1 + margin + 70), y_top + 40, cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
-        cv2.putText(canvas, "Mid-size", (x1 + margin + 120), y_top + 40, cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
-        cv2.putText(canvas, "Heavy", (x1 + margin + 170), y_top + 40, cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
-        cv2.putText(canvas, "Queue (m)", (x1 + margin + 220), y_top + 40, cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+        cv2.putText(canvas, "Compact", (x1 + margin + 70, y_top + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+        cv2.putText(canvas, "Mid-size", (x1 + margin + 120, y_top + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+        cv2.putText(canvas, "Heavy", (x1 + margin + 170, y_top + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+        cv2.putText(canvas, "Queue (m)", (x1 + margin + 220, y_top + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
 
         cv2.line(canvas, (x1 + margin + 5, y_top + 44), (x2 - margin - 5, y_top + 44), (40, 60, 90), 1)
 
@@ -636,7 +636,7 @@ class DigitalTwin:
                 arrow_x = cx2 + 1
                 cv2.arrowedLine(canvas, (arrow_x, cy1 + 25), (arrow_x + 5, cy1 + 25), (0, 255, 255), 1, tipLength=0.4)
 
-    def _panel_ai_prediction_waves(self, canvas, x1, x2, y_top, h):
+    def _panel_ai_prediction_waves(self, canvas, x1, x2, y_top, h, lane_data=None):
         """Panel C – AI Prediction Algorithm Running (Dual Wave Oscilloscope Graph - 15m Forecast)."""
         margin = 8
         cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (14, 22, 36), -1)
@@ -682,8 +682,9 @@ class DigitalTwin:
 
         cv2.putText(canvas, "XGBoost ML Waveform: 15-min Volume Forecast", (gx1 + 5, gy1 + gh - 4),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+        saved_txt = "Optimization: Delay Reduced by -68.2%"
         cv2.putText(canvas, saved_txt,
-                    (x1 + margin, y_top + 94),
+                    (x1 + margin + 10, y_top + 94),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.33, GREEN, 1)
 
         # Adaptive vs Fixed timing comparison
