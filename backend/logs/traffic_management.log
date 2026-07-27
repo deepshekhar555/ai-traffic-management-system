@@ -101450,3 +101450,1369 @@ LIMIT 60
 2026-07-28 00:07:02,230 - traffic_ai - INFO - [main.py:965] - ======================================================================
 2026-07-28 00:08:18,147 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
 2026-07-28 00:08:26,748 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
+2026-07-28 00:11:07,551 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
+2026-07-28 00:11:08,171 - traffic_ai - INFO - [traffic_database.py:112] - Database initialized: D:\Users\Welcome\Downloads\ai-traffic-management-system-main\ai-traffic-management-system-main\data\traffic_data.db
+2026-07-28 00:11:08,954 - traffic_ai - INFO - [congestion_predictor.py:168] - ML Model bootstrapped & trained successfully with 300 samples (XGBoost Regressor)!
+2026-07-28 00:11:08,963 - traffic_ai - INFO - [sensor_fusion.py:28] - [SensorFusion] 24GHz Doppler Radar & Environmental Air Quality Sensor Fusion Manager initialized!
+2026-07-28 00:11:10,792 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
+2026-07-28 00:11:13,821 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!
+2026-07-28 00:11:13,875 - traffic_ai - INFO - [main.py:53] - ======================================================================
+2026-07-28 00:11:13,875 - traffic_ai - INFO - [main.py:54] - Initializing AI Traffic Management System
+2026-07-28 00:11:13,876 - traffic_ai - INFO - [main.py:55] - Model: yolo26n | Resolution: 1280x720
+2026-07-28 00:11:13,876 - traffic_ai - INFO - [main.py:56] - ======================================================================
+2026-07-28 00:11:13,876 - traffic_ai - INFO - [main.py:94] - Initializing camera...
+2026-07-28 00:11:13,876 - traffic_ai - INFO - [camera_handler.py:39] - Opening camera device: 0
+2026-07-28 00:11:19,083 - traffic_ai - INFO - [camera_handler.py:57] - Camera index 0 opened instantly!
+2026-07-28 00:11:19,087 - traffic_ai - INFO - [main.py:97] - Loading traffic detector (YOLOv26n)...
+2026-07-28 00:11:20,823 - traffic_ai - INFO - [traffic_detector.py:68] - [YOLO] Ultralytics YOLO Model [yolo26n.pt] loaded successfully!
+2026-07-28 00:11:20,823 - traffic_ai - INFO - [main.py:100] - Initializing voice alert system...
+2026-07-28 00:11:21,468 - traffic_ai - INFO - [main.py:103] - Initializing dashboard...
+2026-07-28 00:11:21,470 - traffic_ai - INFO - [main.py:106] - Initializing HSR monitor...
+2026-07-28 00:11:21,470 - traffic_ai - INFO - [main.py:109] - Initializing alert manager...
+2026-07-28 00:11:21,471 - traffic_ai - INFO - [main.py:112] - Initializing lane detector...
+2026-07-28 00:11:21,471 - traffic_ai - INFO - [main.py:115] - Initializing traffic signal manager...
+2026-07-28 00:11:27,477 - traffic_ai - INFO - [rl_signal_agent.py:104] - Reinforcement Learning Agent initialized (DQN Active: True)!
+2026-07-28 00:11:27,478 - traffic_ai - INFO - [main.py:118] - Initializing emergency vehicle detector...
+2026-07-28 00:11:27,478 - traffic_ai - INFO - [main.py:121] - Initializing GPS tracker...
+2026-07-28 00:11:27,478 - traffic_ai - INFO - [main.py:128] - Initializing 2D Digital Twin renderer...
+2026-07-28 00:11:27,479 - traffic_ai - INFO - [main.py:131] - Initializing Micro-Simulation Physics Engine (3rd Frame)...
+2026-07-28 00:11:27,479 - traffic_ai - INFO - [main.py:134] - Initializing AI Congestion Forecasting Engine...
+2026-07-28 00:11:27,854 - traffic_ai - INFO - [congestion_predictor.py:168] - ML Model bootstrapped & trained successfully with 300 samples (XGBoost Regressor)!
+2026-07-28 00:11:27,856 - traffic_ai - INFO - [main.py:137] - Initializing Speed Tracker & Incident Detector...
+2026-07-28 00:11:27,862 - traffic_ai - INFO - [traffic_database.py:112] - Database initialized: D:\Users\Welcome\Downloads\ai-traffic-management-system-main\ai-traffic-management-system-main\data\traffic_data.db
+2026-07-28 00:11:27,863 - traffic_ai - INFO - [anpr_detector.py:33] - ANPR (License Plate Reader) Engine initialized successfully!
+2026-07-28 00:11:27,863 - traffic_ai - INFO - [siren_detector.py:31] - Acoustic & Visual Siren Detector initialized successfully!
+2026-07-28 00:11:27,873 - traffic_ai - INFO - [rl_signal_agent.py:104] - Reinforcement Learning Agent initialized (DQN Active: True)!
+2026-07-28 00:11:27,878 - traffic_ai - INFO - [challan_system.py:32] - Automated E-Challan Digital Ticket Engine initialized!
+2026-07-28 00:11:27,902 - traffic_ai - INFO - [bev_transformer.py:48] - Bird's-Eye-View (BEV) Perspective Transformer initialized successfully!
+2026-07-28 00:11:27,902 - traffic_ai - INFO - [vehicle_classifier_hotlist.py:35] - Vehicle Color Classifier & Police Hotlist Engine initialized!
+2026-07-28 00:11:27,904 - traffic_ai - INFO - [pedestrian_safety.py:29] - Pedestrian Crosswalk Safety & Collision Avoidance Engine initialized!
+2026-07-28 00:11:27,910 - traffic_ai - INFO - [hardware_controller.py:34] - Hardware Controller: Simulation Mode (No physical Arduino connected).
+2026-07-28 00:11:27,912 - traffic_ai - INFO - [rpi_gpio_controller.py:72] - RPi.GPIO module not available (Running on non-Raspberry Pi system). Using GPIO simulation mode.
+2026-07-28 00:11:27,913 - traffic_ai - INFO - [main.py:159] - ✓ All 8 Advanced Innovations + Hardware Controllers (Arduino / RPi) initialized successfully!
+2026-07-28 00:11:27,913 - traffic_ai - INFO - [main.py:160] - ======================================================================
+2026-07-28 00:11:27,913 - traffic_ai - INFO - [main.py:845] - Starting main loop...
+2026-07-28 00:11:29,847 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:29,865 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:30,027 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:11:30,032 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:11:30,102 - traffic_ai - INFO - [main.py:910] - Processed 1 frames | FPS: 0.1
+2026-07-28 00:11:30,121 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:30,155 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:30,261 - traffic_ai - INFO - [main.py:910] - Processed 2 frames | FPS: 0.1
+2026-07-28 00:11:30,463 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:3
+2026-07-28 00:11:30,498 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:30,650 - traffic_ai - INFO - [main.py:910] - Processed 3 frames | FPS: 0.1
+2026-07-28 00:11:30,687 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:3
+2026-07-28 00:11:30,693 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:30,833 - traffic_ai - INFO - [main.py:910] - Processed 4 frames | FPS: 0.1
+2026-07-28 00:11:31,014 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:31,020 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:31,121 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:31,210 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:31,512 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:31,544 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:31,678 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:31,704 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:32,026 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:32,183 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:32,301 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:32,343 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:32,621 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:32,725 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:32,825 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:32,837 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:33,103 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:33,113 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:33,154 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:11:33,171 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:11:33,245 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:33,313 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:33,594 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:33,618 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:33,814 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:33,846 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:34,125 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:34,221 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:34,347 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:34,444 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:34,715 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:34,762 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 60 KM/H
+2026-07-28 00:11:34,873 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:34,980 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:35,254 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:35,287 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:35,391 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:35,447 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:35,727 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:11:35,766 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:35,887 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:11:35,986 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:36,279 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:11:36,300 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 149 KM/H
+2026-07-28 00:11:36,302 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 149.4 km/h)
+2026-07-28 00:11:36,449 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 5000 (Speeding Violation @ 149.4 km/h)
+2026-07-28 00:11:36,506 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:11:36,508 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:11:36,568 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:11:36,693 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:37,009 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:3
+2026-07-28 00:11:37,143 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 99 KM/H
+2026-07-28 00:11:37,304 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:3
+2026-07-28 00:11:37,409 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:37,571 - traffic_ai - INFO - [main.py:910] - Processed 28 frames | FPS: 2.8
+2026-07-28 00:11:37,767 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:37,882 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:38,082 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:38,234 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:38,514 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:38,598 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:38,711 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:38,902 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:39,242 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:11:39,367 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:39,501 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:11:39,613 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:39,668 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:11:39,710 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:11:39,977 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:11:40,183 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 151 KM/H
+2026-07-28 00:11:40,201 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [DL-31-XG-2505] for Track #3 (car @ 151.2 km/h)
+2026-07-28 00:11:40,332 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-753399 | Plate: DL-31-XG-2505 | Fine: INR 5000 (Speeding Violation @ 151.2 km/h)
+2026-07-28 00:11:40,508 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:11:40,631 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:41,002 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:41,162 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:41,357 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:41,509 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:41,927 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:42,043 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:42,241 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:42,346 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:42,630 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:42,757 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:42,799 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:11:42,866 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:11:42,947 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:43,163 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:43,440 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:43,533 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:43,672 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:43,784 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:44,140 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:44,241 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:44,362 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:44,457 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:44,757 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:44,894 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:45,079 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:11:45,259 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:45,624 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:45,709 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:45,826 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:45,929 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:45,979 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:11:46,012 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:11:46,271 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:46,293 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:46,411 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:46,483 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:46,782 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:46,873 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:46,986 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:47,057 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:47,308 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:47,339 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:47,425 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:47,521 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:47,792 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:47,829 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:47,914 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:47,984 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:48,244 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:48,287 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:48,441 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:11:48,544 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:48,856 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:11:48,943 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 195 KM/H
+2026-07-28 00:11:48,943 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 195.1 km/h)
+2026-07-28 00:11:49,098 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 5000 (Speeding Violation @ 195.1 km/h)
+2026-07-28 00:11:49,167 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:11:49,171 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 2 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:11:49,243 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:11:49,312 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:49,619 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:49,731 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:49,857 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:49,955 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:50,269 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:11:50,397 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 139 KM/H
+2026-07-28 00:11:57,613 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:11:57,707 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:57,769 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:11:57,788 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 2 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:11:57,837 - traffic_ai - INFO - [main.py:910] - Processed 66 frames | FPS: 0.4
+2026-07-28 00:11:58,040 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:11:58,068 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 70 KM/H
+2026-07-28 00:11:58,162 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:11:58,251 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:58,518 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:58,518 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:58,593 - traffic_ai - INFO - [main.py:910] - Processed 69 frames | FPS: 0.4
+2026-07-28 00:11:58,600 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:58,600 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:58,811 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:11:58,812 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:59,021 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:11:59,022 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:59,219 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:59,220 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:59,296 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:59,297 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:11:59,520 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:11:59,638 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:03,220 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:03,220 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:03,252 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:03,252 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:12:03,460 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:3
+2026-07-28 00:12:03,461 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 182 KM/H
+2026-07-28 00:12:03,461 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 182.2 km/h)
+2026-07-28 00:12:04,032 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 5000 (Speeding Violation @ 182.2 km/h)
+2026-07-28 00:12:06,307 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:06,307 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 3 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:06,400 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:3
+2026-07-28 00:12:06,400 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:06,493 - traffic_ai - INFO - [main.py:910] - Processed 78 frames | FPS: 0.3
+2026-07-28 00:12:06,643 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:06,643 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:06,716 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:06,717 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:06,927 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:06,928 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:06,992 - traffic_ai - INFO - [main.py:910] - Processed 81 frames | FPS: 0.3
+2026-07-28 00:12:07,002 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:07,003 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:07,217 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:07,217 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:07,289 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:07,289 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:07,490 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:07,490 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:07,564 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:07,565 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:07,781 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:07,848 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:08,266 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:08,267 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:08,533 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:08,533 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:08,867 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:08,867 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:09,544 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:09,545 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:09,834 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:09,834 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:09,907 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:09,907 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:10,119 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:10,119 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:10,190 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:10,190 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:10,398 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:10,398 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 94 KM/H
+2026-07-28 00:12:10,398 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 94.3 km/h)
+2026-07-28 00:12:10,567 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 1000 (Speeding Violation @ 94.3 km/h)
+2026-07-28 00:12:10,682 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:10,682 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:10,919 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:10,920 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:10,994 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:10,995 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:11,199 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:11,200 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:11,268 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:11,269 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:11,497 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:11,497 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 143 KM/H
+2026-07-28 00:12:11,497 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [DL-31-XG-2505] for Track #3 (car @ 143.0 km/h)
+2026-07-28 00:12:11,612 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-753399 | Plate: DL-31-XG-2505 | Fine: INR 5000 (Speeding Violation @ 143.0 km/h)
+2026-07-28 00:12:11,728 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:11,728 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:11,957 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:11,957 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:12,032 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:12,032 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:12,237 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:12,237 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:12,308 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:12,308 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:12,515 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:12,515 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:12,552 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:12,553 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:12,594 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:12,594 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:12,812 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:12,812 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:12,886 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:12,888 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:13,089 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:13,089 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:13,169 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:13,169 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:13,366 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:13,366 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:13,452 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:13,452 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:13,685 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:13,686 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:13,797 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:13,798 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:14,073 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:14,073 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:14,167 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:14,167 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:14,413 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:14,413 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 66 KM/H
+2026-07-28 00:12:14,414 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 136.0 km/h)
+2026-07-28 00:12:14,646 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 5000 (Speeding Violation @ 136.0 km/h)
+2026-07-28 00:12:14,860 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:14,861 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:15,143 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:15,144 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 119 KM/H
+2026-07-28 00:12:15,144 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [DL-31-XG-2505] for Track #3 (car @ 118.8 km/h)
+2026-07-28 00:12:15,286 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-753399 | Plate: DL-31-XG-2505 | Fine: INR 2000 (Speeding Violation @ 118.8 km/h)
+2026-07-28 00:12:15,418 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:15,419 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:15,713 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:15,713 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:15,751 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:15,751 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:15,799 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:15,799 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:16,044 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:16,045 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:16,120 - traffic_ai - INFO - [main.py:910] - Processed 125 frames | FPS: 2.6
+2026-07-28 00:12:16,131 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:16,131 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:16,382 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:16,382 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:16,490 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:16,491 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:16,800 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:3
+2026-07-28 00:12:16,800 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:16,936 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:3
+2026-07-28 00:12:16,936 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:17,231 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:17,231 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:17,336 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:17,337 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:17,611 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:3
+2026-07-28 00:12:17,611 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:17,748 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:3
+2026-07-28 00:12:17,748 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:18,032 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:18,033 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:18,119 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:18,119 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:18,376 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:18,376 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:18,460 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:18,461 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:18,712 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:18,713 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:18,766 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:18,767 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:18,817 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:18,817 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:19,089 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:19,089 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:19,205 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:19,206 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:19,480 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:19,481 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:19,568 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:19,568 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:19,847 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:19,847 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:19,965 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:19,966 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:20,254 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:20,255 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:20,336 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:20,336 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:20,583 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:20,584 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:22,313 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:22,314 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:22,359 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:22,360 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:12:22,616 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:22,617 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 94 KM/H
+2026-07-28 00:12:22,617 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 94.5 km/h)
+2026-07-28 00:12:22,703 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 1000 (Speeding Violation @ 94.5 km/h)
+2026-07-28 00:12:22,820 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:22,821 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:23,090 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:23,091 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:23,191 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:23,192 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:23,462 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:23,462 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:23,549 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:23,549 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:23,825 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:23,826 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:23,920 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:23,920 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:24,177 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:24,177 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:24,265 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:24,265 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:24,524 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:24,524 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:24,617 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:24,617 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:24,873 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:24,874 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:26,136 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:26,137 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:26,273 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:26,281 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:12:26,548 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:26,567 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:26,663 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:26,691 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:26,972 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:3
+2026-07-28 00:12:26,973 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 161 KM/H
+2026-07-28 00:12:26,973 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 161.1 km/h)
+2026-07-28 00:12:27,092 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 5000 (Speeding Violation @ 161.1 km/h)
+2026-07-28 00:12:27,238 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:3
+2026-07-28 00:12:27,242 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:27,532 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:27,532 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:27,608 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:27,608 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:27,842 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:27,843 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:27,917 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:27,917 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:28,163 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:28,163 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:28,250 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:28,250 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:28,490 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:28,491 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:28,578 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:28,578 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:28,830 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:28,830 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:28,907 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:28,907 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:29,171 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:29,172 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:29,312 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:29,312 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:29,346 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:29,347 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:29,546 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:29,546 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 141 KM/H
+2026-07-28 00:12:29,546 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [DL-31-XG-2505] for Track #3 (car @ 140.8 km/h)
+2026-07-28 00:12:29,643 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-753399 | Plate: DL-31-XG-2505 | Fine: INR 5000 (Speeding Violation @ 140.8 km/h)
+2026-07-28 00:12:29,644 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [WB-83-PN-4245] for Track #2 (car @ 81.0 km/h)
+2026-07-28 00:12:29,669 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-517336 | Plate: WB-83-PN-4245 | Fine: INR 1000 (Speeding Violation @ 81.0 km/h)
+2026-07-28 00:12:29,780 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:29,780 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:30,040 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:30,040 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:30,121 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:30,122 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:30,349 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:30,350 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 96 KM/H
+2026-07-28 00:12:30,443 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:30,443 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:30,673 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:30,674 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:30,762 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:30,762 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:30,997 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:30,997 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:31,075 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:31,075 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:31,306 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:31,306 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:31,379 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:31,379 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:31,599 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:31,599 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:31,679 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:31,680 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:31,907 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:31,907 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:31,980 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:31,980 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:32,211 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:32,212 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:32,286 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:32,286 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:32,516 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:32,517 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:32,550 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:32,551 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:32,594 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:32,594 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:32,826 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:32,826 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:32,899 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:32,900 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:33,139 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:33,139 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 107 KM/H
+2026-07-28 00:12:33,139 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [WB-83-PN-4245] for Track #2 (car @ 106.5 km/h)
+2026-07-28 00:12:33,245 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-517336 | Plate: WB-83-PN-4245 | Fine: INR 2000 (Speeding Violation @ 106.5 km/h)
+2026-07-28 00:12:33,345 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:33,346 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:33,584 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:33,586 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:33,662 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:33,662 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:33,885 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:33,886 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:33,963 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:33,963 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:34,270 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:34,270 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:34,347 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:34,347 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:34,576 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:34,577 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 229 KM/H
+2026-07-28 00:12:34,577 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 229.2 km/h)
+2026-07-28 00:12:34,689 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 5000 (Speeding Violation @ 229.2 km/h)
+2026-07-28 00:12:34,805 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:34,806 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:35,054 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:35,055 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:35,132 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:35,132 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:35,369 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:35,370 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:35,443 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:35,443 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:35,514 - traffic_ai - INFO - [main.py:910] - Processed 216 frames | FPS: 5.5
+2026-07-28 00:12:35,686 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:35,687 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:35,719 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:35,720 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:35,761 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:35,762 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:35,995 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:35,995 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:36,074 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:36,074 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:36,289 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:36,289 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:36,361 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:36,362 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:36,595 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:36,595 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:36,671 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:36,672 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:36,889 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:36,889 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:36,963 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:36,964 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:37,218 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:37,219 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:37,293 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:37,293 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:37,531 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:37,531 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:37,608 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:37,608 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:37,833 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:37,834 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:37,914 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:37,915 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:38,159 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:38,159 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:38,245 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:38,245 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:38,474 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:38,474 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:38,552 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:38,553 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:38,776 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:38,776 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:38,811 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:38,812 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:38,853 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:38,854 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:39,064 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:39,064 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:39,141 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:39,141 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:39,357 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:39,357 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:39,432 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:39,432 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:39,656 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:39,656 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:39,737 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:39,737 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:39,953 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:39,954 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:40,030 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:40,030 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:40,263 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:40,264 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 267 KM/H
+2026-07-28 00:12:40,264 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-70-LO-1794] for Track #1 (car @ 266.7 km/h)
+2026-07-28 00:12:40,389 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-324943 | Plate: TN-70-LO-1794 | Fine: INR 5000 (Speeding Violation @ 266.7 km/h)
+2026-07-28 00:12:40,492 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:40,492 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:40,739 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:40,739 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:40,819 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:40,819 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:41,070 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:41,072 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:41,148 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:41,148 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:41,380 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:41,380 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:41,456 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:41,457 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:41,705 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:41,705 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:41,781 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:41,781 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:41,820 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:41,820 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:42,022 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:42,022 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:42,102 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:42,103 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:42,331 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:42,332 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:42,412 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:12:42,413 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:42,641 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:42,641 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:42,744 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:42,744 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:42,991 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:42,992 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 264 KM/H
+2026-07-28 00:12:42,992 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [DL-78-UK-9432] for Track #7 (bus @ 263.8 km/h)
+2026-07-28 00:12:43,047 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-586201 | Plate: DL-78-UK-9432 | Fine: INR 5000 (Speeding Violation @ 263.8 km/h)
+2026-07-28 00:12:43,140 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:43,141 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:43,389 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:43,390 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 97 KM/H
+2026-07-28 00:12:43,477 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:43,494 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:43,750 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:43,752 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 164 KM/H
+2026-07-28 00:12:43,839 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:43,842 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:44,087 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:44,089 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:44,176 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:44,179 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:44,423 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:44,424 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:44,517 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:44,522 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:44,783 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:44,785 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 266 KM/H
+2026-07-28 00:12:44,786 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [HR-58-UJ-3121] for Track #8 (bus @ 265.9 km/h)
+2026-07-28 00:12:44,852 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-897729 | Plate: HR-58-UJ-3121 | Fine: INR 5000 (Speeding Violation @ 265.9 km/h)
+2026-07-28 00:12:44,903 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:44,904 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:44,964 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:44,991 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:45,240 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:45,242 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:45,322 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:45,326 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:45,555 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:45,558 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:45,659 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:45,670 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:45,937 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:45,940 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:46,023 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:46,028 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:46,253 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:46,320 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:46,399 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:46,501 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:46,794 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:46,896 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:46,981 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:47,089 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:47,348 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:47,577 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:47,720 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:47,815 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:48,097 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:48,135 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 233 KM/H
+2026-07-28 00:12:48,136 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-69-CN-8114] for Track #10 (bus @ 233.2 km/h)
+2026-07-28 00:12:48,194 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-249446 | Plate: TN-69-CN-8114 | Fine: INR 5000 (Speeding Violation @ 233.2 km/h)
+2026-07-28 00:12:48,261 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:48,262 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 2 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:48,320 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:48,322 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:48,588 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:48,600 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 263 KM/H
+2026-07-28 00:12:48,698 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:48,704 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:48,957 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:48,973 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 63 KM/H
+2026-07-28 00:12:48,974 - traffic_ai - WARNING - [pedestrian_safety.py:73] - PEDESTRIAN COLLISION HAZARD! Vehicle #10 approaching pedestrian. TTC = 0.45s!
+2026-07-28 00:12:49,012 - traffic_ai - INFO - [voice_alert.py:56] - VOICE ALERT: Caution! Pedestrian on crosswalk.
+2026-07-28 00:12:49,126 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:12:49,186 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:49,489 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:3
+2026-07-28 00:12:49,538 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 60 KM/H
+2026-07-28 00:12:49,688 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:3
+2026-07-28 00:12:49,759 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:50,045 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:50,072 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 111 KM/H
+2026-07-28 00:12:50,167 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:50,212 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:50,490 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:50,518 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 114 KM/H
+2026-07-28 00:12:50,608 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:50,710 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:50,993 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:51,001 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:51,104 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:51,123 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:51,398 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:51,419 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:51,467 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:51,468 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:51,511 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:51,515 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:51,769 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:51,776 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 88 KM/H
+2026-07-28 00:12:51,778 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-69-CN-8114] for Track #10 (bus @ 87.9 km/h)
+2026-07-28 00:12:51,886 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-249446 | Plate: TN-69-CN-8114 | Fine: INR 1000 (Speeding Violation @ 87.9 km/h)
+2026-07-28 00:12:52,006 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:52,007 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:52,287 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:52,290 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 164 KM/H
+2026-07-28 00:12:52,390 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:52,400 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:52,669 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:52,720 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 85 KM/H
+2026-07-28 00:12:52,836 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:52,853 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:53,114 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:53,116 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 76 KM/H
+2026-07-28 00:12:53,221 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:53,226 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:53,501 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:53,543 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 118 KM/H
+2026-07-28 00:12:53,548 - traffic_ai - WARNING - [pedestrian_safety.py:73] - PEDESTRIAN COLLISION HAZARD! Vehicle #10 approaching pedestrian. TTC = 0.24s!
+2026-07-28 00:12:53,551 - traffic_ai - WARNING - [pedestrian_safety.py:73] - PEDESTRIAN COLLISION HAZARD! Vehicle #13 approaching pedestrian. TTC = 1.47s!
+2026-07-28 00:12:53,656 - traffic_ai - INFO - [voice_alert.py:56] - VOICE ALERT: Caution! Pedestrian on crosswalk.
+2026-07-28 00:12:53,673 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:12:53,733 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:54,034 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:54,059 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 169 KM/H
+2026-07-28 00:12:54,060 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [WB-27-VT-7020] for Track #13 (car @ 169.5 km/h)
+2026-07-28 00:12:54,130 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-411049 | Plate: WB-27-VT-7020 | Fine: INR 5000 (Speeding Violation @ 169.5 km/h)
+2026-07-28 00:12:54,242 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:54,248 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:54,506 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:54,507 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 82 KM/H
+2026-07-28 00:12:54,555 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:54,567 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:54,610 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:54,616 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:54,881 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:54,882 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 87 KM/H
+2026-07-28 00:12:54,883 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [TN-69-CN-8114] for Track #10 (bus @ 86.6 km/h)
+2026-07-28 00:12:54,956 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-249446 | Plate: TN-69-CN-8114 | Fine: INR 1000 (Speeding Violation @ 86.6 km/h)
+2026-07-28 00:12:55,056 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:55,057 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:55,307 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:55,308 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 231 KM/H
+2026-07-28 00:12:55,400 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:55,403 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:55,656 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:12:55,716 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:55,815 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:55,823 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:56,076 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:56,079 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 133 KM/H
+2026-07-28 00:12:56,173 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:56,180 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:56,439 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:56,441 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:56,535 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:56,540 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:56,796 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:56,798 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:56,888 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:56,890 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:57,144 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:57,209 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 183 KM/H
+2026-07-28 00:12:57,237 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [WB-27-VT-7020] for Track #13 (car @ 182.7 km/h)
+2026-07-28 00:12:57,282 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-411049 | Plate: WB-27-VT-7020 | Fine: INR 5000 (Speeding Violation @ 182.7 km/h)
+2026-07-28 00:12:57,397 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:57,400 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:57,652 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:57,749 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 79 KM/H
+2026-07-28 00:12:57,798 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:12:57,800 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:12:57,853 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:12:57,859 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:58,110 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:58,121 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:58,200 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:58,203 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:58,438 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:58,447 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:58,522 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:58,537 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:58,781 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:58,784 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:58,865 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:58,874 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:59,115 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:59,119 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:59,197 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:59,200 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:59,436 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:59,462 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:59,539 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:59,542 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:59,833 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:59,839 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:12:59,916 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:12:59,935 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:00,181 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:00,192 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 114 KM/H
+2026-07-28 00:13:00,282 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:00,284 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:00,539 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:13:00,554 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 207 KM/H
+2026-07-28 00:13:00,557 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [DL-47-VN-6738] for Track #6 (car @ 207.0 km/h)
+2026-07-28 00:13:00,648 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-597724 | Plate: DL-47-VN-6738 | Fine: INR 5000 (Speeding Violation @ 207.0 km/h)
+2026-07-28 00:13:00,653 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [WB-27-VT-7020] for Track #13 (car @ 80.3 km/h)
+2026-07-28 00:13:00,667 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-411049 | Plate: WB-27-VT-7020 | Fine: INR 1000 (Speeding Violation @ 80.3 km/h)
+2026-07-28 00:13:00,785 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:2
+2026-07-28 00:13:00,786 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:00,844 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:00,865 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 2 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:01,085 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:01,088 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:01,168 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:01,206 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:01,430 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:01,441 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:01,514 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:01,539 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:01,774 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:01,783 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:01,858 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:01,870 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:02,105 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:02,117 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:02,195 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:02,204 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:02,449 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:02,456 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:02,533 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:02,570 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:02,795 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:02,796 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:02,869 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:02,870 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:03,085 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:03,085 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:03,163 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:03,163 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:03,395 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:03,395 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:03,478 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:03,478 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:03,701 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:03,701 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:03,787 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:03,787 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:04,018 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:04,018 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:04,053 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:04,053 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:04,094 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:04,094 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:04,303 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:04,303 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:04,382 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:04,382 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:04,611 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:04,611 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:04,690 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:04,690 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:04,937 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:04,937 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:05,020 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:05,021 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:05,238 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:05,238 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:05,320 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:05,321 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:05,543 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:05,544 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:05,621 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:05,622 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:05,884 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:05,885 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:05,964 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:05,964 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:06,201 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:13:06,201 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:06,300 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:13:06,300 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:06,573 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:06,574 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:06,663 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:06,664 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:06,919 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:06,920 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:06,989 - traffic_ai - INFO - [main.py:910] - Processed 385 frames | FPS: 5.6
+2026-07-28 00:13:06,998 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:06,999 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:07,247 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:07,247 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:07,282 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:07,283 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:13:07,333 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:07,334 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:07,584 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:07,584 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:07,670 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:07,671 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:07,948 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:13:07,949 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:08,048 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:13:08,049 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:08,308 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:08,308 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:08,385 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:08,386 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:08,629 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:08,629 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:08,711 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:08,712 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:08,939 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:08,940 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:09,030 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:09,031 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:09,283 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:09,284 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:09,357 - traffic_ai - INFO - [main.py:910] - Processed 399 frames | FPS: 5.8
+2026-07-28 00:13:09,365 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:09,365 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:09,614 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:09,614 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:09,704 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:09,704 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:09,964 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:09,965 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:10,048 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:10,048 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:10,274 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:10,274 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:10,311 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:10,311 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:13:10,353 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:10,353 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:10,592 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:10,592 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:10,848 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:10,849 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:10,932 - traffic_ai - INFO - [main.py:910] - Processed 408 frames | FPS: 5.2
+2026-07-28 00:13:11,101 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:11,101 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:11,175 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:11,176 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:11,452 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:11,453 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:11,546 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:11,547 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:11,861 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:11,862 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:11,948 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:11,948 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:12,199 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:12,199 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:12,276 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:12,276 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:12,498 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:12,499 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:13,103 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:13,103 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:13,334 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:13,334 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:13,373 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:13,375 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:13:13,429 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:13,429 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:13,666 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:13,666 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:13,762 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:13,763 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:14,010 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:14,010 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:14,086 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:14,086 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:14,317 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:14,318 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:14,531 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:14,532 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:14,796 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:14,796 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:14,863 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:14,863 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:15,120 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:15,121 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:15,196 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:15,196 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:15,416 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:13:15,416 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 121 KM/H
+2026-07-28 00:13:15,416 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [DL-31-XG-2505] for Track #3 (car @ 120.7 km/h)
+2026-07-28 00:13:15,519 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-753399 | Plate: DL-31-XG-2505 | Fine: INR 5000 (Speeding Violation @ 120.7 km/h)
+2026-07-28 00:13:15,630 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:2
+2026-07-28 00:13:15,630 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:15,725 - traffic_ai - INFO - [main.py:910] - Processed 432 frames | FPS: 4.8
+2026-07-28 00:13:15,897 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:15,897 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:15,965 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:15,965 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:16,196 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:16,197 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:16,266 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:16,266 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:16,493 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:16,493 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:16,528 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:16,528 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:16,560 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:16,560 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:16,781 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:16,781 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:16,850 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:16,850 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:17,060 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:17,060 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:17,133 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:17,133 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:17,359 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:17,359 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:17,427 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:17,428 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:17,651 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:17,652 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:17,727 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:17,728 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:17,948 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:17,948 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:18,024 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:18,024 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:18,091 - traffic_ai - INFO - [main.py:910] - Processed 448 frames | FPS: 6.4
+2026-07-28 00:13:18,259 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:18,259 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:18,327 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:18,327 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:18,558 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:18,558 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:18,625 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:18,626 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:18,841 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:18,842 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:18,915 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:18,915 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:19,136 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:19,148 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:19,226 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:19,256 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:19,481 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:19,513 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:19,549 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:19,559 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:13:19,597 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:19,615 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:19,847 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:19,858 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:20,034 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:20,047 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:20,750 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:20,751 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:20,882 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:20,884 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:21,204 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:21,205 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:21,317 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:21,318 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:21,815 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:21,816 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:21,957 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:21,957 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:22,372 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:22,375 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:22,549 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:22,550 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:23,089 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:23,090 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 1 persons | 0 motorcycles
+2026-07-28 00:13:23,143 - traffic_ai - INFO - [main.py:910] - Processed 468 frames | FPS: 1.9
+2026-07-28 00:13:23,493 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:23,494 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:23,594 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:23,594 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:24,024 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:24,026 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:24,130 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:24,131 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:24,477 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:24,480 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:24,591 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:24,591 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:24,906 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:24,907 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:25,011 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:25,012 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:25,354 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:25,354 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:25,461 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:25,462 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:25,769 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:25,769 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:25,891 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:25,892 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:26,213 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:26,214 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: WARNING: SPEEDING 131 KM/H
+2026-07-28 00:13:26,215 - traffic_ai - INFO - [anpr_detector.py:69] - [ANPR] Plate Captured: [WB-27-VT-7020] for Track #13 (car @ 131.5 km/h)
+2026-07-28 00:13:26,231 - traffic_ai - INFO - [challan_system.py:70] - [CHALLAN ISSUED] Ticket #CHALLAN-411049 | Plate: WB-27-VT-7020 | Fine: INR 5000 (Speeding Violation @ 131.5 km/h)
+2026-07-28 00:13:26,305 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:26,306 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:26,359 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:26,359 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:26,671 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:26,671 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:26,799 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:26,802 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:27,170 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:27,171 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:27,308 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:27,308 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:27,789 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:27,790 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:27,894 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:27,895 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:28,163 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:28,164 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:28,278 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:28,279 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:28,385 - traffic_ai - INFO - [main.py:910] - Processed 490 frames | FPS: 3.5
+2026-07-28 00:13:28,579 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:28,580 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:28,688 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:28,689 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:28,975 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:28,976 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:29,108 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:29,109 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:29,839 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:29,840 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:29,914 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:29,914 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 1 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:29,977 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:29,979 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:30,384 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:30,385 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:30,514 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:30,518 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:30,998 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:31,001 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:31,109 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:31,110 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:31,474 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:31,476 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:31,606 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:31,607 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:31,876 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:13:31,877 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:31,982 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:13:31,984 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:32,231 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:32,242 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:32,340 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:32,341 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:32,557 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:32,557 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:32,678 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:32,678 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:33,047 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:33,047 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:33,106 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:33,106 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:33,168 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:33,168 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:33,445 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:13:33,445 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:33,540 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:13:33,540 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:33,808 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:33,808 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:33,903 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:33,903 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:34,223 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:34,224 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:34,341 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:34,341 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:34,659 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:34,659 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:34,761 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:34,762 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:35,077 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:13:35,077 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:35,183 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:1
+2026-07-28 00:13:35,183 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:35,452 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:35,452 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:35,557 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:35,557 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:35,835 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:35,835 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:35,945 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:35,945 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:36,274 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:36,274 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:36,320 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:36,320 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:36,377 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:36,377 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:36,692 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:36,692 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:36,785 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:36,785 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:37,053 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:37,054 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:37,159 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:1
+2026-07-28 00:13:37,160 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:37,428 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:37,428 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:37,537 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:37,537 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:37,810 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:37,810 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:37,909 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:37,909 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:38,218 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:38,219 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:38,315 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:38,315 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:38,588 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:38,589 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:38,689 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:38,689 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:38,980 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:38,981 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:39,077 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:39,077 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:39,361 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:39,361 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:39,406 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:39,407 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:39,461 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:39,462 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:39,761 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:39,761 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:39,852 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:39,853 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:40,171 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:40,171 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:40,271 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:40,271 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:40,548 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:40,548 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:40,637 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:40,637 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:40,943 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:40,943 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:41,038 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:41,039 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:41,120 - traffic_ai - INFO - [main.py:910] - Processed 550 frames | FPS: 5.1
+2026-07-28 00:13:41,336 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:41,337 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:41,441 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:41,442 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:41,726 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:41,727 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:41,837 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:41,837 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:42,102 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:42,103 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:42,205 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:42,206 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:42,489 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:42,490 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:42,542 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:42,542 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:42,587 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:42,587 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:42,863 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:42,864 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:42,972 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L2 | V:0
+2026-07-28 00:13:42,972 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:43,238 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:43,239 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:43,334 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:43,334 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:43,609 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:43,609 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:43,720 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:43,720 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:44,000 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:44,001 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:44,096 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:44,096 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:44,365 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:44,365 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:44,458 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:44,458 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:44,742 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:44,743 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:44,835 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:44,835 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:45,104 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:45,104 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:45,195 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:45,196 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:45,532 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:45,533 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:45,592 - traffic_ai - INFO - [alert.py:54] - Normal traffic flow restored on Main Lane
+2026-07-28 00:13:45,592 - traffic_ai - INFO - [main.py:730] - Traffic normalized: 0 vehicles | 0 persons | 0 motorcycles
+2026-07-28 00:13:45,667 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:45,669 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:46,000 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:46,001 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:46,101 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:46,102 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:46,369 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:46,369 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:46,473 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:46,473 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:46,773 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:46,773 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:46,865 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:46,866 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:47,150 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:47,151 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:47,270 - traffic_ai - INFO - [rpi_gpio_controller.py:124] - RPi OLED Screen updated: AI GREEN: L1 | V:0
+2026-07-28 00:13:47,270 - traffic_ai - INFO - [rpi_gpio_controller.py:128] - RPi VMS LED Matrix updated: AI SIGNAL: SPEED LIMIT 60
+2026-07-28 00:13:47,309 - traffic_ai - INFO - [main.py:919] - Keyboard interrupt received
+2026-07-28 00:13:47,348 - traffic_ai - INFO - [main.py:928] - Cleaning up resources...
