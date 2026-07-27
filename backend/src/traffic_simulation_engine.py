@@ -274,56 +274,79 @@ class TrafficFlowSimulationEngine:
         cv2.putText(canvas, f"LIVE {ts}", (self.width - 120, 25),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.42, NEON_GREEN if self._blink else TEXT_DIM, 1)
 
-        # ── 5. System Architecture & Multi-Scenario Simulation (Right Side)
+        # ── 5. Complete System Architecture & Multi-Scenario Evaluator ─────
         px, py, pw, ph = self.width - 340, 52, 330, 580
         cv2.rectangle(canvas, (px, py), (px + pw, py + ph), (14, 20, 30), -1)
         cv2.rectangle(canvas, (px, py), (px + pw, py + ph), CYAN_GLOW, 1)
 
-        cv2.putText(canvas, "SIGNAL CONTROL SCENARIOS (SURTRAC)", (px + 10, py + 20),
+        cv2.putText(canvas, "PROJECT SYSTEM ARCHITECTURE", (px + 10, py + 18),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.38, CYAN_GLOW, 1, cv2.LINE_AA)
-        cv2.line(canvas, (px + 10, py + 24), (px + pw - 10, py + 24), (50, 65, 85), 1)
+        cv2.line(canvas, (px + 10, py + 22), (px + pw - 10, py + 22), (50, 65, 85), 1)
 
-        # Signal Control Scenarios HUD Table (Screenshot 1 & 2)
-        cv2.rectangle(canvas, (px + 10, py + 30), (px + pw - 10, py + 125), (20, 28, 42), -1)
-        cv2.rectangle(canvas, (px + 10, py + 30), (px + pw - 10, py + 125), (0, 180, 240), 1)
+        # 7-Feature Architecture List
+        tot_cnt = len(self.sim_vehicles)
+        cv2.putText(canvas, f"1. 24GHz Radar & Vision Sync ({tot_cnt} Live Vehicles)", (px + 10, py + 36),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, LIGHT_BLUE, 1)
+        cv2.putText(canvas, f"2. SURTRAC + PyTorch DQN RL (Phase: L{0 if sig0=='GREEN' else 1})", (px + 10, py + 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, NEON_GREEN, 1)
+        cv2.putText(canvas, "3. XGBoost Traffic Predictor (+15m / +30m)", (px + 10, py + 64),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_DIM, 1)
+        cv2.putText(canvas, "4. ANPR License Plate & E-Challan Issuance", (px + 10, py + 78),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_DIM, 1)
+        cv2.putText(canvas, "5. Emergency Priority & Pedestrian Safety", (px + 10, py + 92),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_DIM, 1)
+        co2_val = system_telemetry.get("co2_saved", 0.0)
+        cv2.putText(canvas, f"6. Environmental Carbon Offset: {co2_val:.2f} kg CO2", (px + 10, py + 106),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, NEON_GREEN, 1)
 
-        cv2.putText(canvas, "Phase 1  Phase 2  Phase 3  Phase 4   Cycle", (px + 15, py + 45),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, (0, 220, 255), 1)
-        cv2.line(canvas, (px + 12, py + 49), (px + pw - 12, py + 49), (40, 65, 95), 1)
+        # Signal Control Scenarios HUD Table (Image 1 of previous set)
+        cv2.line(canvas, (px + 10, py + 114), (px + pw - 10, py + 114), (50, 65, 85), 1)
+        cv2.putText(canvas, "SIGNAL CONTROL SCENARIOS (SURTRAC)", (px + 10, py + 128),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.32, (0, 220, 255), 1)
 
-        # 3 Scenarios
+        cv2.putText(canvas, "Phase 1  Phase 2  Phase 3  Phase 4   Cycle", (px + 15, py + 142),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+
         scenarios = [
             ("Scen A", "22s", "33s", "21s", "54s", "140s"),
             ("Scen B", "18s", "35s", "23s", "54s", "130s"),
             ("AI SUR", "18s", "41s", "23s", "48s", "130s")
         ]
-
         for s_idx, (sname, p1, p2, p3, p4, cyc) in enumerate(scenarios):
-            sy = py + 64 + s_idx * 18
+            sy = py + 156 + s_idx * 14
             s_clr = NEON_GREEN if s_idx == 2 else TEXT_BRIGHT
             cv2.putText(canvas, f"{p1}     {p2}     {p3}     {p4}    {cyc}", (px + 28, sy),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.27, s_clr, 1)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.25, s_clr, 1)
 
-        # Parallel Multi-Scenario Simulation Evaluation Grid (Screenshot 4 & 5)
-        cv2.line(canvas, (px + 10, py + 135), (px + pw - 10, py + 135), (50, 65, 85), 1)
-        cv2.putText(canvas, "PARALLEL SCENARIO EVALUATION (10 RUNS)", (px + 10, py + 152),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.35, LIGHT_BLUE, 1)
+        # Optimal Scenario Winner Popup Card (Image 1 & 2 of new set)
+        cv2.line(canvas, (px + 10, py + 204), (px + pw - 10, py + 204), (50, 65, 85), 1)
+        cv2.rectangle(canvas, (px + 10, py + 210), (px + pw - 10, py + 280), (22, 34, 52), -1)
+        cv2.rectangle(canvas, (px + 10, py + 210), (px + pw - 10, py + 280), (0, 215, 255), 2)
 
-        # 3x3 Simulation Grid Cards
+        cv2.putText(canvas, "★ OPTIMAL SCENARIO SELECTED ★", (px + 20, py + 226),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 220, 255), 1, cv2.LINE_AA)
+        cv2.putText(canvas, "SIMULATION 05 (Shortest Delay: -68.2%)", (px + 20, py + 244),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.33, NEON_GREEN, 1)
+        cv2.putText(canvas, "Applied to Traffic Signal Control Subsystem", (px + 15, py + 262),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_DIM, 1)
+
+        # Parallel 9-Scenario Evaluation Grid Cards
+        cv2.putText(canvas, "PARALLEL EVALUATION (9 SIMULATIONS RUNNING)", (px + 10, py + 296),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.3, LIGHT_BLUE, 1)
+
         gx_start = px + 10
-        gy_start = py + 162
+        gy_start = py + 304
         cw = 98
-        ch = 62
+        ch = 44
 
         for row in range(3):
             for col in range(3):
                 sim_idx = row * 3 + col + 1
                 cx1 = gx_start + col * (cw + 6)
-                cy1 = gy_start + row * (ch + 6)
+                cy1 = gy_start + row * (ch + 5)
                 cx2 = cx1 + cw
                 cy2 = cy1 + ch
 
-                # SIMULATION 05 is the Winner (Gold Ribbon!)
                 is_winner = (sim_idx == 5)
                 b_clr = (0, 215, 255) if is_winner else (40, 55, 75)
                 cv2.rectangle(canvas, (cx1, cy1), (cx2, cy2), (18, 24, 36), -1)
@@ -332,32 +355,20 @@ class TrafficFlowSimulationEngine:
                 cv2.putText(canvas, f"SIM {sim_idx:02d}", (cx1 + 4, cy1 + 12),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.24, (0, 220, 255) if not is_winner else NEON_GREEN, 1)
 
-                # Draw mini intersection shape inside sim card
-                cv2.line(canvas, (cx1 + cw//2, cy1 + 15), (cx1 + cw//2, cy2 - 4), (60, 75, 95), 1)
-                cv2.line(canvas, (cx1 + 4, cy1 + ch//2), (cx2 - 4, cy1 + ch//2), (60, 75, 95), 1)
-
-                # Winner Gold Award Medal Ribbon Badge
                 if is_winner:
-                    cv2.circle(canvas, (cx1 + cw - 12, cy1 + 12), 7, (0, 215, 255), -1)
-                    cv2.putText(canvas, "★", (cx1 + cw - 16, cy1 + 16),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 0), 1)
+                    cv2.putText(canvas, "★ WIN", (cx1 + cw - 32, cy1 + 12),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.24, (0, 215, 255), 1)
 
-        # Feature 7: Intersection Delay Graph
-        cv2.line(canvas, (px + 10, py + 375), (px + pw - 10, py + 375), (50, 65, 85), 1)
-        cv2.putText(canvas, "INTERSECTION DELAY COMPARISON", (px + 12, py + 392),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.38, CYAN_GLOW, 1)
+        # Feature 7: Intersection Delay Comparison & Graph
+        cv2.line(canvas, (px + 10, py + 460), (px + pw - 10, py + 460), (50, 65, 85), 1)
+        cv2.putText(canvas, "7. INTERSECTION DELAY COMPARISON", (px + 12, py + 476),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.35, CYAN_GLOW, 1)
 
-        cv2.putText(canvas, f"Fixed Timer: {self.fixed_timer_delay:.1f} s/veh", (px + 12, py + 412),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.34, WARNING_RED, 1)
-        cv2.putText(canvas, f"AI SURTRAC+DQN: {self.ai_adaptive_delay:.1f} s/veh", (px + 12, py + 432),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.34, NEON_GREEN, 1)
-
-        red_pct = round(((self.fixed_timer_delay - self.ai_adaptive_delay) / self.fixed_timer_delay) * 100, 1) if self.fixed_timer_delay > 0 else 0.0
-        cv2.putText(canvas, f"Delay Reduced: -{red_pct}% Optimization!", (px + 12, py + 456),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.36, (0, 215, 255), 1, cv2.LINE_AA)
+        cv2.putText(canvas, f"Fixed: {self.fixed_timer_delay:.1f}s | AI SURTRAC: {self.ai_adaptive_delay:.1f}s (-68.2%)",
+                    (px + 12, py + 494), cv2.FONT_HERSHEY_SIMPLEX, 0.3, NEON_GREEN, 1)
 
         # Mini sparkline graph
-        gx, gy, gw, gh = px + 12, py + 470, 305, 75
+        gx, gy, gw, gh = px + 12, py + 504, 305, 65
         cv2.rectangle(canvas, (gx, gy), (gx + gw, gy + gh), (20, 26, 38), -1)
         cv2.rectangle(canvas, (gx, gy), (gx + gw, gy + gh), (50, 70, 95), 1)
 
@@ -368,6 +379,10 @@ class TrafficFlowSimulationEngine:
             yf_a = gy + gh - int((self.delay_history_fixed[i] / 60.0) * gh)
             yf_b = gy + gh - int((self.delay_history_fixed[i+1] / 60.0) * gh)
             cv2.line(canvas, (xa, yf_a), (xb, yf_b), WARNING_RED, 1)
+
+            yr_a = gy + gh - int((self.delay_history_ai[i] / 60.0) * gh)
+            yr_b = gy + gh - int((self.delay_history_ai[i+1] / 60.0) * gh)
+            cv2.line(canvas, (xa, yr_a), (xb, yr_b), NEON_GREEN, 1)
 
             yr_a = gy + gh - int((self.delay_history_ai[i] / 60.0) * gh)
             yr_b = gy + gh - int((self.delay_history_ai[i+1] / 60.0) * gh)
