@@ -94,10 +94,15 @@ class TrafficFlowSimulationEngine:
             self._blink = not self._blink
             self._last_blink = now
 
-        # Spawn new vehicles periodically
-        if now - self._last_spawn > 1.1 and len(self.sim_vehicles) < self.max_vehicles:
+        # Real-time Camera Sync: Target vehicle count per lane from lane_data
+        target_l0 = lane_data.get("lane_0", {}).get("count", 4) if lane_data else 4
+        target_l1 = lane_data.get("lane_1", {}).get("count", 2) if lane_data else 2
+        target_total = min(22, max(8, target_l0 + target_l1 + 4))
+
+        # Dynamic Spawning synced with live camera detections
+        if now - self._last_spawn > 0.8 and len(self.sim_vehicles) < target_total:
             self._last_spawn = now
-            lane = random.choice([0, 1])
+            lane = 0 if sum(1 for v in self.sim_vehicles if v["lane"] == 0) < target_l0 else 1
             x = self.cx - self.road_w // 4 if lane == 0 else self.cx + self.road_w // 4
             y = self.height - 10 if lane == 0 else 10
             self.sim_vehicles.append({
@@ -121,25 +126,39 @@ class TrafficFlowSimulationEngine:
         for v in self.sim_vehicles:
             lane = v["lane"]
             speed = v["speed"]
+            vy = v["y"]
+
+            # Vehicle-ahead distance calculation for queue spacing
+            dist_to_ahead = 999.0
+            for other in self.sim_vehicles:
+                if other["id"] != v["id"] and other["lane"] == lane:
+                    if lane == 0 and other["y"] < vy:
+                        dist_to_ahead = min(dist_to_ahead, vy - other["y"])
+                    elif lane == 1 and other["y"] > vy:
+                        dist_to_ahead = min(dist_to_ahead, other["y"] - vy)
 
             if lane == 0:
                 # Moving UP towards junction
-                stop_cond = (sig0 != "GREEN") and (v["y"] > stop_y0) and (v["y"] - stop_y0 < 85)
-                if stop_cond:
-                    speed = max(0.0, speed - 3.8)
+                stop_for_signal = (sig0 != "GREEN") and (vy > stop_y0) and (vy - stop_y0 < 85)
+                stop_for_queue  = (dist_to_ahead < 52.0)
+
+                if stop_for_signal or stop_for_queue:
+                    speed = max(0.0, speed - 4.5)
                 else:
-                    speed = min(48.0, speed + 1.4)
+                    speed = min(48.0, speed + 1.6)
 
                 v["y"] -= speed * 0.125
                 if v["y"] < -40:
                     continue
             else:
                 # Moving DOWN towards junction
-                stop_cond = (sig1 != "GREEN") and (v["y"] < stop_y1) and (stop_y1 - v["y"] < 85)
-                if stop_cond:
-                    speed = max(0.0, speed - 3.8)
+                stop_for_signal = (sig1 != "GREEN") and (vy < stop_y1) and (stop_y1 - vy < 85)
+                stop_for_queue  = (dist_to_ahead < 52.0)
+
+                if stop_for_signal or stop_for_queue:
+                    speed = max(0.0, speed - 4.5)
                 else:
-                    speed = min(48.0, speed + 1.4)
+                    speed = min(48.0, speed + 1.6)
 
                 v["y"] += speed * 0.125
                 if v["y"] > self.height + 40:
@@ -204,37 +223,51 @@ class TrafficFlowSimulationEngine:
         cv2.line(canvas, (self.cx - rw//2, self.cy + rw//2 + 8), (self.cx, self.cy + rw//2 + 8), clr0, 4)
         cv2.line(canvas, (self.cx, self.cy - rw//2 - 8), (self.cx + rw//2, self.cy - rw//2 - 8), clr1, 4)
 
-        # ── 3. Render Vehicles with CNN Neural Feature Activation Grid ────
-        for v in self.sim_vehicles:
+        # ── 3. Render Vehicles with Crisp Non-Overlapping Badges ───────────
+        # Sort vehicles by Y position to prevent overlap visual glitches
+        self.sim_vehicles.sort(key=lambda item: item["y"])
+
+        for idx, v in enumerate(self.sim_vehicles):
             vx, vy = int(v["x"]), int(v["y"])
             spd = v["speed"]
             vid = v["id"]
             conf = v["confidence"]
+            lane = v["lane"]
 
             hull_color = LIGHT_BLUE if spd > 5.0 else WARNING_RED
 
-            # Vehicle bounding rectangle
-            w, h = 22, 34
+            # Vehicle bounding rectangle (crisp dimensions)
+            w, h = 20, 32
             cv2.rectangle(canvas, (vx - w//2, vy - h//2), (vx + w//2, vy + h//2), hull_color, -1)
-            cv2.rectangle(canvas, (vx - w//2 - 2, vy - h//2 - 2), (vx + w//2 + 2, vy + h//2 + 2), CYAN_GLOW, 1)
+            cv2.rectangle(canvas, (vx - w//2 - 1, vy - h//2 - 1), (vx + w//2 + 1, vy + h//2 + 1), CYAN_GLOW, 1)
 
             # CNN Feature Activation Dots (Simulating Neural Tensor Extraction)
-            for dx in [-6, 0, 6]:
-                for dy in [-10, 0, 10]:
+            for dx in [-5, 0, 5]:
+                for dy in [-8, 0, 8]:
                     cv2.circle(canvas, (vx + dx, vy + dy), 1, (255, 255, 255), -1)
 
-            # Bounding Box Corners (YOLO Anchor Box Style)
-            cv2.line(canvas, (vx - w//2 - 4, vy - h//2 - 4), (vx - w//2 + 2, vy - h//2 - 4), CYAN_GLOW, 1)
-            cv2.line(canvas, (vx - w//2 - 4, vy - h//2 - 4), (vx - w//2 - 4, vy - h//2 + 2), CYAN_GLOW, 1)
-            cv2.line(canvas, (vx + w//2 + 4, vy + h//2 + 4), (vx + w//2 - 2, vy + h//2 + 4), CYAN_GLOW, 1)
-            cv2.line(canvas, (vx + w//2 + 4, vy + h//2 + 4), (vx + w//2 + 4, vy + h//2 - 2), CYAN_GLOW, 1)
+            # Bounding Box Corner Anchors
+            cv2.line(canvas, (vx - w//2 - 3, vy - h//2 - 3), (vx - w//2 + 3, vy - h//2 - 3), CYAN_GLOW, 1)
+            cv2.line(canvas, (vx - w//2 - 3, vy - h//2 - 3), (vx - w//2 - 3, vy - h//2 + 3), CYAN_GLOW, 1)
+            cv2.line(canvas, (vx + w//2 + 3, vy + h//2 + 3), (vx + w//2 - 3, vy + h//2 + 3), CYAN_GLOW, 1)
+            cv2.line(canvas, (vx + w//2 + 3, vy + h//2 + 3), (vx + w//2 + 3, vy + h//2 - 3), CYAN_GLOW, 1)
 
-            # Label: ID + CNN Conf
+            # Clean Text Placement: Alternate text side (Left / Right) based on lane & index to prevent text overlapping!
+            text_x = vx + 16 if (lane == 0 or idx % 2 == 0) else vx - 95
+            text_y = vy
+
             lbl = f"#{vid} {v['type']} {conf*100:.0f}%"
-            cv2.putText(canvas, lbl, (vx + 14, vy - 4),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.3, TEXT_CYAN, 1)
-            cv2.putText(canvas, f"{spd:.0f} km/h", (vx + 14, vy + 8),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_DIM, 1)
+            spd_lbl = f"{spd:.0f} km/h"
+
+            # Draw dark semi-transparent background pill box for text readability
+            tw = 82
+            cv2.rectangle(canvas, (text_x - 2, text_y - 12), (text_x + tw, text_y + 12), (10, 14, 22), -1)
+            cv2.rectangle(canvas, (text_x - 2, text_y - 12), (text_x + tw, text_y + 12), (50, 70, 95), 1)
+
+            cv2.putText(canvas, lbl, (text_x, text_y - 2),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_CYAN, 1, cv2.LINE_AA)
+            cv2.putText(canvas, spd_lbl, (text_x, text_y + 9),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.26, NEON_GREEN if spd > 5 else WARNING_RED, 1, cv2.LINE_AA)
 
         # ── 4. Top Header (Real GPS & Cyberpunk Navigation) ───────────────
         cv2.rectangle(canvas, (0, 0), (self.width, 40), (12, 16, 24), -1)

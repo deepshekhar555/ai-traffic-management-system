@@ -305,20 +305,28 @@ class DigitalTwin:
         """L2 – Blended congestion heatmap over the road area."""
         if not tracked_vehicles:
             # Decay the accum map gently when no vehicles
-            self._heatmap_accum *= 0.92
+            self._heatmap_accum *= 0.90
         else:
             # Decay first
-            self._heatmap_accum *= 0.88
+            self._heatmap_accum *= 0.85
             for v in tracked_vehicles:
-                cx, cy = v.get("center", (0, 0))
+                if "center" in v and v["center"] != (0, 0):
+                    cx, cy = v["center"]
+                else:
+                    b = v.get("bbox", v.get("box", (100, 100, 300, 300)))
+                    cx = (b[0] + b[2]) / 2.0
+                    cy = (b[1] + b[3]) / 2.0
+
                 tx = int((cx / 1280.0) * (self.road_x2 - self.road_x1)) + self.road_x1
                 ty = int((cy / 720.0)  * (self.road_y2 - self.road_y1)) + self.road_y1
-                tx = np.clip(tx, self.road_x1, self.road_x2 - 1)
-                ty = np.clip(ty, self.road_y1, self.road_y2 - 1)
+                tx = np.clip(tx, self.road_x1 + 5, self.road_x2 - 5)
+                ty = np.clip(ty, self.road_y1 + 5, self.road_y2 - 5)
+
                 speed = v.get("current_speed", v.get("speed", 0))
-                intensity = min(1.0, 0.3 + speed / 120.0)
+                # Heavy congestion splash when slow/stopped
+                intensity = 1.0 if speed < 15.0 else min(1.0, 0.4 + speed / 100.0)
                 # Gaussian splash
-                for r, alpha in [(25, intensity), (15, intensity * 1.4), (8, intensity * 2.0)]:
+                for r, alpha in [(30, intensity * 1.5), (18, intensity * 2.0), (8, intensity * 3.0)]:
                     for dy in range(-r, r + 1):
                         for dx in range(-r, r + 1):
                             nx, ny = tx + dx, ty + dy
@@ -328,7 +336,7 @@ class DigitalTwin:
                                 if dist <= r:
                                     falloff = 1.0 - dist / r
                                     self._heatmap_accum[ny, nx] = min(
-                                        255, self._heatmap_accum[ny, nx] + alpha * falloff * 30
+                                        255, self._heatmap_accum[ny, nx] + alpha * falloff * 45
                                     )
 
         # Normalise & colorize
@@ -337,21 +345,22 @@ class DigitalTwin:
         hmap_colored = cv2.applyColorMap(hmap_blur, cv2.COLORMAP_JET)
 
         # Mask to road area only
-        mask = np.zeros((self.height, self.width), dtype=np.uint8)
-        cv2.rectangle(mask, (self.road_x1, self.road_y1),
-                      (self.road_x2, self.road_y2), 255, -1)
-
-        # Blend
         roi = canvas[self.road_y1:self.road_y2, self.road_x1:self.road_x2]
         heat_roi = hmap_colored[self.road_y1:self.road_y2, self.road_x1:self.road_x2]
-        blended = cv2.addWeighted(roi, 0.65, heat_roi, 0.35, 0)
+        blended = cv2.addWeighted(roi, 0.55, heat_roi, 0.45, 0)
         canvas[self.road_y1:self.road_y2, self.road_x1:self.road_x2] = blended
 
     def _draw_vehicles(self, canvas, tracked_vehicles):
         """L3 – Vehicle entities: icon + speed label + trail."""
         for v in tracked_vehicles:
-            tid  = v.get("track_id", 0)
-            cx, cy = v.get("center", (0, 0))
+            tid = v.get("track_id", v.get("id", 0))
+            if "center" in v and v["center"] != (0, 0):
+                cx, cy = v["center"]
+            else:
+                b = v.get("bbox", v.get("box", (100, 100, 300, 300)))
+                cx = (b[0] + b[2]) / 2.0
+                cy = (b[1] + b[3]) / 2.0
+
             tx = int((cx / 1280.0) * (self.road_x2 - self.road_x1)) + self.road_x1
             ty = int((cy / 720.0)  * (self.road_y2 - self.road_y1)) + self.road_y1
             tx = np.clip(tx, self.road_x1 + 14, self.road_x2 - 14)
@@ -411,8 +420,13 @@ class DigitalTwin:
     def _draw_flow_vectors(self, canvas, tracked_vehicles):
         """L4 – Velocity vectors per vehicle (length ∝ speed)."""
         for v in tracked_vehicles:
-            tid = v.get("track_id", 0)
-            cx, cy = v.get("center", (0, 0))
+            tid = v.get("track_id", v.get("id", 0))
+            if "center" in v and v["center"] != (0, 0):
+                cx, cy = v["center"]
+            else:
+                b = v.get("bbox", v.get("box", (100, 100, 300, 300)))
+                cx = (b[0] + b[2]) / 2.0
+                cy = (b[1] + b[3]) / 2.0
             tx = int((cx / 1280.0) * (self.road_x2 - self.road_x1)) + self.road_x1
             ty = int((cy / 720.0)  * (self.road_y2 - self.road_y1)) + self.road_y1
             tx = np.clip(tx, self.road_x1 + 14, self.road_x2 - 14)
