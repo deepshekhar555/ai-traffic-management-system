@@ -96604,3 +96604,5 @@ LIMIT 60
 2026-07-27 23:44:15,584 - traffic_ai - INFO - [traffic_database.py:112] - Database initialized: D:\Users\Welcome\Downloads\ai-traffic-management-system-main\ai-traffic-management-system-main\data\traffic_data.db
 2026-07-27 23:44:17,122 - traffic_ai - INFO - [congestion_predictor.py:168] - ML Model bootstrapped & trained successfully with 300 samples (XGBoost Regressor)!
 2026-07-27 23:44:17,157 - traffic_ai - INFO - [sensor_fusion.py:28] - [SensorFusion] 24GHz Doppler Radar & Environmental Air Quality Sensor Fusion Manager initialized!
+2026-07-27 23:53:24,926 - traffic_ai - INFO - [rl_signal_agent.py:37] - PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!
+2026-07-27 23:53:33,400 - traffic_ai - INFO - [congestion_predictor.py:34] - XGBoost library successfully imported for ML Traffic Forecasting!

@@ -43,6 +43,7 @@ from src.bev_transformer import BEVTransformer
 from src.vehicle_classifier_hotlist import VehicleHotlistClassifier
 from src.pedestrian_safety import PedestrianSafetySystem
 from src.hardware_controller import HardwareController
+from src.traffic_simulation_engine import TrafficFlowSimulationEngine
 from src.rpi_gpio_controller import RPiGPIOController
 
 class TrafficManagementApp:
@@ -126,6 +127,9 @@ class TrafficManagementApp:
             
             logger.info("Initializing 2D Digital Twin renderer...")
             self.digital_twin = DigitalTwin(width=1000, height=650)
+            
+            logger.info("Initializing Micro-Simulation Physics Engine (3rd Frame)...")
+            self.sim_engine = TrafficFlowSimulationEngine(width=960, height=600)
             
             logger.info("Initializing AI Congestion Forecasting Engine...")
             self.congestion_predictor = CongestionPredictor()
@@ -695,6 +699,11 @@ class TrafficManagementApp:
                 tracked_vehicles, lane_data, signal_state, surtrac_telem, system_telemetry
             )
             cv2.imshow("AI Traffic Digital Twin (2D Spatial Map)", twin_frame)
+
+            # Render 3rd OpenCV Window: SUMO / 51WORLD Micro-Simulation Physics Engine
+            self.sim_engine.update_physics(signal_state, lane_data)
+            sim_frame = self.sim_engine.render_simulation_frame(signal_state, lane_data)
+            cv2.imshow("AI Traffic Micro-Simulation Engine (SUMO/51WORLD Physics)", sim_frame)
             # Update HSR status
             is_incident = traffic_analysis["level"] == "HIGH"
             self.hsr_monitor.update_status(is_incident)
@@ -840,11 +849,14 @@ class TrafficManagementApp:
         # Configure OpenCV windows to be freely resizable and fit user screen
         win_camera = "AI Traffic Management System - YOLOv26n"
         win_twin   = "AI Traffic Digital Twin (2D Spatial Map)"
+        win_sim    = "AI Traffic Micro-Simulation Engine (SUMO/51WORLD Physics)"
         
         cv2.namedWindow(win_camera, cv2.WINDOW_NORMAL)
         cv2.namedWindow(win_twin, cv2.WINDOW_NORMAL)
+        cv2.namedWindow(win_sim, cv2.WINDOW_NORMAL)
         cv2.resizeWindow(win_camera, 960, 540)
         cv2.resizeWindow(win_twin, 960, 620)
+        cv2.resizeWindow(win_sim, 960, 600)
         
         try:
             while self.running:
