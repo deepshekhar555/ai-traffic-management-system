@@ -603,7 +603,7 @@ class DigitalTwin:
         cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (16, 24, 38), -1)
         cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (0, 180, 240), 1)
 
-        cv2.putText(canvas, "Digital Twin Subsystem Flow (IEEE Research Gap Bridged)", (x1 + margin + 4, y_top + 22),
+        cv2.putText(canvas, "Digital Twin Subsystem Flow (Literature Gap Bridged)", (x1 + margin + 4, y_top + 22),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.33, (0, 220, 255), 1, cv2.LINE_AA)
         cv2.line(canvas, (x1 + margin + 5, y_top + 26), (x2 - margin - 5, y_top + 26), (50, 75, 105), 1)
 

@@ -1,5 +1,5 @@
 """
-IEEE Research Gap Analyzer & Advanced AI Benchmark Engine
+Academic Research Gap Analyzer & Advanced AI Benchmark Engine
 SIH 2026 - Smart City Traffic Intelligence
 
 Synthesizes & Bridges Research Gaps Across 3 Key Research Papers:

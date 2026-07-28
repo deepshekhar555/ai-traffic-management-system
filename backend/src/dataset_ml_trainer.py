@@ -1,8 +1,8 @@
 """
-IEEE Machine Learning Dataset Trainer & Benchmarking Engine
+Machine Learning Dataset Trainer & Benchmarking Engine
 SIH 2026 - Smart City Traffic Intelligence
 
-Inspired by JPInfotech IEEE Project Architecture:
+Multi-Model Benchmarking Architecture:
   1. CSV Dataset Upload & Ingestion (e.g. Metro Interstate Traffic Volume dataset)
   2. Multi-Model Benchmarking (XGBoost Regressor, Gradient Boosting Regressor, Random Forest Regressor)
   3. Evaluation Metrics: R2 Score, MAE (Mean Absolute Error), RMSE (Root Mean Squared Error)
@@ -42,9 +42,9 @@ except ImportError:
     xgb = None
 
 
-class IEEEModelBenchmarker:
+class MLModelBenchmarker:
     """
-    IEEE Standard Multi-Model Traffic Volume Predictor & Benchmarking Suite.
+    Standard Multi-Model Traffic Volume Predictor & Benchmarking Suite.
     Trains and compares XGBoost, Gradient Boosting, and Random Forest regressors.
     """
 
@@ -254,8 +254,8 @@ class IEEEModelBenchmarker:
 
 # Quick test
 if __name__ == "__main__":
-    benchmarker = IEEEModelBenchmarker()
+    benchmarker = MLModelBenchmarker()
     res = benchmarker.predict_custom_parameters(17, 28.5, "Rain")
-    print(f"[OK] IEEEModelBenchmarker tested successfully!")
+    print(f"[OK] MLModelBenchmarker tested successfully!")
     print(f"  Predicted Volume: {res['xgb_predicted_volume_vph']} vph")
     print(f"  Level: {res['congestion_level']} | SURTRAC: {res['surtrac_recommendation']}")

@@ -10,13 +10,13 @@ from src.congestion_predictor import CongestionPredictor
 import json
 import numpy as np
 
-from src.dataset_ml_trainer import IEEEModelBenchmarker
+from src.dataset_ml_trainer import MLModelBenchmarker
 
 app = Flask(__name__)
 db = TrafficDatabase()
 gps = GPSTracker()
 predictor = CongestionPredictor()
-ieee_benchmarker = IEEEModelBenchmarker()
+ml_benchmarker = MLModelBenchmarker()
 
 @app.route('/')
 def dashboard():
@@ -74,14 +74,14 @@ def get_echallan():
 
 @app.route('/api/research-metrics')
 def get_research_metrics():
-    """Get real-time IEEE & arXiv Research Innovation Telemetry Metrics"""
+    """Get real-time Academic Research Innovation Telemetry Metrics"""
     import random
     return jsonify({
         "q_learning_reward": round(random.uniform(14.2, 28.5), 2),
         "bev_homography_error_m": 0.04,
         "ttc_min_seconds": round(random.uniform(2.8, 5.2), 2),
         "siren_fft_frequency_hz": random.choice([950, 1100, 1250, 850]),
-        "ieee_compliance_score": "98.4%",
+        "research_compliance_score": "98.4%",
         "ncrb_hotlist_scans_today": random.randint(120, 350)
     })
 
@@ -105,15 +105,15 @@ def get_rl_telemetry():
 @app.route('/api/ml-model-comparison')
 def get_ml_model_comparison():
     """
-    JPInfotech & IEEE Project Standard: Machine Learning Model Comparison & Accuracy Metrics
+    Standard Machine Learning Model Comparison & Accuracy Metrics
     Compares XGBoost, Gradient Boosting, and Random Forest models on traffic dataset.
     """
-    return jsonify(ieee_benchmarker.get_benchmarking_results())
+    return jsonify(ml_benchmarker.get_benchmarking_results())
 
 @app.route('/api/predict-traffic', methods=['GET', 'POST'])
 def predict_traffic_endpoint():
     """
-    JPInfotech-style Interactive Traffic Volume Prediction Endpoint
+    Interactive Traffic Volume Prediction Endpoint
     Input: hour, day_of_week, temperature_c, weather_condition
     Output: Predicted vehicle count, congestion level, signal recommendation
     """
@@ -123,13 +123,13 @@ def predict_traffic_endpoint():
     temp = float(request.args.get('temp', 28.5))
     weather = request.args.get('weather', 'Clear')
     
-    res = ieee_benchmarker.predict_custom_parameters(hour, temp, weather)
+    res = ml_benchmarker.predict_custom_parameters(hour, temp, weather)
     return jsonify(res)
 
 @app.route('/api/upload-csv', methods=['POST'])
 def upload_csv_endpoint():
     """
-    JPInfotech Feature: CSV Dataset Upload & Dynamic Retraining
+    CSV Dataset Upload & Dynamic Retraining
     Allows user to upload any custom traffic CSV dataset to train & benchmark ML models.
     """
     from flask import request
@@ -141,16 +141,16 @@ def upload_csv_endpoint():
         return jsonify({"success": False, "error": "Empty filename"}), 400
         
     content = file.read()
-    res = ieee_benchmarker.train_from_csv_bytes(content)
+    res = ml_benchmarker.train_from_csv_bytes(content)
     return jsonify(res)
 
-@app.route('/api/download-ieee-report')
-def download_ieee_report():
+@app.route('/api/download-research-report')
+def download_research_report():
     """
-    Generate downloadable IEEE-formatted research report text
+    Generate downloadable research report text
     """
     report_text = f"""================================================================================
-IEEE RESEARCH SUBMISSION & BENCHMARKING REPORT
+ACADEMIC RESEARCH SUBMISSION & BENCHMARKING REPORT
 Project Title: AI-Driven 2D Spatial Digital Twin & Adaptive Traffic Signal Control
 Track: Smart Cities & Urban Mobility (Bharat Nirman Track - SIH 2026)
 Team: CipherSquad
@@ -161,7 +161,7 @@ Team: CipherSquad
    real-time YOLOv26 computer vision, Carnegie Mellon SURTRAC schedule-driven signal control,
    and XGBoost machine learning time-series congestion forecasting.
 
-2. MACHINE LEARNING BENCHMARKING RESULTS (IEEE STANDARDS)
+2. MACHINE LEARNING BENCHMARKING RESULTS (BENCHMARK STANDARDS)
    Dataset: Metro Interstate Traffic Volume & Sensor Feeds
    Evaluated Models:
    - XGBoost Regressor         | R2 Score: 0.942 | MAE: 142.3 vph | RMSE: 188.5 [SELECTED]
@@ -178,7 +178,7 @@ Team: CipherSquad
 ================================================================================
 """
     from flask import Response
-    return Response(report_text, mimetype="text/plain", headers={"Content-disposition": "attachment; filename=IEEE_Traffic_AI_Research_Report.txt"})
+    return Response(report_text, mimetype="text/plain", headers={"Content-disposition": "attachment; filename=Traffic_AI_Research_Report.txt"})
 
 from src.sensor_fusion import SensorFusionManager
 

@@ -41,12 +41,12 @@ All features requested across the entire development session have been fully int
 - **Complete System Architecture Panel**: Displays live telemetry across all 7 project features.
 - **1-to-1 Live Camera & Radar Sync**: Zero fake vehicles — spawns and tracks the exact live vehicle count detected by camera and radar.
 
-#### D. XGBoost Multi-Horizon Forecasting & IEEE Benchmarking (`src/congestion_predictor.py`, `src/dataset_ml_trainer.py`, `dashboard_app.py`, `templates/dashboard.html`)
+#### D. XGBoost Multi-Horizon Forecasting & ML Benchmarking (`src/congestion_predictor.py`, `src/dataset_ml_trainer.py`, `dashboard_app.py`, `templates/dashboard.html`)
 - **XGBoost Regressor**: Multi-horizon volume prediction ($+15\text{m}$, $+30\text{m}$, $+60\text{m}$).
-- **IEEE Model Benchmarking**: Live accuracy comparison: **XGBoost ($94.2\%$)**, **Gradient Boosting ($91.5\%$)**, and **Random Forest ($89.8\%$)**.
-- **Interactive Predictor Suite & Custom CSV Uploader**: Web interface for uploading custom traffic CSV datasets and downloading formatted IEEE research papers.
+- **Machine Learning Benchmarking**: Live accuracy comparison: **XGBoost ($94.2\%$)**, **Gradient Boosting ($91.5\%$)**, and **Random Forest ($89.8\%$)**.
+- **Interactive Predictor Suite & Custom CSV Uploader**: Web interface for uploading custom traffic CSV datasets and downloading formatted research reports.
 
-#### E. V2X Smart Mobility & IEEE Research Gap Analyzer (`src/v2x_communication.py`, `src/research_gap_analyzer.py`)
+#### E. V2X Smart Mobility & Literature Research Gap Analyzer (`src/v2x_communication.py`, `src/research_gap_analyzer.py`)
 - **V2X (Vehicle-to-Everything) Communication**: C-V2X 5G Direct / DSRC 5.9 GHz low-latency packet transmission ($1.2\text{ ms}$).
 - **GLOSA & SPaT Broadcasting**: Green Light Optimal Speed Advisory ($45\text{ km/h}$) and Signal Phase and Timing updates to connected autonomous vehicles.
 - **Literature Gap Bridging**: Bridges research limitations identified across Damadam et al. (2022), Chan Basha et al. (2025), and Xuanning Zhang (2025).
@@ -61,16 +61,16 @@ ai-traffic-management-system/
 │   ├── main.py                          # Master Loop & 4-Road Quad-Camera HUD
 │   ├── dashboard_app.py                 # Flask REST API Telemetry & Command Center
 │   ├── templates/
-│   │   └── dashboard.html               # Interactive Dashboard UI with IEEE Benchmarks
+│   │   └── dashboard.html               # Interactive Dashboard UI with ML Benchmarks
 │   ├── src/
 │   │   ├── surtrac_controller.py        # CMU SURTRAC Signal Schedule Optimizer
 │   │   ├── digital_twin.py              # Iron Man AR HUD & LAONROAD Digital Twin
 │   │   ├── v2x_communication.py         # V2X C-V2X 5G & GLOSA Speed Advisory Engine
-│   │   ├── research_gap_analyzer.py     # IEEE Literature Research Gap Analyzer
+│   │   ├── research_gap_analyzer.py     # Literature Research Gap Analyzer
 │   │   ├── congestion_predictor.py      # XGBoost Multi-Horizon Forecasting Engine
 │   │   ├── rl_signal_agent.py           # PyTorch Deep Q-Network (DQN) RL Agent
 │   │   ├── traffic_simulation_engine.py # 9-Grid Parallel Scenario Evaluator & Physics Engine
-│   │   ├── dataset_ml_trainer.py        # IEEE Machine Learning Model Benchmarker
+│   │   ├── dataset_ml_trainer.py        # Machine Learning Model Benchmarker
 │   │   ├── traffic_signal_manager.py    # SURTRAC + DQN Hybrid Signal Controller
 │   │   ├── bev_transformer.py           # Homography Perspective BEV Meter Transformer
 │   │   ├── sensor_fusion.py             # 24GHz Doppler Radar & Environmental Fusion
