@@ -46,6 +46,11 @@ All features requested across the entire development session have been fully int
 - **IEEE Model Benchmarking**: Live accuracy comparison: **XGBoost ($94.2\%$)**, **Gradient Boosting ($91.5\%$)**, and **Random Forest ($89.8\%$)**.
 - **Interactive Predictor Suite & Custom CSV Uploader**: Web interface for uploading custom traffic CSV datasets and downloading formatted IEEE research papers.
 
+#### E. V2X Smart Mobility & IEEE Research Gap Analyzer (`src/v2x_communication.py`, `src/research_gap_analyzer.py`)
+- **V2X (Vehicle-to-Everything) Communication**: C-V2X 5G Direct / DSRC 5.9 GHz low-latency packet transmission ($1.2\text{ ms}$).
+- **GLOSA & SPaT Broadcasting**: Green Light Optimal Speed Advisory ($45\text{ km/h}$) and Signal Phase and Timing updates to connected autonomous vehicles.
+- **Literature Gap Bridging**: Bridges research limitations identified across Damadam et al. (2022), Chan Basha et al. (2025), and Xuanning Zhang (2025).
+
 ---
 
 ### 3. File Directory Index
@@ -60,6 +65,8 @@ ai-traffic-management-system/
 │   ├── src/
 │   │   ├── surtrac_controller.py        # CMU SURTRAC Signal Schedule Optimizer
 │   │   ├── digital_twin.py              # Iron Man AR HUD & LAONROAD Digital Twin
+│   │   ├── v2x_communication.py         # V2X C-V2X 5G & GLOSA Speed Advisory Engine
+│   │   ├── research_gap_analyzer.py     # IEEE Literature Research Gap Analyzer
 │   │   ├── congestion_predictor.py      # XGBoost Multi-Horizon Forecasting Engine
 │   │   ├── rl_signal_agent.py           # PyTorch Deep Q-Network (DQN) RL Agent
 │   │   ├── traffic_simulation_engine.py # 9-Grid Parallel Scenario Evaluator & Physics Engine
@@ -71,6 +78,7 @@ ai-traffic-management-system/
 │   │   ├── anpr_detector.py             # License Plate Recognition Engine
 │   │   ├── challan_system.py            # Automated E-Challan Issuance System
 │   │   └── pedestrian_safety.py         # Crosswalk Safety & Time-To-Collision (TTC)
+├── presentation/                        # Research Papers & PDF Literature Base
 ├── scripts/
 │   └── start_all.py                     # All-in-One Smart City Master Launcher
 └── docs/
