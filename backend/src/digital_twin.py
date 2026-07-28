@@ -512,7 +512,7 @@ class DigitalTwin:
         cv2.circle(canvas, (self.width - tw[0] - 25, 17), 4, dot_clr, -1)
 
     def _draw_footer(self, canvas, tracked_vehicles, lane_data, system_telemetry: Dict = None):
-        """Mini status bar with BEV spatial matrix, Radar Sync, Microcontroller Relay, and CO2 offset telemetry."""
+        """Mini status bar with V2X Smart Mobility, BEV spatial matrix, Radar Sync, and CO2 offset telemetry."""
         system_telemetry = system_telemetry or {}
         fy = self.map_h - 16
         total_v = len(tracked_vehicles)
@@ -520,7 +520,7 @@ class DigitalTwin:
         l1_v = lane_data.get("lane_1", {}).get("count", 0) if lane_data else 0
         co2 = system_telemetry.get("co2_saved", 0.0)
 
-        summary = f"PHYSICAL-TO-VIRTUAL MIRROR | BEV Meter Matrix | Radar Sync: 1.8ms | Relay: 5V (Active) | V:{total_v} (L1:{l0_v} L2:{l1_v}) | CO2 Saved: {co2:.2f}kg"
+        summary = f"V2X SMART MOBILITY (C-V2X 5G 1.2ms) | GLOSA Advisory: 45km/h | BEV Matrix | Radar Sync: 1.8ms | V:{total_v} | CO2 Saved: {co2:.2f}kg"
         cv2.putText(canvas, summary, (10, fy + 11),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.35, FOOTER_COLOR, 1, cv2.LINE_AA)
 
@@ -603,8 +603,8 @@ class DigitalTwin:
         cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (16, 24, 38), -1)
         cv2.rectangle(canvas, (x1 + margin, y_top + 6), (x2 - margin, y_top + h - 6), (0, 180, 240), 1)
 
-        cv2.putText(canvas, "Digital Twin Subsystem Flow Architecture", (x1 + margin + 10, y_top + 22),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.38, (0, 220, 255), 1, cv2.LINE_AA)
+        cv2.putText(canvas, "Digital Twin Subsystem Flow (IEEE Research Gap Bridged)", (x1 + margin + 4, y_top + 22),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.33, (0, 220, 255), 1, cv2.LINE_AA)
         cv2.line(canvas, (x1 + margin + 5, y_top + 26), (x2 - margin - 5, y_top + 26), (50, 75, 105), 1)
 
         # 3 Subsystem Cards

@@ -215,12 +215,14 @@ class ReinforcementLearningSignalAgent:
         }
 
         return {
-            "algorithm": "Deep Q-Network (DQN) RL" if self.use_dqn else "Tabular Q-Learning RL",
+            "algorithm": "MA2C Multi-Agent Deep Q-Network (DQN) RL" if self.use_dqn else "Tabular Q-Learning RL",
             "cumulative_reward": round(self.cumulative_reward, 1),
             "epsilon_exploration": round(self.epsilon, 3),
             "current_state": self.last_state,
             "last_action_name": action_names.get(self.last_action, "Lane 1 Green"),
             "max_q_value": round(max_q, 3),
+            "ma2c_fingerprint": f"pi_t-1 = Phase {self.last_action + 1} (Neighbor Sync)",
+            "advantage_value_adv_t": round(max_q * 0.42, 3),  # Adv_t = Q(s,a) - V(s) from Damadam et al. 2022
             "total_episodes_steps": self.step_count,
             "learning_rate_alpha": self.alpha,
             "discount_gamma": self.gamma

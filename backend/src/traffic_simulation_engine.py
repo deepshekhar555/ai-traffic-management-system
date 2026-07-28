@@ -284,21 +284,23 @@ class TrafficFlowSimulationEngine:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.38, CYAN_GLOW, 1, cv2.LINE_AA)
         cv2.line(canvas, (px + 10, py + 22), (px + pw - 10, py + 22), (50, 65, 85), 1)
 
-        # 7-Feature Architecture List
+        # 8-Feature Architecture List
         tot_cnt = len(self.sim_vehicles)
-        cv2.putText(canvas, f"1. 24GHz Radar & Vision Sync ({tot_cnt} Live Vehicles)", (px + 10, py + 36),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, LIGHT_BLUE, 1)
-        cv2.putText(canvas, f"2. SURTRAC + PyTorch DQN RL (Phase: L{0 if sig0=='GREEN' else 1})", (px + 10, py + 50),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, NEON_GREEN, 1)
-        cv2.putText(canvas, "3. XGBoost Traffic Predictor (+15m / +30m)", (px + 10, py + 64),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_DIM, 1)
-        cv2.putText(canvas, "4. ANPR License Plate & E-Challan Issuance", (px + 10, py + 78),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_DIM, 1)
-        cv2.putText(canvas, "5. Emergency Priority & Pedestrian Safety", (px + 10, py + 92),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, TEXT_DIM, 1)
+        cv2.putText(canvas, f"1. 24GHz Radar & Vision Sync ({tot_cnt} Live Vehicles)", (px + 10, py + 34),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.27, LIGHT_BLUE, 1)
+        cv2.putText(canvas, f"2. SURTRAC + PyTorch DQN RL (Phase: L{0 if sig0=='GREEN' else 1})", (px + 10, py + 46),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.27, NEON_GREEN, 1)
+        cv2.putText(canvas, "3. XGBoost Traffic Predictor (+15m / +30m)", (px + 10, py + 58),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.27, TEXT_DIM, 1)
+        cv2.putText(canvas, "4. ANPR License Plate & E-Challan Issuance", (px + 10, py + 70),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.27, TEXT_DIM, 1)
+        cv2.putText(canvas, "5. Emergency Priority & Pedestrian Safety", (px + 10, py + 82),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.27, TEXT_DIM, 1)
         co2_val = system_telemetry.get("co2_saved", 0.0)
-        cv2.putText(canvas, f"6. Environmental Carbon Offset: {co2_val:.2f} kg CO2", (px + 10, py + 106),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, NEON_GREEN, 1)
+        cv2.putText(canvas, f"6. Carbon Offset: {co2_val:.2f} kg CO2", (px + 10, py + 94),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.27, NEON_GREEN, 1)
+        cv2.putText(canvas, "8. V2X Smart Mobility (C-V2X 5G / DSRC)", (px + 10, py + 106),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.27, (0, 220, 255), 1)
 
         # Signal Control Scenarios HUD Table (Image 1 of previous set)
         cv2.line(canvas, (px + 10, py + 114), (px + pw - 10, py + 114), (50, 65, 85), 1)

@@ -143,6 +143,14 @@ class TrafficManagementApp:
             self.siren_detector = SirenDetector()
             self.rl_agent = QLearningSignalAgent()
             self.challan_system = EChallanSystem()
+            try:
+                from src.v2x_communication import V2XCommunicationManager
+                from src.research_gap_analyzer import ResearchGapAnalyzer
+            except ImportError:
+                from backend.src.v2x_communication import V2XCommunicationManager
+                from backend.src.research_gap_analyzer import ResearchGapAnalyzer
+            self.v2x_manager = V2XCommunicationManager()
+            self.gap_analyzer = ResearchGapAnalyzer()
             self.bev_transformer = BEVTransformer()
             self.hotlist_classifier = VehicleHotlistClassifier()
             self.pedestrian_safety = PedestrianSafetySystem()
@@ -696,12 +704,14 @@ class TrafficManagementApp:
 
             # Render 2D Digital Twin Vector Map (with SURTRAC & System Telemetry)
             surtrac_telem = self.signal_manager.get_surtrac_telemetry()
+            v2x_telem = self.v2x_manager.update_v2x_state(tracked_vehicles, signal_state)
             system_telemetry = {
                 "gps": self.gps_tracker.get_location_string(),
                 "pedestrian_hazard": bool(ped_hazards),
                 "emergency_vehicle": self.emergency_vehicle,
                 "co2_saved": self.co2_saved,
                 "speeding_count": speeding_count,
+                "v2x": v2x_telem
             }
             twin_frame = self.digital_twin.render_2d_twin(
                 tracked_vehicles, lane_data, signal_state, surtrac_telem, system_telemetry
