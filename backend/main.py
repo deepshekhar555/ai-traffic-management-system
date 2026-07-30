@@ -146,11 +146,20 @@ class TrafficManagementApp:
             try:
                 from src.v2x_communication import V2XCommunicationManager
                 from src.research_gap_analyzer import ResearchGapAnalyzer
+                from src.ai_weather_vision import AIWeatherVisionEnhancer
+                from src.green_corridor_router import GreenCorridorRouter
+                from src.ev_charging_station_optimizer import EVChargingStationOptimizer
             except ImportError:
                 from backend.src.v2x_communication import V2XCommunicationManager
                 from backend.src.research_gap_analyzer import ResearchGapAnalyzer
+                from backend.src.ai_weather_vision import AIWeatherVisionEnhancer
+                from backend.src.green_corridor_router import GreenCorridorRouter
+                from backend.src.ev_charging_station_optimizer import EVChargingStationOptimizer
             self.v2x_manager = V2XCommunicationManager()
             self.gap_analyzer = ResearchGapAnalyzer()
+            self.weather_enhancer = AIWeatherVisionEnhancer()
+            self.green_corridor = GreenCorridorRouter()
+            self.ev_optimizer = EVChargingStationOptimizer()
             self.bev_transformer = BEVTransformer()
             self.hotlist_classifier = VehicleHotlistClassifier()
             self.pedestrian_safety = PedestrianSafetySystem()
@@ -538,9 +547,12 @@ class TrafficManagementApp:
     def process_frame(self, frame):
         """Process single frame for traffic analysis with lane management and emergency detection"""
         try:
+            # Apply AI Weather Optical Enhancement (CLAHE De-hazing / Low-Light Gamma)
+            proc_frame, opt_telemetry = self.weather_enhancer.process_and_enhance(frame)
+
             # High-FPS Optimization: Run YOLO every 2nd frame and reuse detection cache
             if self.frame_count % 2 == 0 or not hasattr(self, '_last_detection') or self._last_detection is None:
-                detection_result = self.detector.detect_all_objects(frame)
+                detection_result = self.detector.detect_all_objects(proc_frame)
                 self._last_detection = detection_result
             else:
                 detection_result = self._last_detection
@@ -705,13 +717,17 @@ class TrafficManagementApp:
             # Render 2D Digital Twin Vector Map (with SURTRAC & System Telemetry)
             surtrac_telem = self.signal_manager.get_surtrac_telemetry()
             v2x_telem = self.v2x_manager.update_v2x_state(tracked_vehicles, signal_state)
+            corridor_telem = self.green_corridor.update_corridor(bool(self.emergency_vehicle))
+            ev_telem = self.ev_optimizer.update_ev_state(tracked_vehicles)
             system_telemetry = {
                 "gps": self.gps_tracker.get_location_string(),
                 "pedestrian_hazard": bool(ped_hazards),
                 "emergency_vehicle": self.emergency_vehicle,
                 "co2_saved": self.co2_saved,
                 "speeding_count": speeding_count,
-                "v2x": v2x_telem
+                "v2x": v2x_telem,
+                "green_corridor": corridor_telem,
+                "ev_grid": ev_telem
             }
             twin_frame = self.digital_twin.render_2d_twin(
                 tracked_vehicles, lane_data, signal_state, surtrac_telem, system_telemetry
