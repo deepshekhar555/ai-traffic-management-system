@@ -522,11 +522,15 @@ class DigitalTwin:
         ev_info = system_telemetry.get("ev_grid", {})
         g_wave_str = "GREEN WAVE LOCKED" if corridor.get("corridor_active") else "CORRIDOR: READY"
         ev_kw = ev_info.get("grid_load_kw", 550.0)
+        drone_info = system_telemetry.get("drone_fleet", {})
+        parking_info = system_telemetry.get("smart_parking", {})
+        drones_act = drone_info.get("active_drones", 6)
+        free_p = parking_info.get("free_spots", 94)
         co2 = system_telemetry.get("co2_saved", 0.0)
 
-        summary = f"V2X SMART MOBILITY 5G | GLOSA: 45km/h | {g_wave_str} | EV Grid: {ev_kw}kW | Radar Sync: 1.8ms | CLAHE De-haze | CO2 Saved: {co2:.2f}kg"
+        summary = f"V2X 5G | GLOSA: 45km/h | {g_wave_str} | EV: {ev_kw}kW | Drones: {drones_act} Active | Parking: {free_p} Free | CLAHE De-haze | CO2: {co2:.2f}kg"
         cv2.putText(canvas, summary, (10, fy + 11),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.33, FOOTER_COLOR, 1, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.31, FOOTER_COLOR, 1, cv2.LINE_AA)
 
     # ──────────────────────────────────────────────────────────────────────────
     # Info Panels (bottom strip) – L5, L6, L7

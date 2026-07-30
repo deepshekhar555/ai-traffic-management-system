@@ -284,25 +284,27 @@ class TrafficFlowSimulationEngine:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.38, CYAN_GLOW, 1, cv2.LINE_AA)
         cv2.line(canvas, (px + 10, py + 22), (px + pw - 10, py + 22), (50, 65, 85), 1)
 
-        # 10-Feature System Architecture List
+        # 12-Feature System Architecture List
         tot_cnt = len(self.sim_vehicles)
         cv2.putText(canvas, f"1. 24GHz Radar & Vision Sync ({tot_cnt} Live Vehicles)", (px + 10, py + 34),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, LIGHT_BLUE, 1)
-        cv2.putText(canvas, f"2. SURTRAC + PyTorch DQN RL (Phase: L{0 if sig0=='GREEN' else 1})", (px + 10, py + 45),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, NEON_GREEN, 1)
-        cv2.putText(canvas, "3. XGBoost Traffic Predictor (+15m / +30m)", (px + 10, py + 56),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
-        cv2.putText(canvas, "4. ANPR License Plate & E-Challan Issuance", (px + 10, py + 67),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
-        cv2.putText(canvas, "5. Emergency Priority & Pedestrian Safety", (px + 10, py + 78),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, TEXT_DIM, 1)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, LIGHT_BLUE, 1)
+        cv2.putText(canvas, f"2. SURTRAC + PyTorch DQN RL (Phase: L{0 if sig0=='GREEN' else 1})", (px + 10, py + 44),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, NEON_GREEN, 1)
+        cv2.putText(canvas, "3. XGBoost Traffic Predictor (+15m / +30m)", (px + 10, py + 54),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, TEXT_DIM, 1)
+        cv2.putText(canvas, "4. ANPR License Plate & E-Challan Issuance", (px + 10, py + 64),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, TEXT_DIM, 1)
+        cv2.putText(canvas, "5. Emergency Priority & Pedestrian Safety", (px + 10, py + 74),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, TEXT_DIM, 1)
         co2_val = system_telemetry.get("co2_saved", 0.0)
-        cv2.putText(canvas, f"6. Carbon Offset: {co2_val:.2f} kg CO2", (px + 10, py + 89),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, NEON_GREEN, 1)
-        cv2.putText(canvas, "8. V2X Smart Mobility (C-V2X 5G / DSRC)", (px + 10, py + 100),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, (0, 220, 255), 1)
-        cv2.putText(canvas, "9. Multi-Hop Green Wave & CLAHE Weather AI", (px + 10, py + 110),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.26, (255, 200, 0), 1)
+        cv2.putText(canvas, f"6. Carbon Offset: {co2_val:.2f} kg CO2", (px + 10, py + 84),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, NEON_GREEN, 1)
+        cv2.putText(canvas, "8. V2X Smart Mobility (C-V2X 5G / DSRC)", (px + 10, py + 94),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, (0, 220, 255), 1)
+        cv2.putText(canvas, "9. Multi-Hop Green Wave & CLAHE Weather AI", (px + 10, py + 103),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 200, 0), 1)
+        cv2.putText(canvas, "10. Drone Patrol & Smart Parking Guidance", (px + 10, py + 112),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 120, 200), 1)
 
         # Signal Control Scenarios HUD Table (Image 1 of previous set)
         cv2.line(canvas, (px + 10, py + 114), (px + pw - 10, py + 114), (50, 65, 85), 1)

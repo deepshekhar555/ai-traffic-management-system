@@ -149,17 +149,23 @@ class TrafficManagementApp:
                 from src.ai_weather_vision import AIWeatherVisionEnhancer
                 from src.green_corridor_router import GreenCorridorRouter
                 from src.ev_charging_station_optimizer import EVChargingStationOptimizer
+                from src.drone_fleet_manager import DroneFleetManager
+                from src.smart_parking_guidance import SmartParkingGuidanceEngine
             except ImportError:
                 from backend.src.v2x_communication import V2XCommunicationManager
                 from backend.src.research_gap_analyzer import ResearchGapAnalyzer
                 from backend.src.ai_weather_vision import AIWeatherVisionEnhancer
                 from backend.src.green_corridor_router import GreenCorridorRouter
                 from backend.src.ev_charging_station_optimizer import EVChargingStationOptimizer
+                from backend.src.drone_fleet_manager import DroneFleetManager
+                from backend.src.smart_parking_guidance import SmartParkingGuidanceEngine
             self.v2x_manager = V2XCommunicationManager()
             self.gap_analyzer = ResearchGapAnalyzer()
             self.weather_enhancer = AIWeatherVisionEnhancer()
             self.green_corridor = GreenCorridorRouter()
             self.ev_optimizer = EVChargingStationOptimizer()
+            self.drone_fleet = DroneFleetManager()
+            self.smart_parking = SmartParkingGuidanceEngine()
             self.bev_transformer = BEVTransformer()
             self.hotlist_classifier = VehicleHotlistClassifier()
             self.pedestrian_safety = PedestrianSafetySystem()
@@ -719,6 +725,8 @@ class TrafficManagementApp:
             v2x_telem = self.v2x_manager.update_v2x_state(tracked_vehicles, signal_state)
             corridor_telem = self.green_corridor.update_corridor(bool(self.emergency_vehicle))
             ev_telem = self.ev_optimizer.update_ev_state(tracked_vehicles)
+            drone_telem = self.drone_fleet.get_fleet_telemetry()
+            parking_telem = self.smart_parking.update_parking_state()
             system_telemetry = {
                 "gps": self.gps_tracker.get_location_string(),
                 "pedestrian_hazard": bool(ped_hazards),
@@ -727,7 +735,9 @@ class TrafficManagementApp:
                 "speeding_count": speeding_count,
                 "v2x": v2x_telem,
                 "green_corridor": corridor_telem,
-                "ev_grid": ev_telem
+                "ev_grid": ev_telem,
+                "drone_fleet": drone_telem,
+                "smart_parking": parking_telem
             }
             twin_frame = self.digital_twin.render_2d_twin(
                 tracked_vehicles, lane_data, signal_state, surtrac_telem, system_telemetry
