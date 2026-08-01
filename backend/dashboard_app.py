@@ -32,8 +32,21 @@ static_dir = _backend_dir / "static"
 app = Flask(__name__, template_folder=str(templates_dir), static_folder=str(static_dir))
 db = TrafficDatabase()
 gps = GPSTracker()
-predictor = CongestionPredictor()
-ml_benchmarker = MLModelBenchmarker()
+
+_predictor = None
+_ml_benchmarker = None
+
+def get_predictor():
+    global _predictor
+    if _predictor is None:
+        _predictor = CongestionPredictor()
+    return _predictor
+
+def get_ml_benchmarker():
+    global _ml_benchmarker
+    if _ml_benchmarker is None:
+        _ml_benchmarker = MLModelBenchmarker()
+    return _ml_benchmarker
 
 @app.route('/')
 def dashboard():
@@ -50,8 +63,9 @@ def get_stats():
     """Get today's statistics & AI predictions"""
     stats = db.get_todays_statistics()
     # Add dummy historical density samples for prediction demo
-    predictor.add_datapoint(0.35)
-    forecast = predictor.predict_future_congestion()
+    p = get_predictor()
+    p.add_datapoint(0.35)
+    forecast = p.predict_future_congestion()
     stats["forecast"] = forecast
     stats["gps"] = {
         "location": gps.get_location_string(),
@@ -130,7 +144,7 @@ def get_ml_model_comparison():
     Standard Machine Learning Model Comparison & Accuracy Metrics
     Compares XGBoost, Gradient Boosting, and Random Forest models on traffic dataset.
     """
-    return jsonify(ml_benchmarker.get_benchmarking_results())
+    return jsonify(get_ml_benchmarker().get_benchmarking_results())
 
 @app.route('/api/predict-traffic', methods=['GET', 'POST'])
 def predict_traffic_endpoint():

@@ -45,7 +45,19 @@ def launch_system():
             cwd=str(BACKEND_DIR)
         )
         processes.append(("Flask REST API", p_flask))
-        time.sleep(2)
+        
+        # Wait until Flask port 5000 is ready
+        import urllib.request
+        print("      Waiting for Flask server initialization...", end="", flush=True)
+        for _ in range(15):
+            try:
+                urllib.request.urlopen("http://localhost:5000/api/stats", timeout=1)
+                print(" [READY!]")
+                break
+            except Exception:
+                print(".", end="", flush=True)
+                time.sleep(1)
+        print()
 
         # 2. Start React Web Dashboard (Port 3000)
         print("[2/3] Starting React Web Command Center Dashboard (Port 3000)...")
