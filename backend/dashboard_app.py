@@ -3,14 +3,29 @@ Smart City Command Center - Web Dashboard & Digital Twin Control
 Access at: http://localhost:5000
 """
 
+import sys
+from pathlib import Path
+_backend_dir = Path(__file__).parent.resolve()
+_root_dir = Path(__file__).parent.parent.resolve()
+if str(_backend_dir) not in sys.path:
+    sys.path.insert(0, str(_backend_dir))
+if str(_root_dir) not in sys.path:
+    sys.path.insert(0, str(_root_dir))
+
 from flask import Flask, render_template, jsonify
-from src.traffic_database import TrafficDatabase
-from src.gps_tracker import GPSTracker
-from src.congestion_predictor import CongestionPredictor
+try:
+    from src.traffic_database import TrafficDatabase
+    from src.gps_tracker import GPSTracker
+    from src.congestion_predictor import CongestionPredictor
+    from src.dataset_ml_trainer import MLModelBenchmarker
+except ImportError:
+    from backend.src.traffic_database import TrafficDatabase
+    from backend.src.gps_tracker import GPSTracker
+    from backend.src.congestion_predictor import CongestionPredictor
+    from backend.src.dataset_ml_trainer import MLModelBenchmarker
+
 import json
 import numpy as np
-
-from src.dataset_ml_trainer import MLModelBenchmarker
 
 app = Flask(__name__)
 db = TrafficDatabase()
