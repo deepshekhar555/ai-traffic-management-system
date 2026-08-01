@@ -96,9 +96,10 @@ def _try_ip_stream(url, probe_ip=None, probe_port=None, min_brightness=8.0):
         return None, False
 
 
-def _try_webcam(index, min_brightness=10.0):
+def _try_webcam(index, min_brightness=1.0):
     """
     Try to open a hardware webcam by index (with DirectShow on Windows).
+    Reads up to 10 warmup frames to let Windows auto-exposure settle.
     Returns (cap, True) on success, (None, False) on failure.
     """
     try:
@@ -114,13 +115,22 @@ def _try_webcam(index, min_brightness=10.0):
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         cap.set(cv2.CAP_PROP_FPS, FPS)
 
-        ret, frame = cap.read()
-        if ret and frame is not None and frame.size > 0 and float(frame.mean()) >= min_brightness:
-            logger.info(f"[OK] Webcam index {index} connected (brightness={frame.mean():.1f})")
+        # Warmup: read up to 10 frames to let Windows camera auto-expose
+        ret, frame = False, None
+        for i in range(10):
+            ret, frame = cap.read()
+            if ret and frame is not None and frame.size > 0 and float(frame.mean()) >= min_brightness:
+                logger.info(f"[OK] Webcam index {index} connected at warmup frame {i+1} (brightness={frame.mean():.1f})")
+                return cap, True
+            time.sleep(0.05)
+
+        # Even if brightness check failed, accept if we got ANY frame
+        if ret and frame is not None and frame.size > 0:
+            logger.info(f"[OK] Webcam index {index} accepted (low brightness={frame.mean():.1f} - may be dark room)")
             return cap, True
-        else:
-            cap.release()
-            return None, False
+
+        cap.release()
+        return None, False
     except Exception as e:
         logger.debug(f"Webcam index {index} error: {e}")
         return None, False
