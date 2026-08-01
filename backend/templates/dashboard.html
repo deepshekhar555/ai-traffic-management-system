@@ -350,33 +350,55 @@
             const linkEl = document.getElementById('modal-raw-link');
 
             titleEl.innerText = title;
-            labelEl.innerText = 'Endpoint: ' + endpoint;
+            labelEl.innerText = 'Smart City REST Endpoint: ' + endpoint;
             linkEl.href = endpoint;
-            bodyEl.innerHTML = '<div style="color:#38bdf8;">Fetching live API telemetry...</div>';
+            bodyEl.innerHTML = '<div style="color:#38bdf8;">Connecting to Smart City Integration API...</div>';
             overlay.style.display = 'flex';
+
+            const useCases = {
+                '/api/stats': 'Real-World Use: Used by Smart City Command Centers (ICCC) to monitor vehicle throughput, speed violations, and signal health in real time.',
+                '/api/violations': 'Real-World Use: Consumed by Traffic Police E-Challan Servers to automatically issue speeding and red-light tickets.',
+                '/api/ml-model-comparison': 'Real-World Use: Used by Traffic Engineers to compare accuracy (R² score) of XGBoost vs Random Forest model predictions.',
+                '/api/predict-traffic?hour=17&weather=Clear': 'Real-World Use: Polled by Adaptive Signal Controllers (SURTRAC) to pre-adjust green light duration 15 minutes before congestion peak.',
+                '/api/hardware-status': 'Real-World Use: Monitored by IoT Maintenance Crews to detect Raspberry Pi GPIO, Radar, and Camera connection status.',
+                '/api/eco-impact': 'Real-World Use: Used by Environmental Protection Agencies to measure fuel savings and CO2 reduction in the city.'
+            };
 
             fetch(endpoint)
                 .then(r => r.json())
                 .then(data => {
-                    let html = '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">';
-                    for (const [k, v] of Object.entries(data)) {
-                        if (typeof v !== 'object') {
-                            html += `<div style="background:#1e293b; padding:10px; border-radius:8px; border:1px solid #334155;">
-                                        <div style="color:#94a3b8; font-size:11px; text-transform:uppercase;">${k.replace(/_/g, ' ')}</div>
-                                        <div style="color:#00e8a2; font-weight:700; font-size:13px; margin-top:2px;">${v}</div>
-                                     </div>`;
+                    let html = `<div style="background:#1e293b; padding:12px 16px; border-radius:10px; border-left:4px solid #38bdf8; margin-bottom:16px; font-size:12px; color:#cbd5e1; font-family:sans-serif;">
+                                  <strong>🏛️ ${useCases[endpoint] || 'Smart City REST API endpoint for third-party automated system integration.'}</strong>
+                                </div>`;
+
+                    html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; font-family:sans-serif;">';
+
+                    function renderObject(obj, prefix='') {
+                        for (const [k, v] of Object.entries(obj)) {
+                            if (v !== null && typeof v === 'object' && !Array.isArray(v)) {
+                                renderObject(v, prefix + k + ' > ');
+                            } else {
+                                const keyName = (prefix + k).replace(/_/g, ' ').toUpperCase();
+                                let valStr = Array.isArray(v) ? `${v.length} Items` : v;
+                                let badgeColor = '#00e8a2';
+                                if (typeof v === 'string' && (v.includes('HIGH') || v.includes('RED') || v.includes('ALERT'))) badgeColor = '#ef4444';
+                                else if (typeof v === 'string' && (v.includes('MODERATE') || v.includes('AMBER') || v.includes('WARNING'))) badgeColor = '#f59e0b';
+
+                                html += `<div style="background:#0f172a; padding:12px; border-radius:8px; border:1px solid #1e293b;">
+                                            <div style="color:#94a3b8; font-size:10px; font-weight:700; tracking:0.5px;">${keyName}</div>
+                                            <div style="color:${badgeColor}; font-weight:800; font-size:14px; margin-top:4px;">${valStr}</div>
+                                         </div>`;
+                            }
                         }
                     }
-                    html += '</div>';
 
-                    // Formatted Code Block
-                    html += `<div style="color:#94a3b8; font-size:11px; margin-bottom:4px; text-transform:uppercase;">Complete Telemetry Stream (Formatted)</div>`;
-                    html += `<pre style="background:#090d16; padding:12px; border-radius:8px; border:1px solid #1e293b; color:#38bdf8; overflow-x:auto;">${JSON.stringify(data, null, 2)}</pre>`;
+                    renderObject(data);
+                    html += '</div>';
 
                     bodyEl.innerHTML = html;
                 })
                 .catch(err => {
-                    bodyEl.innerHTML = `<div style="color:#ef4444;">Failed to fetch API stream: ${err}</div>`;
+                    bodyEl.innerHTML = `<div style="color:#ef4444;">Failed to connect to API endpoint: ${err}</div>`;
                 });
         }
 
