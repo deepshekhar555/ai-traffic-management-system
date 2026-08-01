@@ -87,9 +87,9 @@
 
     <!-- View / Style Controls -->
     <div class="hud-controls">
-        <button class="btn-view active" onclick="switchMapStyle('dark')">🌃 3D City Night GIS</button>
-        <button class="btn-view" onclick="switchMapStyle('satellite')">🛰️ Real Satellite Imagery</button>
-        <button class="btn-view" onclick="resetCameraView()">🚁 Center Junction</button>
+        <button class="btn-view active" onclick="switchMapStyle('dark', this)">🌃 3D City Night GIS</button>
+        <button class="btn-view" onclick="switchMapStyle('satellite', this)">🛰️ Real Satellite Imagery</button>
+        <button class="btn-view" onclick="resetCameraView(this)">🚁 Center Junction</button>
     </div>
 
     <!-- Sidebar Stats -->
@@ -201,9 +201,9 @@
             });
         }
 
-        function switchMapStyle(styleType) {
+        function switchMapStyle(styleType, btnElement) {
             document.querySelectorAll('.btn-view').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            btnElement.classList.add('active');
 
             if (styleType === 'satellite') {
                 map.setStyle({
@@ -247,12 +247,17 @@
             }
         }
 
-        function resetCameraView() {
+        function resetCameraView(btnElement) {
+            document.querySelectorAll('.btn-view').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            
             map.flyTo({
                 center: centerLngLat,
                 zoom: 16.8,
                 pitch: 60,
-                bearing: -20
+                bearing: -20,
+                essential: true,
+                duration: 1800
             });
         }
 
