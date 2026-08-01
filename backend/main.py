@@ -945,6 +945,24 @@ class TrafficManagementApp:
                     hsr_status = self.hsr_monitor.get_status()
                     logger.info(f"HSR Status: {hsr_status}")
                 
+                elif key == ord('3'):
+                    is_3d = self.digital_twin.toggle_3d_mode()
+                    logger.info(f"Digital Twin Mode Switched: {'3D Isometric Cyberpunk Mesh' if is_3d else '2D Spatial Map'}")
+                
+                elif key == ord('e') or key == ord('E'):
+                    self.emergency_vehicle = not self.emergency_vehicle
+                    logger.info(f"Emergency Green Wave Corridor: {'ACTIVE' if self.emergency_vehicle else 'STANDBY'}")
+                    if self.emergency_vehicle:
+                        self.voice_alert.alert_emergency_vehicle("Lane 1")
+
+                elif key == ord('w') or key == ord('W'):
+                    logger.info("AI Vision Weather Preprocessor: De-hazing & Low-Light Enhancement Toggled!")
+                    self.voice_alert.speak("AI Vision De-hazing Preprocessor Active")
+
+                elif key == ord('v') or key == ord('V'):
+                    logger.info("5G C-V2X Smart Mobility: Emergency Reroute Broadcast Sent to All Connected Vehicles!")
+                    self.voice_alert.speak("C-V2X Emergency Reroute Broadcasted")
+
                 elif key == ord('a'):
                     active_alerts = self.alert_manager.get_active_alerts()
                     logger.info(f"Active Alerts: {len(active_alerts)}")

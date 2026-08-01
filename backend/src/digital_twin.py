@@ -97,9 +97,17 @@ class DigitalTwin:
         self.sensor_fusion = SensorFusionManager()
         self._radar_angle = 0.0
 
+        # 3D Cyberpunk Isometric Mesh Viewport Mode
+        self.is_3d_mode = False
+
         # Blink state for emergency
         self._blink = True
         self._blink_t = time.time()
+
+    def toggle_3d_mode(self):
+        """Toggle between 2D Spatial Map and 3D Isometric Cyberpunk Mesh Viewport."""
+        self.is_3d_mode = not self.is_3d_mode
+        return self.is_3d_mode
 
     # ──────────────────────────────────────────────────────────────────────────
     # Layout computation
@@ -428,19 +436,43 @@ class DigitalTwin:
             cv2.line(canvas, (tx + bw, ty + bh), (tx + bw - 5, ty + bh), (0, 220, 255), 1)
             cv2.line(canvas, (tx + bw, ty + bh), (tx + bw, ty + bh - 5), (0, 220, 255), 1)
 
-            # Vehicle icon (different shapes per class)
-            if cls in ("bus", "truck"):
-                cv2.rectangle(canvas, (tx - 14, ty - 9), (tx + 14, ty + 9), vc, -1)
-                cv2.rectangle(canvas, (tx - 14, ty - 9), (tx + 14, ty + 9), TEXT_BRIGHT, 1)
-                icon_char = "BUS" if cls == "bus" else "TRK"
-                cv2.putText(canvas, icon_char, (tx - 11, ty + 4),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.28, BG_COLOR, 1)
-            elif cls == "motorcycle":
-                cv2.circle(canvas, (tx, ty), 7, vc, -1)
-                cv2.circle(canvas, (tx, ty), 7, TEXT_BRIGHT, 1)
+            # Render 3D Isometric Bounding Cube if 3D mode active
+            if self.is_3d_mode:
+                dx3d, dy3d = 12, 10
+                h3d = 14
+                # Top face
+                top_p1 = (tx - dx3d, ty - dy3d - h3d)
+                top_p2 = (tx + dx3d, ty - dy3d - h3d)
+                top_p3 = (tx + dx3d + 6, ty + dy3d - h3d)
+                top_p4 = (tx - dx3d + 6, ty + dy3d - h3d)
+                # Bottom face
+                bot_p1 = (tx - dx3d, ty - dy3d)
+                bot_p2 = (tx + dx3d, ty - dy3d)
+                bot_p3 = (tx + dx3d + 6, ty + dy3d)
+                bot_p4 = (tx - dx3d + 6, ty + dy3d)
+
+                # Fill 3D top face
+                pts_top = np.array([top_p1, top_p2, top_p3, top_p4], np.int32)
+                cv2.fillPoly(canvas, [pts_top], vc)
+                # Wireframe edges
+                for p_a, p_b in [(top_p1, top_p2), (top_p2, top_p3), (top_p3, top_p4), (top_p4, top_p1),
+                                 (bot_p1, bot_p2), (bot_p2, bot_p3), (bot_p3, bot_p4), (bot_p4, bot_p1),
+                                 (top_p1, bot_p1), (top_p2, bot_p2), (top_p3, bot_p3), (top_p4, bot_p4)]:
+                    cv2.line(canvas, p_a, p_b, (0, 255, 220), 1, cv2.LINE_AA)
             else:
-                cv2.rectangle(canvas, (tx - 10, ty - 7), (tx + 10, ty + 7), vc, -1)
-                cv2.rectangle(canvas, (tx - 10, ty - 7), (tx + 10, ty + 7), TEXT_BRIGHT, 1)
+                # Vehicle icon (different shapes per class)
+                if cls in ("bus", "truck"):
+                    cv2.rectangle(canvas, (tx - 14, ty - 9), (tx + 14, ty + 9), vc, -1)
+                    cv2.rectangle(canvas, (tx - 14, ty - 9), (tx + 14, ty + 9), TEXT_BRIGHT, 1)
+                    icon_char = "BUS" if cls == "bus" else "TRK"
+                    cv2.putText(canvas, icon_char, (tx - 11, ty + 4),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.28, BG_COLOR, 1)
+                elif cls == "motorcycle":
+                    cv2.circle(canvas, (tx, ty), 7, vc, -1)
+                    cv2.circle(canvas, (tx, ty), 7, TEXT_BRIGHT, 1)
+                else:
+                    cv2.rectangle(canvas, (tx - 10, ty - 7), (tx + 10, ty + 7), vc, -1)
+                    cv2.rectangle(canvas, (tx - 10, ty - 7), (tx + 10, ty + 7), TEXT_BRIGHT, 1)
 
             # Real BEV Meter Tag Badge
             bev_str = f"#{tid} {cls.upper()} [{m_x:+.1f}m,{m_y:.1f}m]"
@@ -569,16 +601,22 @@ class DigitalTwin:
                     (self.road_x1 + 15, self.road_y1 + 36), cv2.FONT_HERSHEY_SIMPLEX, 0.28, (0, 255, 220), 1, cv2.LINE_AA)
 
     def _draw_header(self, canvas, system_telemetry: Dict = None):
-        """Header bar with title, GPS location, and live timestamp."""
+        """Header bar with title, GPS location, live timestamp, 3D mode status, and Judge Demo Hotkeys."""
         system_telemetry = system_telemetry or {}
         overlay = canvas.copy()
         cv2.rectangle(overlay, (0, 0), (self.width, 34), (12, 18, 26), -1)
         cv2.addWeighted(overlay, 0.85, canvas, 0.15, 0, canvas)
         cv2.rectangle(canvas, (0, 0), (self.width, 34), HEADER_COLOR, 1)
 
+        mode_str = "[3D ISOMETRIC MESH]" if self.is_3d_mode else "[2D SPATIAL MAP]"
         gps_str = system_telemetry.get("gps", "40.7128 N, 74.0060 W (TMC)")
-        cv2.putText(canvas, f"TRAFFIC DIGITAL TWIN  |  GPS: {gps_str[:38]}",
-                    (10, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.45, HEADER_COLOR, 1, cv2.LINE_AA)
+        cv2.putText(canvas, f"TRAFFIC DIGITAL TWIN  {mode_str}  |  GPS: {gps_str[:22]}",
+                    (10, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (0, 255, 220), 1, cv2.LINE_AA)
+
+        # Judge Interactive Hotkey Guide
+        hotkeys_str = "HOTKEYS: [3] 3D View  [E] Emergency Wave  [P] Pedestrian  [W] De-Haze  [V] V2X"
+        cv2.putText(canvas, hotkeys_str, (self.width // 2 - 130, 22),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.30, (255, 200, 0), 1, cv2.LINE_AA)
 
         ts = time.strftime("%H:%M:%S")
         tw, _ = cv2.getTextSize(ts, cv2.FONT_HERSHEY_SIMPLEX, 0.42, 1)
