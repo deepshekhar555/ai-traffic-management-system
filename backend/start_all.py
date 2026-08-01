@@ -57,9 +57,10 @@ def launch_system():
 
         print("\n" + "=" * 75)
         print("[OK] ALL COMPONENTS STARTED SUCCESSFULLY!")
-        print("   - React Command Center UI : http://localhost:3000")
-        print("   - Flask REST Telemetry API: http://localhost:5000")
-        print("   - Executive Report PDF   : http://localhost:5000/report")
+        print("   - React Command Center UI   : http://localhost:3000")
+        print("   - Flask REST Telemetry API  : http://localhost:5000")
+        print("   - Real-Time 3D City Twin UI : http://localhost:5000/twin3d")
+        print("   - Executive Report PDF     : http://localhost:5000/report")
         print("   Press Ctrl+C at any time to stop all services.")
         print("=" * 75 + "\n")
 

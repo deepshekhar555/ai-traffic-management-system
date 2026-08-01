@@ -27,7 +27,9 @@ except ImportError:
 import json
 import numpy as np
 
-app = Flask(__name__)
+templates_dir = _backend_dir / "templates"
+static_dir = _backend_dir / "static"
+app = Flask(__name__, template_folder=str(templates_dir), static_folder=str(static_dir))
 db = TrafficDatabase()
 gps = GPSTracker()
 predictor = CongestionPredictor()
