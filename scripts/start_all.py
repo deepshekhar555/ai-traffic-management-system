@@ -9,12 +9,12 @@ import time
 from pathlib import Path
 
 CURRENT_DIR = Path(__file__).parent.resolve()
-if CURRENT_DIR.name == "scripts" or CURRENT_DIR.name == "backend":
+if CURRENT_DIR.name == "backend" or CURRENT_DIR.name == "scripts":
+    BACKEND_DIR = CURRENT_DIR if CURRENT_DIR.name == "backend" else CURRENT_DIR.parent / "backend"
     ROOT_DIR = CURRENT_DIR.parent
 else:
     ROOT_DIR = CURRENT_DIR
-    
-BACKEND_DIR = ROOT_DIR / "backend"
+    BACKEND_DIR = ROOT_DIR / "backend"
 
 FRONTEND_DIR = ROOT_DIR / "frontend"
 

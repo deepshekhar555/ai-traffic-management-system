@@ -9,8 +9,8 @@ import time
 from pathlib import Path
 
 CURRENT_DIR = Path(__file__).parent.resolve()
-if CURRENT_DIR.name == "backend":
-    BACKEND_DIR = CURRENT_DIR
+if CURRENT_DIR.name == "backend" or CURRENT_DIR.name == "scripts":
+    BACKEND_DIR = CURRENT_DIR if CURRENT_DIR.name == "backend" else CURRENT_DIR.parent / "backend"
     ROOT_DIR = CURRENT_DIR.parent
 else:
     ROOT_DIR = CURRENT_DIR
@@ -48,8 +48,9 @@ def launch_system():
 
         # 3. Start AI Computer Vision Core
         print("[3/3] Launching AI Computer Vision Detection Core...")
+        ai_cmd = [sys.executable, str(BACKEND_DIR / "main.py")] + sys.argv[1:]
         p_ai = subprocess.Popen(
-            [sys.executable, str(BACKEND_DIR / "main.py")],
+            ai_cmd,
             cwd=str(BACKEND_DIR)
         )
         processes.append(("AI Core Engine", p_ai))
