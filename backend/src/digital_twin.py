@@ -141,7 +141,8 @@ class DigitalTwin:
         lane_data: Dict,
         signal_state: Dict,
         surtrac_telem: Dict = None,
-        system_telemetry: Dict = None
+        system_telemetry: Dict = None,
+        camera_frame: np.ndarray = None
     ) -> np.ndarray:
         """
         Main render method – called every frame.
@@ -166,6 +167,9 @@ class DigitalTwin:
 
         # ── Layer 4: Flow Vectors ────────────────────────────────────────
         self._draw_flow_vectors(canvas, tracked_vehicles)
+
+        # ── Layer 4.5: Physical Camera PiP Feed & Laser Sync Rays ───────
+        self._draw_camera_pip_and_laser_sync(canvas, tracked_vehicles, camera_frame)
 
         # ── Header & Footer (with GPS & CO2 Telemetry) ─────────────────
         self._draw_header(canvas, system_telemetry)
@@ -488,6 +492,81 @@ class DigitalTwin:
             vc = speed_color(speed)
             cv2.arrowedLine(canvas, (tx, ty), tip, vc, 1,
                             tipLength=0.5, line_type=cv2.LINE_AA)
+
+    def _draw_camera_pip_and_laser_sync(self, canvas, tracked_vehicles, camera_frame=None):
+        """
+        Draws Real-Time Physical Camera Ingestion Picture-In-Picture (PiP) feed
+        and dynamic Laser Rays connecting live physical camera detections to 2D Digital Twin nodes.
+        """
+        # PiP Position (Top Right of the Map)
+        pip_w, pip_h = 280, 150
+        pip_x = self.road_x2 - pip_w - 15
+        pip_y = self.road_y1 + 10
+
+        # Background box & border for PiP
+        cv2.rectangle(canvas, (pip_x - 3, pip_y - 22), (pip_x + pip_w + 3, pip_y + pip_h + 3), (12, 18, 26), -1)
+        cv2.rectangle(canvas, (pip_x - 3, pip_y - 22), (pip_x + pip_w + 3, pip_y + pip_h + 3), (0, 220, 255), 1)
+
+        # PiP Title Header Banner
+        cv2.putText(canvas, "LIVE PHYSICAL CAMERA INGESTION FEED", (pip_x, pip_y - 7),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.32, (0, 255, 220), 1, cv2.LINE_AA)
+
+        if camera_frame is not None and camera_frame.size > 0:
+            try:
+                # Resize camera frame to fit PiP
+                resized_cam = cv2.resize(camera_frame, (pip_w, pip_h))
+                canvas[pip_y:pip_y + pip_h, pip_x:pip_x + pip_w] = resized_cam
+            except Exception:
+                cv2.rectangle(canvas, (pip_x, pip_y), (pip_x + pip_w, pip_y + pip_h), (25, 35, 45), -1)
+                cv2.putText(canvas, "CAM INGESTION ACTIVE", (pip_x + 60, pip_y + 75),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 220, 255), 1, cv2.LINE_AA)
+        else:
+            cv2.rectangle(canvas, (pip_x, pip_y), (pip_x + pip_w, pip_y + pip_h), (25, 35, 45), -1)
+            cv2.putText(canvas, "CAM INGESTION ACTIVE", (pip_x + 60, pip_y + 75),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 220, 255), 1, cv2.LINE_AA)
+
+        # Draw laser sync rays connecting PiP detections to 2D Digital Twin Nodes
+        t_now = time.time()
+        for v in tracked_vehicles:
+            tid = v.get("track_id", v.get("id", 0))
+            if "center" in v and v["center"] != (0, 0):
+                cx, cy = v["center"]
+            else:
+                b = v.get("bbox", v.get("box", (100, 100, 300, 300)))
+                cx = (b[0] + b[2]) / 2.0
+                cy = (b[1] + b[3]) / 2.0
+
+            # Pixel center on PiP
+            pip_cx = pip_x + int((cx / 1280.0) * pip_w)
+            pip_cy = pip_y + int((cy / 720.0) * pip_h)
+            pip_cx = np.clip(pip_cx, pip_x + 5, pip_x + pip_w - 5)
+            pip_cy = np.clip(pip_cy, pip_y + 5, pip_y + pip_h - 5)
+
+            # Target position on 2D Digital Twin Map
+            tx = int((cx / 1280.0) * (self.road_x2 - self.road_x1)) + self.road_x1
+            ty = int((cy / 720.0) * (self.road_y2 - self.road_y1)) + self.road_y1
+            tx = np.clip(tx, self.road_x1 + 14, self.road_x2 - 14)
+            ty = np.clip(ty, self.road_y1 + 14, self.road_y2 - 14)
+
+            # Draw target reticle on PiP
+            cv2.circle(canvas, (pip_cx, pip_cy), 4, (0, 255, 220), -1)
+            cv2.circle(canvas, (pip_cx, pip_cy), 7, (255, 200, 0), 1)
+
+            # Dynamic Pulsating Laser Ray from Physical PiP to Digital Twin Map
+            pulse_offset = (t_now * 3.0 + tid) % 1.0
+            pulse_x = int(pip_cx + (tx - pip_cx) * pulse_offset)
+            pulse_y = int(pip_cy + (ty - pip_cy) * pulse_offset)
+
+            # Thin laser sync ray
+            cv2.line(canvas, (pip_cx, pip_cy), (tx, ty), (0, 200, 255), 1, cv2.LINE_AA)
+            # Pulsating laser data packet
+            cv2.circle(canvas, (pulse_x, pulse_y), 3, (0, 255, 220), -1)
+
+        # Digital Twin Concept Banner at top of road area
+        cv2.rectangle(canvas, (self.road_x1 + 10, self.road_y1 + 22), (self.road_x1 + 540, self.road_y1 + 42), (10, 15, 22), -1)
+        cv2.rectangle(canvas, (self.road_x1 + 10, self.road_y1 + 22), (self.road_x1 + 540, self.road_y1 + 42), (0, 220, 255), 1)
+        cv2.putText(canvas, "PHYSICAL-TO-VIRTUAL DIGITAL TWIN SYNC: Live Cam Ingestion -> Homography H Matrix -> 2D Twin",
+                    (self.road_x1 + 15, self.road_y1 + 36), cv2.FONT_HERSHEY_SIMPLEX, 0.28, (0, 255, 220), 1, cv2.LINE_AA)
 
     def _draw_header(self, canvas, system_telemetry: Dict = None):
         """Header bar with title, GPS location, and live timestamp."""

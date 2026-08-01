@@ -740,7 +740,7 @@ class TrafficManagementApp:
                 "smart_parking": parking_telem
             }
             twin_frame = self.digital_twin.render_2d_twin(
-                tracked_vehicles, lane_data, signal_state, surtrac_telem, system_telemetry
+                tracked_vehicles, lane_data, signal_state, surtrac_telem, system_telemetry, camera_frame=proc_frame
             )
             cv2.imshow("AI Traffic Digital Twin (2D Spatial Map)", twin_frame)
 
