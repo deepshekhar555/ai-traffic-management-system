@@ -161,6 +161,11 @@ export default function App() {
             <option value="node_2">📹 Node 2: AIIMS Ring Road Signal</option>
             <option value="node_3">📹 Node 3: Cyber Hub Highway Express</option>
           </select>
+          <a href="http://localhost:5000/twin3d" target="_blank" rel="noreferrer">
+            <button className="btn-action" style={{ background: '#00a2e8', color: '#000', fontWeight: 800 }}>
+              🌐 Launch 3D City Twin
+            </button>
+          </a>
           <a href="http://localhost:5000/report" target="_blank" rel="noreferrer">
             <button className="btn-action btn-green">
               <FileText size={16} /> Export Executive PDF Report

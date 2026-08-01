@@ -202,10 +202,14 @@ class CameraHandler:
         return frame
         
     def stop_capture(self):
-        """Release camera resources"""
-        if self.cap and self.cap.isOpened():
-            self.cap.release()
-            logger.info(f"Camera stopped. Total frames captured: {self.total_frames}")
+        """Release camera resources safely"""
+        try:
+            if hasattr(self, 'cap') and self.cap is not None:
+                if hasattr(self.cap, 'isOpened') and self.cap.isOpened():
+                    self.cap.release()
+            logger.info(f"Camera stopped. Total frames captured: {getattr(self, 'total_frames', 0)}")
+        except Exception as e:
+            logger.warning(f"Error stopping camera capture: {e}")
         self.is_opened = False
 
     def release(self):
