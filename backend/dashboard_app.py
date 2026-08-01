@@ -58,6 +58,11 @@ def digital_twin_3d():
     """Interactive 3D WebGL Three.js Digital Twin Viewport"""
     return render_template('twin3d.html')
 
+@app.route('/digital-twin-pro')
+def digital_twin_pro():
+    """Professional Closed-Loop AI Traffic Digital Twin Workbench (What-If Simulation + Live Camera + Hardware Sync)"""
+    return render_template('digital_twin_pro.html')
+
 @app.route('/api/live-camera-telemetry')
 def get_live_camera_telemetry():
     """Get 100% real physical camera tracked objects & detections for 3D Digital Twin"""
