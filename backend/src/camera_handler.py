@@ -58,8 +58,16 @@ class CameraHandler:
                     cap_ip = cv2.VideoCapture(url)
                     if cap_ip.isOpened():
                         cap_ip.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                        ret, frame = cap_ip.read()
-                        if ret and frame is not None and frame.mean() > 5.0:
+                        # Warmup 5 frames for DroidCam IP stream buffer initialization
+                        frame = None
+                        ret = False
+                        for _ in range(5):
+                            ret, frame = cap_ip.read()
+                            if ret and frame is not None:
+                                break
+                            time.sleep(0.05)
+
+                        if ret and frame is not None:
                             self.cap = cap_ip
                             self.source = url
                             self.is_opened = True
