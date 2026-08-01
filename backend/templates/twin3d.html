@@ -3,28 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraffixAI — Real-Life Smart City Traffic Digital Twin</title>
+    <title>TraffixAI — Real-World GIS Municipal Traffic Digital Twin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- MapLibre GL JS (Open-Source 3D Map Engine - No API Key Needed) -->
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #1e293b; color: #f8fafc; }
-        #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #0f172a; color: #f8fafc; }
+        #map { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
 
-        /* HUD Overlay Header - Clean Municipal GIS Style */
+        /* HUD Overlay Header - Real Municipal GIS Style */
         .hud-header {
             position: absolute; top: 20px; left: 20px; z-index: 10;
             background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(14px);
             border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 10px;
             padding: 16px 22px; pointer-events: auto;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
         .hud-header h1 { font-size: 18px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 10px; }
         .hud-header p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
         .badge-live { background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; border: 1px solid #10b981; }
 
-        /* HUD Camera View Controls */
+        /* HUD Map Style Controls */
         .hud-controls {
             position: absolute; top: 20px; right: 20px; z-index: 10;
             display: flex; gap: 8px; pointer-events: auto;
@@ -56,29 +57,45 @@
         }
         .hud-cam-header { background: #0284c7; color: #ffffff; font-size: 11px; font-weight: 800; padding: 7px 12px; text-transform: uppercase; letter-spacing: 0.5px; }
         .hud-cam-body { width: 100%; height: 120px; background: #0f172a; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px; padding: 10px; text-align: center; }
+
+        /* Vehicle/Pedestrian Custom GIS Markers */
+        .marker-vehicle {
+            width: 32px; height: 32px; background: #0284c7; border: 2px solid #ffffff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 16px; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .marker-person {
+            width: 28px; height: 28px; background: #10b981; border: 2px solid #ffffff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .marker-bus { background: #f59e0b; }
+        .marker-motorcycle { background: #ef4444; }
     </style>
 </head>
 <body>
 
-    <div id="canvas-container"></div>
+    <div id="map"></div>
 
     <!-- Header HUD -->
     <div class="hud-header">
-        <h1>🏢 REAL-LIFE SMART CITY TRAFFIC DIGITAL TWIN <span class="badge-live">LIVE PHYSICAL CAM INGESTION</span></h1>
-        <p>Real Municipal Intersection ➔ YOLOv26 AI Camera Stream ➔ Real 3D GIS Telemetry</p>
+        <h1>🏙️ REAL-WORLD GIS MUNICIPAL DIGITAL TWIN <span class="badge-live">LIVE SATELLITE MAP</span></h1>
+        <p>Real-World GIS OpenStreetMap ➔ 3D Building Extrusions ➔ YOLOv26 Camera Ingestion</p>
     </div>
 
-    <!-- View Preset Controls -->
+    <!-- View / Style Controls -->
     <div class="hud-controls">
-        <button class="btn-view active" onclick="setCameraView('iso')">🏙️ Urban Perspective</button>
-        <button class="btn-view" onclick="setCameraView('top')">🚁 Municipal Top-Down</button>
-        <button class="btn-view" onclick="setCameraView('street')">🚘 Intersection Level</button>
+        <button class="btn-view active" onclick="switchMapStyle('dark')">🌃 3D City Night GIS</button>
+        <button class="btn-view" onclick="switchMapStyle('satellite')">🛰️ Real Satellite Imagery</button>
+        <button class="btn-view" onclick="resetCameraView()">🚁 Center Junction</button>
     </div>
 
     <!-- Sidebar Stats -->
     <div class="hud-sidebar">
         <div style="font-size: 13px; font-weight: 800; color: #38bdf8; margin-bottom: 10px; text-transform: uppercase;">
-            📊 Real-Time Intersection Telemetry
+            📊 Real-World GIS Spatial Telemetry
         </div>
         <div class="stat-row">
             <span class="stat-label">Physical Camera Detections:</span>
@@ -86,369 +103,157 @@
         </div>
         <div class="stat-row">
             <span class="stat-label">Pedestrians / Humans:</span>
-            <span class="stat-val" id="stat-persons" style="color: #38bdf8;">0 Persons</span>
+            <span class="stat-val" id="stat-persons" style="color: #10b981;">0 Persons</span>
         </div>
         <div class="stat-row">
             <span class="stat-label">Vehicles (Cars/Buses/Trucks):</span>
-            <span class="stat-val" id="stat-vehicles" style="color: #f59e0b;">0 Vehicles</span>
+            <span class="stat-val" id="stat-vehicles" style="color: #38bdf8;">0 Vehicles</span>
         </div>
         <div class="stat-row">
-            <span class="stat-label">Signal Controller Phase:</span>
-            <span class="stat-val" id="stat-signal" style="color: #10b981;">LANE 1 GREEN</span>
+            <span class="stat-label">GIS Map Center Coordinates:</span>
+            <span class="stat-val" style="color: #cbd5e1;">28.6139° N, 77.2090° E</span>
         </div>
         <div class="stat-row">
-            <span class="stat-label">CO2 Carbon Savings:</span>
+            <span class="stat-label">CO2 Carbon Offset:</span>
             <span class="stat-val" id="stat-co2">0.0 kg</span>
         </div>
     </div>
 
     <!-- Camera PiP Status -->
     <div class="hud-cam-pip">
-        <div class="hud-cam-header">📷 Live Physical Camera Telemetry (CAM-01)</div>
+        <div class="hud-cam-header">📷 Live Camera Ingestion (CAM-01)</div>
         <div class="hud-cam-body">
             <div>
-                <div style="color: #38bdf8; font-weight: 800; font-size: 13px; margin-bottom: 4px;">YOLOv26 ACTIVE INGESTION</div>
-                <div style="color: #cbd5e1; font-size: 11px;" id="cam-telemetry-detail">Camera feed connected. Mirroring real physical detections...</div>
+                <div style="color: #38bdf8; font-weight: 800; font-size: 13px; margin-bottom: 4px;">YOLOv26 INGESTION STREAM</div>
+                <div style="color: #cbd5e1; font-size: 11px;" id="cam-telemetry-detail">Camera feed active. Projecting detections onto GIS map...</div>
             </div>
         </div>
     </div>
 
     <script>
-        let scene, camera, renderer, controls;
-        let activeEntityMeshes = {};
-        let trafficSignalMeshes = {};
+        let map;
+        let activeMarkers = {};
 
-        function init3D() {
-            const container = document.getElementById('canvas-container');
-            scene = new THREE.Scene();
-            
-            // Realistic Sky Daylight Backdrop
-            scene.background = new THREE.Color(0x87ceeb); // Daylight Sky Blue
-            scene.fog = new THREE.FogExp2(0x87ceeb, 0.0006);
+        // Default Junction Coordinates (Connaught Place / New Delhi Smart City Junction)
+        const centerLngLat = [77.2090, 28.6139];
 
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 4000);
-            camera.position.set(0, 75, 130);
+        function initMap() {
+            map = new maplibregl.Map({
+                container: 'map',
+                style: {
+                    version: 8,
+                    sources: {
+                        'carto-dark': {
+                            type: 'raster',
+                            tiles: ['https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
+                            tileSize: 256,
+                            attribution: '&copy; OpenStreetMap &copy; CARTO'
+                        },
+                        'openmaptiles': {
+                            type: 'vector',
+                            url: 'https://demotiles.maplibre.org/tiles/tiles.json'
+                        }
+                    },
+                    layers: [
+                        {
+                            id: 'carto-dark-layer',
+                            type: 'raster',
+                            source: 'carto-dark',
+                            minzoom: 0,
+                            maxzoom: 20
+                        }
+                    ]
+                },
+                center: centerLngLat,
+                zoom: 16.8,
+                pitch: 60, // 3D Perspective Tilt
+                bearing: -20
+            });
 
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            container.appendChild(renderer.domElement);
+            map.addControl(new maplibregl.NavigationControl(), 'top-left');
 
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.maxPolarAngle = Math.PI / 2 - 0.02;
+            map.on('load', () => {
+                // Add 3D Building Extrusions from OpenStreetMap vector data
+                map.addLayer({
+                    'id': '3d-buildings',
+                    'source': 'openmaptiles',
+                    'source-layer': 'building',
+                    'type': 'fill-extrusion',
+                    'minzoom': 14,
+                    'paint': {
+                        'fill-extrusion-color': '#1e293b',
+                        'fill-extrusion-height': [
+                            'interpolate', ['linear'], ['zoom'],
+                            14, 0,
+                            15.05, ['get', 'render_height']
+                        ],
+                        'fill-extrusion-base': [
+                            'interpolate', ['linear'], ['zoom'],
+                            14, 0,
+                            15.05, ['get', 'render_min_height']
+                        ],
+                        'fill-extrusion-opacity': 0.85
+                    }
+                });
 
-            // Natural Sunlight & Ambient Lighting
-            const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
-            sunLight.position.set(120, 250, 100);
-            sunLight.castShadow = true;
-            sunLight.shadow.mapSize.width = 2048;
-            sunLight.shadow.mapSize.height = 2048;
-            scene.add(sunLight);
-
-            const ambientLight = new THREE.AmbientLight(0xe0f2fe, 0.7);
-            scene.add(ambientLight);
-
-            // Build Realistic Real-World Infrastructure
-            createRealisticTerrainAndRoads();
-            createRealisticBuildings();
-            createTreesAndGrass();
-            createRealisticSignalPosts();
-
-            window.addEventListener('resize', onWindowResize);
-            animate();
-
-            // Poll Live Physical Camera Telemetry every 100 ms
-            setInterval(fetchLiveCameraTelemetry, 100);
+                // Poll Live Telemetry
+                setInterval(fetchLiveCameraTelemetry, 100);
+            });
         }
 
-        function createRealisticTerrainAndRoads() {
-            // Infinite Green Grass Landscape
-            const grassGeo = new THREE.PlaneGeometry(8000, 8000);
-            const grassMat = new THREE.MeshStandardMaterial({ color: 0x477033, roughness: 0.8 });
-            const grass = new THREE.Mesh(grassGeo, grassMat);
-            grass.rotation.x = -Math.PI / 2;
-            grass.position.y = -0.1;
-            grass.receiveShadow = true;
-            scene.add(grass);
+        function switchMapStyle(styleType) {
+            document.querySelectorAll('.btn-view').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
 
-            // Main Charcoal Asphalt Road (North-South)
-            const roadMat = new THREE.MeshStandardMaterial({ color: 0x22252a, roughness: 0.6 });
-            const mainRoadGeo = new THREE.PlaneGeometry(36, 1200);
-            const mainRoad = new THREE.Mesh(mainRoadGeo, roadMat);
-            mainRoad.rotation.x = -Math.PI / 2;
-            mainRoad.position.y = 0.1;
-            mainRoad.receiveShadow = true;
-            scene.add(mainRoad);
-
-            // Cross Asphalt Road (East-West)
-            const crossRoadGeo = new THREE.PlaneGeometry(1200, 36);
-            const crossRoad = new THREE.Mesh(crossRoadGeo, roadMat);
-            crossRoad.rotation.x = -Math.PI / 2;
-            crossRoad.position.y = 0.12;
-            crossRoad.receiveShadow = true;
-            scene.add(crossRoad);
-
-            // Concrete Sidewalks & Curbing
-            const curbMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.5 });
-            [-22, 22].forEach(x => {
-                const curbGeo = new THREE.BoxGeometry(6, 0.5, 1200);
-                const curb = new THREE.Mesh(curbGeo, curbMat);
-                curb.position.set(x, 0.25, 0);
-                curb.receiveShadow = true;
-                scene.add(curb);
-            });
-
-            // Realistic Yellow Double Central Median Lines
-            const yellowLineMat = new THREE.MeshBasicMaterial({ color: 0xeab308 });
-            [-0.4, 0.4].forEach(xOff => {
-                const lineGeo = new THREE.PlaneGeometry(0.3, 1200);
-                const line = new THREE.Mesh(lineGeo, yellowLineMat);
-                line.rotation.x = -Math.PI / 2;
-                line.position.set(xOff, 0.2, 0);
-                scene.add(line);
-            });
-
-            // White Painted Pedestrian Zebra Crosswalk Stripes
-            const whiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-            for (let i = -14; i <= 14; i += 3.5) {
-                // North Crosswalk
-                const stripeN = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 8), whiteMat);
-                stripeN.rotation.x = -Math.PI / 2;
-                stripeN.position.set(i, 0.22, -24);
-                scene.add(stripeN);
-
-                // South Crosswalk
-                const stripeS = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 8), whiteMat);
-                stripeS.rotation.x = -Math.PI / 2;
-                stripeS.position.set(i, 0.22, 24);
-                scene.add(stripeS);
+            if (styleType === 'satellite') {
+                map.setStyle({
+                    version: 8,
+                    sources: {
+                        'esri-satellite': {
+                            type: 'raster',
+                            tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+                            tileSize: 256,
+                            attribution: 'Esri World Imagery'
+                        }
+                    },
+                    layers: [
+                        {
+                            id: 'satellite-layer',
+                            type: 'raster',
+                            source: 'esri-satellite',
+                            minzoom: 0,
+                            maxzoom: 20
+                        }
+                    ]
+                });
+            } else {
+                map.setStyle({
+                    version: 8,
+                    sources: {
+                        'carto-dark': {
+                            type: 'raster',
+                            tiles: ['https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
+                            tileSize: 256
+                        }
+                    },
+                    layers: [
+                        {
+                            id: 'carto-dark-layer',
+                            type: 'raster',
+                            source: 'carto-dark'
+                        }
+                    ]
+                });
             }
         }
 
-        function createRealisticBuildings() {
-            const bldgMaterials = [
-                new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.3 }),
-                new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.4 }),
-                new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.2 })
-            ];
-            const glassMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.1, metalness: 0.9 });
-
-            const bConfigs = [
-                [-60, -70, 36, 70, 36], [60, -70, 40, 85, 40],
-                [-60, 70, 38, 75, 38], [60, 70, 42, 90, 40],
-                [-110, -130, 50, 110, 50], [110, -130, 45, 95, 45]
-            ];
-
-            bConfigs.forEach(([x, z, w, h, d], idx) => {
-                const mat = bldgMaterials[idx % bldgMaterials.length];
-                const bGeo = new THREE.BoxGeometry(w, h, d);
-                const bMesh = new THREE.Mesh(bGeo, mat);
-                bMesh.position.set(x, h / 2, z);
-                bMesh.castShadow = true;
-                bMesh.receiveShadow = true;
-                scene.add(bMesh);
-
-                // Glass Windows Layer
-                const winGeo = new THREE.BoxGeometry(w + 0.2, h * 0.8, d + 0.2);
-                const winMesh = new THREE.Mesh(winGeo, glassMat);
-                winMesh.position.set(x, h / 2, z);
-                scene.add(winMesh);
+        function resetCameraView() {
+            map.flyTo({
+                center: centerLngLat,
+                zoom: 16.8,
+                pitch: 60,
+                bearing: -20
             });
-        }
-
-        function createTreesAndGrass() {
-            const trunkGeo = new THREE.CylinderGeometry(0.8, 1.2, 8);
-            const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5c3d1e, roughness: 0.9 });
-            const foliageGeo = new THREE.ConeGeometry(5, 14, 8);
-            const foliageMat = new THREE.MeshStandardMaterial({ color: 0x2e6f40, roughness: 0.7 });
-
-            const treeCoords = [
-                [-30, -50], [30, -50], [-30, 50], [30, 50],
-                [-30, -100], [30, -100], [-30, 100], [30, 100]
-            ];
-
-            treeCoords.forEach(([x, z]) => {
-                const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-                trunk.position.set(x, 4, z);
-                trunk.castShadow = true;
-                scene.add(trunk);
-
-                const foliage = new THREE.Mesh(foliageGeo, foliageMat);
-                foliage.position.set(x, 13, z);
-                foliage.castShadow = true;
-                scene.add(foliage);
-            });
-        }
-
-        function createRealisticSignalPosts() {
-            // Realistic Municipal Traffic Light Poles at Intersection
-            const postGeo = new THREE.CylinderGeometry(0.4, 0.4, 18);
-            const postMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.5 });
-            const boxGeo = new THREE.BoxGeometry(2, 5, 2);
-            const boxMat = new THREE.MeshStandardMaterial({ color: 0x0f172a });
-
-            const corners = [
-                { id: 'lane_0', x: -20, z: -20 },
-                { id: 'lane_1', x: 20, z: 20 }
-            ];
-
-            corners.forEach(c => {
-                const group = new THREE.Group();
-                const post = new THREE.Mesh(postGeo, postMat);
-                post.position.y = 9;
-                group.add(post);
-
-                const box = new THREE.Mesh(boxGeo, boxMat);
-                box.position.set(0, 15, 0);
-                group.add(box);
-
-                // Signal Light Sphere
-                const lightGeo = new THREE.SphereGeometry(1.2, 16, 16);
-                const lightMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
-                const lightMesh = new THREE.Mesh(lightGeo, lightMat);
-                lightMesh.position.set(0, 15, 1.1);
-                group.add(lightMesh);
-
-                group.position.set(c.x, 0, c.z);
-                scene.add(group);
-                trafficSignalMeshes[c.id] = lightMesh;
-            });
-        }
-
-        function sync3DEntityMesh(obj) {
-            const id = obj.id;
-            const cls = obj.class || 'car';
-            
-            // Map camera relative normalized coordinates (0.0 to 1.0) into 3D world space
-            const worldX = (obj.cx - 0.5) * 50.0;
-            const worldZ = (obj.cy - 0.5) * 70.0;
-
-            if (!activeEntityMeshes[id]) {
-                const group = new THREE.Group();
-
-                if (cls === 'person') {
-                    // REALISTIC 3D HUMAN / PEDESTRIAN MODEL (Head, Body, Legs)
-                    const skinMat = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.5 });
-                    const shirtMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.6 });
-                    const pantsMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7 });
-
-                    // Head
-                    const headGeo = new THREE.SphereGeometry(0.8, 16, 16);
-                    const head = new THREE.Mesh(headGeo, skinMat);
-                    head.position.y = 5.2;
-                    head.castShadow = true;
-                    group.add(head);
-
-                    // Torso/Shirt
-                    const torsoGeo = new THREE.BoxGeometry(1.6, 2.4, 1.0);
-                    const torso = new THREE.Mesh(torsoGeo, shirtMat);
-                    torso.position.y = 3.4;
-                    torso.castShadow = true;
-                    group.add(torso);
-
-                    // Legs
-                    const legGeo = new THREE.BoxGeometry(0.7, 2.2, 0.8);
-                    const legL = new THREE.Mesh(legGeo, pantsMat);
-                    legL.position.set(-0.45, 1.1, 0);
-                    legL.castShadow = true;
-                    group.add(legL);
-
-                    const legR = new THREE.Mesh(legGeo, pantsMat);
-                    legR.position.set(0.45, 1.1, 0);
-                    legR.castShadow = true;
-                    group.add(legR);
-
-                } else if (cls === 'bus' || cls === 'truck') {
-                    // REALISTIC CITY BUS / HEAVY VEHICLE CAD MODEL
-                    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.3, metalness: 0.3 });
-                    const glassMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1, metalness: 0.8 });
-                    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 });
-
-                    // Bus Body
-                    const bodyGeo = new THREE.BoxGeometry(6.5, 4.5, 14);
-                    const body = new THREE.Mesh(bodyGeo, bodyMat);
-                    body.position.y = 2.8;
-                    body.castShadow = true;
-                    group.add(body);
-
-                    // Windshield/Windows
-                    const windowGeo = new THREE.BoxGeometry(6.6, 1.8, 12);
-                    const windows = new THREE.Mesh(windowGeo, glassMat);
-                    windows.position.y = 3.8;
-                    group.add(windows);
-
-                    // 4 Rubber Wheels
-                    const wheelGeo = new THREE.CylinderGeometry(0.9, 0.9, 0.8, 16);
-                    [[-3.2, 1, 4], [3.2, 1, 4], [-3.2, 1, -4], [3.2, 1, -4]].forEach(wPos => {
-                        const wheel = new THREE.Mesh(wheelGeo, wheelMat);
-                        wheel.rotation.z = Math.PI / 2;
-                        wheel.position.set(...wPos);
-                        group.add(wheel);
-                    });
-
-                } else if (cls === 'motorcycle' || cls === 'bicycle') {
-                    // REALISTIC MOTORBIKE MODEL
-                    const bikeMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.4 });
-                    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 });
-
-                    const bodyGeo = new THREE.BoxGeometry(1.8, 1.8, 4.2);
-                    const body = new THREE.Mesh(bodyGeo, bikeMat);
-                    body.position.y = 1.6;
-                    body.castShadow = true;
-                    group.add(body);
-
-                    const wheelGeo = new THREE.CylinderGeometry(0.7, 0.7, 0.4, 16);
-                    [[0, 0.7, 1.5], [0, 0.7, -1.5]].forEach(wPos => {
-                        const wheel = new THREE.Mesh(wheelGeo, wheelMat);
-                        wheel.rotation.z = Math.PI / 2;
-                        wheel.position.set(...wPos);
-                        group.add(wheel);
-                    });
-
-                } else { // REALISTIC SEDAN CAR MODEL
-                    const carColors = [0xd97706, 0x0284c7, 0x475569, 0xdc2626, 0x16a34a];
-                    const carColor = carColors[id % carColors.length];
-                    const carMat = new THREE.MeshStandardMaterial({ color: carColor, roughness: 0.3, metalness: 0.4 });
-                    const glassMat = new THREE.MeshStandardMaterial({ color: 0xe0f2fe, roughness: 0.1, metalness: 0.8 });
-                    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 });
-
-                    // Car Base Body
-                    const bodyGeo = new THREE.BoxGeometry(4.8, 1.8, 8.5);
-                    const body = new THREE.Mesh(bodyGeo, carMat);
-                    body.position.y = 1.3;
-                    body.castShadow = true;
-                    group.add(body);
-
-                    // Car Cabin Roof
-                    const cabinGeo = new THREE.BoxGeometry(4.2, 1.4, 4.5);
-                    const cabin = new THREE.Mesh(cabinGeo, glassMat);
-                    cabin.position.set(0, 2.6, -0.3);
-                    cabin.castShadow = true;
-                    group.add(cabin);
-
-                    // 4 Wheels
-                    const wheelGeo = new THREE.CylinderGeometry(0.7, 0.7, 0.6, 16);
-                    [[-2.4, 0.7, 2.5], [2.4, 0.7, 2.5], [-2.4, 0.7, -2.5], [2.4, 0.7, -2.5]].forEach(wPos => {
-                        const wheel = new THREE.Mesh(wheelGeo, wheelMat);
-                        wheel.rotation.z = Math.PI / 2;
-                        wheel.position.set(...wPos);
-                        group.add(wheel);
-                    });
-                }
-
-                scene.add(group);
-                activeEntityMeshes[id] = group;
-            }
-
-            // Update position in real time
-            const mesh = activeEntityMeshes[id];
-            mesh.position.x = worldX;
-            mesh.position.z = worldZ;
-            mesh.updated = true;
         }
 
         function fetchLiveCameraTelemetry() {
@@ -459,67 +264,67 @@
                     const persons = data.person_count || 0;
                     const vehicles = data.vehicle_count || 0;
                     const total = data.total_count || 0;
-                    const signalState = data.signal_state || {};
 
                     document.getElementById('stat-count').innerText = `${total} Tracked`;
                     document.getElementById('stat-persons').innerText = `${persons} Persons`;
                     document.getElementById('stat-vehicles').innerText = `${vehicles} Vehicles`;
-                    document.getElementById('stat-signal').innerText = signalState["lane_0"] === "GREEN" ? "LANE 1 GREEN" : "LANE 2 GREEN";
                     document.getElementById('stat-co2').innerText = `${data.co2_saved || 0.0} kg`;
-                    document.getElementById('cam-telemetry-detail').innerText = `Camera telemetry active: ${objs.length} physical detections mirrored onto GIS map.`;
+                    document.getElementById('cam-telemetry-detail').innerText = `GIS Stream Active: ${objs.length} physical detections mapped onto real GIS map.`;
 
-                    // Update Traffic Light Colors
-                    if (trafficSignalMeshes['lane_0']) {
-                        trafficSignalMeshes['lane_0'].material.color.setHex(signalState['lane_0'] === 'GREEN' ? 0x10b981 : 0xef4444);
-                    }
-                    if (trafficSignalMeshes['lane_1']) {
-                        trafficSignalMeshes['lane_1'].material.color.setHex(signalState['lane_1'] === 'GREEN' ? 0x10b981 : 0xef4444);
-                    }
+                    // Track updated marker IDs
+                    const updatedIds = new Set();
 
-                    // Mark all existing meshes as not updated
-                    Object.values(activeEntityMeshes).forEach(m => m.updated = false);
+                    objs.forEach(obj => {
+                        const id = obj.id;
+                        const cls = obj.class || 'car';
+                        updatedIds.add(id);
 
-                    // Sync real camera detected objects
-                    objs.forEach(sync3DEntityMesh);
+                        // Project camera relative coordinates (0 to 1) into GPS offset around junction
+                        const lng = centerLngLat[0] + (obj.cx - 0.5) * 0.003;
+                        const lat = centerLngLat[1] - (obj.cy - 0.5) * 0.002;
 
-                    // Remove any old meshes no longer detected by camera
-                    Object.keys(activeEntityMeshes).forEach(id => {
-                        if (!activeEntityMeshes[id].updated) {
-                            scene.remove(activeEntityMeshes[id]);
-                            delete activeEntityMeshes[id];
+                        if (!activeMarkers[id]) {
+                            const el = document.createElement('div');
+                            if (cls === 'person') {
+                                el.className = 'marker-person';
+                                el.innerHTML = '👤';
+                                el.title = `Pedestrian #${id}`;
+                            } else if (cls === 'bus' || cls === 'truck') {
+                                el.className = 'marker-vehicle marker-bus';
+                                el.innerHTML = '🚌';
+                                el.title = `Heavy Vehicle #${id}`;
+                            } else if (cls === 'motorcycle' || cls === 'bicycle') {
+                                el.className = 'marker-vehicle marker-motorcycle';
+                                el.innerHTML = '🏍️';
+                                el.title = `Motorcycle #${id}`;
+                            } else {
+                                el.className = 'marker-vehicle';
+                                el.innerHTML = '🚗';
+                                el.title = `Vehicle #${id}`;
+                            }
+
+                            const marker = new maplibregl.Marker({ element: el })
+                                .setLngLat([lng, lat])
+                                .addTo(map);
+
+                            activeMarkers[id] = marker;
+                        } else {
+                            activeMarkers[id].setLngLat([lng, lat]);
+                        }
+                    });
+
+                    // Remove stale markers no longer detected by camera
+                    Object.keys(activeMarkers).forEach(id => {
+                        if (!updatedIds.has(Number(id)) && !updatedIds.has(id)) {
+                            activeMarkers[id].remove();
+                            delete activeMarkers[id];
                         }
                     });
                 })
-                .catch(e => console.log('Live Telemetry poll:', e));
+                .catch(e => console.log('GIS Telemetry poll error:', e));
         }
 
-        function setCameraView(preset) {
-            document.querySelectorAll('.btn-view').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-
-            if (preset === 'top') {
-                camera.position.set(0, 160, 1);
-            } else if (preset === 'street') {
-                camera.position.set(0, 8, 45);
-            } else {
-                camera.position.set(0, 75, 130);
-            }
-            controls.update();
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-
-        window.onload = init3D;
+        window.onload = initMap;
     </script>
 </body>
 </html>
