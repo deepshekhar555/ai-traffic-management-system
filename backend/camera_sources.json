@@ -1,0 +1,58 @@
+{
+  "_comment": "Camera sources priority list — sources tried from top to bottom. First live/valid source wins.",
+  "_instructions": {
+    "type_ip_http": "For DroidCam/IP webcam: set type=ip_http, url=http://IP:PORT/video",
+    "type_rtsp": "For CCTV/traffic camera RTSP: set type=rtsp, url=rtsp://user:pass@IP:PORT/stream",
+    "type_webcam": "For laptop/USB webcam: set type=webcam, index=0 (0=built-in, 1=external USB)",
+    "type_video_file": "For video file replay: set type=video_file, path=path/to/video.mp4",
+    "enabled": "Set false to skip a source without deleting it"
+  },
+  "sources": [
+    {
+      "name": "DroidCam Phone Camera",
+      "type": "ip_http",
+      "enabled": true,
+      "url": "http://10.32.131.90:4747/video",
+      "probe_ip": "10.32.131.90",
+      "probe_port": 4747,
+      "description": "DroidCam app on Android phone. Open DroidCam app → Start. Must be on same WiFi."
+    },
+    {
+      "name": "Traffic IP Camera (Junction North)",
+      "type": "rtsp",
+      "enabled": false,
+      "url": "rtsp://admin:admin123@192.168.1.100:554/stream1",
+      "description": "Add real traffic CCTV RTSP URL here when available."
+    },
+    {
+      "name": "Traffic IP Camera (Junction South)",
+      "type": "ip_http",
+      "enabled": false,
+      "url": "http://192.168.1.101:8080/video",
+      "probe_ip": "192.168.1.101",
+      "probe_port": 8080,
+      "description": "Add second IP webcam/traffic cam URL here."
+    },
+    {
+      "name": "Laptop Built-in Webcam",
+      "type": "webcam",
+      "enabled": true,
+      "index": 0,
+      "description": "Built-in laptop webcam. Always available as fallback."
+    },
+    {
+      "name": "External USB Webcam",
+      "type": "webcam",
+      "enabled": true,
+      "index": 1,
+      "description": "External USB webcam plugged into laptop."
+    },
+    {
+      "name": "Demo Traffic Video File",
+      "type": "video_file",
+      "enabled": false,
+      "path": "data/demo_traffic.mp4",
+      "description": "Replay a recorded traffic video file for demo/testing."
+    }
+  ]
+}

@@ -962,8 +962,9 @@ class TrafficManagementApp:
                 # Update FPS
                 self.update_fps()
                 
-                # Display
-                cv2.imshow("AI Traffic Management System - YOLOv26n", processed_frame)
+                # Display — window title shows active camera source
+                cam_label = getattr(self.camera, 'source_name', 'Camera')
+                cv2.imshow(f"AI Traffic Management System - YOLOv26n | {cam_label}", processed_frame)
                 
                 # Handle keyboard
                 key = cv2.waitKey(1) & 0xFF
