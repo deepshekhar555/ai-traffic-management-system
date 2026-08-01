@@ -35,8 +35,42 @@ class CameraHandler:
         self.open_camera()
         
     def open_camera(self):
-        """Open camera or video source with instant startup"""
-        logger.info(f"Opening camera device: {self.source}")
+        """Open DroidCam IP camera (10.32.131.90:4747), hardware webcam, or video source with instant fallback"""
+        logger.info(f"Opening camera device/source: {self.source}")
+
+        # 1. DroidCam IP Stream Auto-Detector List
+        droidcam_urls = [
+            ("10.32.131.90", 4747, "http://10.32.131.90:4747/video"),
+            ("10.32.131.90", 4747, "http://10.32.131.90:4747/mjpegfeed"),
+            ("127.0.0.1", 4747, "http://127.0.0.1:4747/video")
+        ]
+
+        import socket
+        for ip, port, url in droidcam_urls:
+            try:
+                # Fast 300ms socket probe to check if DroidCam port is open
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(0.3)
+                result = s.connect_ex((ip, port))
+                s.close()
+                if result == 0:
+                    logger.info(f"Probing open DroidCam port at {ip}:{port}...")
+                    cap_ip = cv2.VideoCapture(url)
+                    if cap_ip.isOpened():
+                        cap_ip.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                        ret, frame = cap_ip.read()
+                        if ret and frame is not None and frame.mean() > 5.0:
+                            self.cap = cap_ip
+                            self.source = url
+                            self.is_opened = True
+                            logger.info(f" Successfully connected to DroidCam IP Camera Stream at {url}!")
+                            return
+                        else:
+                            cap_ip.release()
+            except Exception as e:
+                logger.debug(f"DroidCam stream probe {url} skipped: {e}")
+
+        # 2. Hardware Webcam & DirectShow Fallback
         try:
             if isinstance(self.source, str) and self.source.isdigit():
                 self.source = int(self.source)
@@ -59,7 +93,7 @@ class CameraHandler:
                     else:
                         self.cap.release()
                 
-                # Secondary fast check if primary index failed or was Iriun placeholder
+                # Secondary fast check if primary index failed
                 for alt_idx in [2, 1, 0, 3]:
                     if alt_idx == self.source:
                         continue
@@ -80,8 +114,6 @@ class CameraHandler:
                             return
                         else:
                             cap_alt.release()
-
-
                             
                 logger.warning("Unable to open hardware webcam. Falling back to synthetic mode.")
                 self.synthetic_mode = True
@@ -221,5 +253,6 @@ if __name__ == "__main__":
     frame = cam.get_frame()
     print(f"[OK] CameraHandler tested successfully! Frame Captured: {frame is not None} (Frame Shape: {frame.shape if frame is not None else 'None'})")
     cam.release()
+
 
 
