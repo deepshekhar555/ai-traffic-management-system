@@ -231,7 +231,7 @@ def predict_traffic_endpoint():
     temp = float(request.args.get('temp', 28.5))
     weather = request.args.get('weather', 'Clear')
     
-    res = ml_benchmarker.predict_custom_parameters(hour, temp, weather)
+    res = get_ml_benchmarker().predict_custom_parameters(hour, temp, weather)
     return jsonify(res)
 
 @app.route('/api/upload-csv', methods=['POST'])
@@ -249,7 +249,7 @@ def upload_csv_endpoint():
         return jsonify({"success": False, "error": "Empty filename"}), 400
         
     content = file.read()
-    res = ml_benchmarker.train_from_csv_bytes(content)
+    res = get_ml_benchmarker().train_from_csv_bytes(content)
     return jsonify(res)
 
 @app.route('/api/download-research-report')
