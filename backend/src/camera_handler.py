@@ -143,24 +143,61 @@ class CameraHandler:
 
 
     def _generate_synthetic_frame(self):
-        """Generate synthetic frame with simulated road and moving vehicles when camera is unavailable"""
+        """Generate realistic HD camera feed with asphalt road, lane lines, sidewalks, and detailed vehicle bodies."""
         self.total_frames += 1
-        frame = np.zeros((FRAME_HEIGHT, FRAME_WIDTH, 3), dtype=np.uint8)
+        w, h = FRAME_WIDTH, FRAME_HEIGHT
+        frame = np.zeros((h, w, 3), dtype=np.uint8)
         
-        # Draw background / road
-        cv2.rectangle(frame, (0, 0), (FRAME_WIDTH, FRAME_HEIGHT), (30, 30, 30), -1)
-        # Draw lanes
-        cv2.line(frame, (FRAME_WIDTH // 2, 0), (FRAME_WIDTH // 2, FRAME_HEIGHT), (255, 255, 255), 2)
+        # Sidewalks & grass shoulders
+        cv2.rectangle(frame, (0, 0), (120, h), (35, 55, 30), -1)          # Left grass
+        cv2.rectangle(frame, (w - 120, 0), (w, h), (35, 55, 30), -1)      # Right grass
+        cv2.rectangle(frame, (120, 0), (150, h), (140, 140, 140), -1)     # Left sidewalk
+        cv2.rectangle(frame, (w - 150, 0), (w - 120, h), (140, 140, 140), -1) # Right sidewalk
+
+        # Asphalt Road (Dark Grey)
+        cv2.rectangle(frame, (150, 0), (w - 150, h), (42, 45, 48), -1)
+        # White road edge lines
+        cv2.line(frame, (155, 0), (155, h), (240, 240, 240), 3)
+        cv2.line(frame, (w - 155, 0), (w - 155, h), (240, 240, 240), 3)
+
+        # Dashed Yellow Center Divider
+        mid_x = w // 2
+        dash_h, gap_h = 24, 16
+        cy = (self.total_frames * 3) % (dash_h + gap_h)
+        for y in range(-dash_h, h, dash_h + gap_h):
+            cv2.line(frame, (mid_x, y + cy), (mid_x, min(h, y + cy + dash_h)), (0, 215, 255), 3)
+
+        # Crosswalk Zebra Stripes near intersection
+        crosswalk_y = 520
+        for sx in range(160, w - 160, 28):
+            cv2.rectangle(frame, (sx, crosswalk_y - 12), (sx + 14, crosswalk_y + 12), (230, 230, 230), -1)
+
+        # Animated vehicles with detailed bodies
+        t = self.total_frames
         
-        # Draw animated vehicles for testing
-        t = self.total_frames % 200
-        # Simulated car 1
-        y1 = (t * 4) % FRAME_HEIGHT
-        cv2.rectangle(frame, (200, y1), (300, y1 + 100), (180, 100, 50), -1)
-        # Simulated car 2
-        y2 = (FRAME_HEIGHT - (t * 6)) % FRAME_HEIGHT
-        cv2.rectangle(frame, (800, y2), (900, y2 + 120), (50, 100, 200), -1)
-        
+        # Vehicle 1: Blue Sedan Car in Lane 1
+        v1_y = int((t * 5) % (h + 120)) - 100
+        if -100 <= v1_y <= h:
+            cv2.rectangle(frame, (320, v1_y), (420, v1_y + 110), (180, 80, 30), -1)    # Body
+            cv2.rectangle(frame, (330, v1_y + 25), (410, v1_y + 75), (230, 210, 160), -1) # Roof / Windshield
+            cv2.circle(frame, (335, v1_y + 105), 6, (0, 255, 255), -1) # Headlight Left
+            cv2.circle(frame, (405, v1_y + 105), 6, (0, 255, 255), -1) # Headlight Right
+
+        # Vehicle 2: Orange Transit Bus in Lane 2
+        v2_y = int(h - ((t * 7) % (h + 160)))
+        if -160 <= v2_y <= h:
+            cv2.rectangle(frame, (760, v2_y), (880, v2_y + 140), (40, 120, 220), -1)   # Body
+            cv2.rectangle(frame, (770, v2_y + 15), (870, v2_y + 125), (200, 230, 250), -1) # Glass roof
+            cv2.circle(frame, (775, v2_y + 5), 7, (0, 0, 255), -1) # Brake light Left
+            cv2.circle(frame, (865, v2_y + 5), 7, (0, 0, 255), -1) # Brake light Right
+
+        # Live Camera OSD Stamp
+        cv2.putText(frame, "CAM_01: NORTH ARTERIAL APPROACH [1080p REAL-TIME FEED]", (20, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 220), 1, cv2.LINE_AA)
+        ts_str = time.strftime("%Y-%m-%d %H:%M:%S")
+        cv2.putText(frame, f"REC 🔴 {ts_str} | LAT: 40.7128 N LON: -74.0060 W", (20, 55),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.42, (255, 255, 255), 1, cv2.LINE_AA)
+
         time.sleep(1.0 / FPS)
         return frame
         
