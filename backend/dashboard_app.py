@@ -85,6 +85,51 @@ def get_live_camera_telemetry():
         "co2_saved": 0.0
     })
 
+@app.route('/api/sumo-traci-telemetry')
+def get_sumo_traci_telemetry():
+    """Get live SUMO TraCI Graph Sync & Spatio-Temporal Graph Neural Network (STGCN) Predictions"""
+    try:
+        from src.sumo_traci_bridge import SUMOTraCIBridge
+        from src.graph_gnn_predictor import SpatioTemporalGraphPredictor
+    except ImportError:
+        from backend.src.sumo_traci_bridge import SUMOTraCIBridge
+        from backend.src.graph_gnn_predictor import SpatioTemporalGraphPredictor
+
+    bridge = SUMOTraCIBridge()
+    stgcn = SpatioTemporalGraphPredictor()
+
+    telem_file = _root_dir / "data" / "live_camera_telemetry.json"
+    telem_data = {}
+    if telem_file.exists():
+        try:
+            with open(telem_file, "r") as f:
+                telem_data = json.load(f)
+        except Exception:
+            pass
+
+    graph_state = bridge.sync_virtual_graph_state(telem_data)
+    gnn_forecast = stgcn.predict_network_congestion()
+
+    return jsonify({
+        "status": "ONLINE",
+        "sumo_graph": graph_state,
+        "stgcn_prediction": gnn_forecast
+    })
+
+@app.route('/api/simulate-what-if', methods=['GET', 'POST'])
+def simulate_what_if_endpoint():
+    """Execute What-If TraCI Signal Timing Scenario Simulation"""
+    from flask import request
+    try:
+        from src.sumo_traci_bridge import SUMOTraCIBridge
+    except ImportError:
+        from backend.src.sumo_traci_bridge import SUMOTraCIBridge
+
+    green_sec = int(request.args.get('green_sec', 45))
+    bridge = SUMOTraCIBridge()
+    result = bridge.simulate_what_if_signal_override(proposed_green_sec=green_sec)
+    return jsonify(result)
+
 @app.route('/api/stats')
 def get_stats():
     """Get today's statistics & AI predictions"""
