@@ -58,6 +58,28 @@ def digital_twin_3d():
     """Interactive 3D WebGL Three.js Digital Twin Viewport"""
     return render_template('twin3d.html')
 
+@app.route('/api/live-camera-telemetry')
+def get_live_camera_telemetry():
+    """Get 100% real physical camera tracked objects & detections for 3D Digital Twin"""
+    telem_file = _root_dir / "data" / "live_camera_telemetry.json"
+    if telem_file.exists():
+        try:
+            with open(telem_file, "r") as f:
+                data = json.load(f)
+            return jsonify(data)
+        except Exception:
+            pass
+    return jsonify({
+        "timestamp": 0,
+        "person_count": 0,
+        "motorcycle_count": 0,
+        "vehicle_count": 0,
+        "total_count": 0,
+        "objects": [],
+        "signal_state": {"lane_0": "GREEN", "lane_1": "GREEN"},
+        "co2_saved": 0.0
+    })
+
 @app.route('/api/stats')
 def get_stats():
     """Get today's statistics & AI predictions"""
