@@ -89,7 +89,8 @@
     <div class="hud-controls">
         <button class="btn-view active" onclick="switchMapStyle('dark', this)">🌃 3D City Night GIS</button>
         <button class="btn-view" onclick="switchMapStyle('satellite', this)">🛰️ Real Satellite Imagery</button>
-        <button class="btn-view" onclick="resetCameraView(this)">🚁 Center Junction</button>
+        <button class="btn-view" onclick="resetCameraView(this)">🚁 Center 3D Junction</button>
+        <a href="/digital-twin-pro" class="btn-view" style="background: #38bdf8; color: #000; font-weight: 800; text-decoration: none;">🎮 Digital Twin Pro Workbench ↗</a>
     </div>
 
     <!-- Sidebar Stats -->
@@ -111,11 +112,11 @@
         </div>
         <div class="stat-row">
             <span class="stat-label">GIS Map Center Coordinates:</span>
-            <span class="stat-val" style="color: #cbd5e1;">28.6139° N, 77.2090° E</span>
+            <span class="stat-val" style="font-family: monospace;">28.6139° N, 77.2090° E</span>
         </div>
         <div class="stat-row">
             <span class="stat-label">CO2 Carbon Offset:</span>
-            <span class="stat-val" id="stat-co2">0.0 kg</span>
+            <span class="stat-val" id="stat-co2" style="color: #f59e0b;">0 kg</span>
         </div>
     </div>
 
@@ -165,9 +166,9 @@
                     ]
                 },
                 center: centerLngLat,
-                zoom: 16.8,
-                pitch: 60, // 3D Perspective Tilt
-                bearing: -20
+                zoom: 18.2,
+                pitch: 72, // 3D Perspective Tilt
+                bearing: -30
             });
 
             map.addControl(new maplibregl.NavigationControl(), 'top-left');
@@ -253,9 +254,9 @@
             
             map.flyTo({
                 center: centerLngLat,
-                zoom: 16.8,
-                pitch: 60,
-                bearing: -20,
+                zoom: 18.2,
+                pitch: 72,
+                bearing: -30,
                 essential: true,
                 duration: 1800
             });
