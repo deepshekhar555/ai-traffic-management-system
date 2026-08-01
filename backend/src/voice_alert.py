@@ -74,6 +74,9 @@ class VoiceAlertSystem:
     def alert_high_traffic(self, lane_name="main lane"):
         self.speak(f"High traffic density detected on {lane_name}")
 
+    def alert_emergency_vehicle(self, lane_name="main lane"):
+        self.speak(f"Emergency vehicle priority corridor active on {lane_name}")
+
     def alert_speeding_vehicle(self, info):
         speed = info.get('speed', 0)
         self.speak(f"Speeding vehicle detected at {speed:.0f} kilometers per hour")
