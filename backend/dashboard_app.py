@@ -23,6 +23,11 @@ def dashboard():
     """Main dashboard page"""
     return render_template('dashboard.html')
 
+@app.route('/twin3d')
+def digital_twin_3d():
+    """Interactive 3D WebGL Three.js Digital Twin Viewport"""
+    return render_template('twin3d.html')
+
 @app.route('/api/stats')
 def get_stats():
     """Get today's statistics & AI predictions"""
