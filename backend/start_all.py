@@ -18,12 +18,23 @@ else:
 
 FRONTEND_DIR = ROOT_DIR / "frontend"
 
+def kill_stale_ports(ports=(5000, 3000)):
+    """Automatically kill any leftover ghost processes listening on ports 5000 or 3000"""
+    for port in ports:
+        try:
+            if sys.platform == "win32":
+                cmd = f'powershell -Command "Get-NetTCPConnection -LocalPort {port} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object {{ Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }}"'
+                subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except Exception:
+            pass
+
 def launch_system():
     print("=" * 75)
     print("TRAFFIX-AI: ALL-IN-ONE SMART CITY SYSTEM LAUNCHER")
     print("   SIH 2026 Submission - Team CipherSquad")
     print("=" * 75)
 
+    kill_stale_ports((5000, 3000))
     processes = []
     
     try:
