@@ -96,44 +96,63 @@ def _try_ip_stream(url, probe_ip=None, probe_port=None, min_brightness=8.0):
         return None, False
 
 
-def _try_webcam(index, min_brightness=1.0):
+def _scan_best_webcam(indices=None):
     """
-    Try to open a hardware webcam by index (with DirectShow on Windows).
-    Reads up to 10 warmup frames to let Windows auto-exposure settle.
-    Returns (cap, True) on success, (None, False) on failure.
+    Scans ALL available webcam indices (0-4 by default) and picks the one with
+    the HIGHEST brightness. This ensures virtual cam placeholders (Iriun, OBS,
+    DroidCam virtual device) showing dark/black placeholder screens are skipped
+    in favour of the real physical built-in laptop camera.
+    Returns (cap, index, brightness) for the best camera, or (None, -1, 0).
     """
-    try:
-        cap = cv2.VideoCapture(index, cv2.CAP_DSHOW)
-        if not cap.isOpened():
-            cap.release()
-            cap = cv2.VideoCapture(index)
-        if not cap.isOpened():
-            return None, False
+    if indices is None:
+        indices = list(range(5))  # scan 0, 1, 2, 3, 4
 
-        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
-        cap.set(cv2.CAP_PROP_FPS, FPS)
+    best_cap = None
+    best_index = -1
+    best_brightness = -1.0
 
-        # Warmup: read up to 10 frames to let Windows camera auto-expose
-        ret, frame = False, None
-        for i in range(10):
-            ret, frame = cap.read()
-            if ret and frame is not None and frame.size > 0 and float(frame.mean()) >= min_brightness:
-                logger.info(f"[OK] Webcam index {index} connected at warmup frame {i+1} (brightness={frame.mean():.1f})")
-                return cap, True
-            time.sleep(0.05)
+    for index in indices:
+        try:
+            cap = cv2.VideoCapture(index, cv2.CAP_DSHOW)
+            if not cap.isOpened():
+                cap.release()
+                cap = cv2.VideoCapture(index)
+            if not cap.isOpened():
+                continue
 
-        # Even if brightness check failed, accept if we got ANY frame
-        if ret and frame is not None and frame.size > 0:
-            logger.info(f"[OK] Webcam index {index} accepted (low brightness={frame.mean():.1f} - may be dark room)")
-            return cap, True
+            cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
+            cap.set(cv2.CAP_PROP_FPS, FPS)
 
-        cap.release()
-        return None, False
-    except Exception as e:
-        logger.debug(f"Webcam index {index} error: {e}")
-        return None, False
+            # Warmup: read up to 10 frames so Windows auto-exposure settles
+            ret, frame = False, None
+            for _ in range(10):
+                ret, frame = cap.read()
+                if ret and frame is not None and frame.size > 0:
+                    break
+                time.sleep(0.05)
+
+            if ret and frame is not None and frame.size > 0:
+                brightness = float(frame.mean())
+                logger.info(f"  Webcam index {index}: brightness={brightness:.1f}")
+                if brightness > best_brightness:
+                    # Release previous best if we found a brighter one
+                    if best_cap is not None:
+                        best_cap.release()
+                    best_cap = cap
+                    best_index = index
+                    best_brightness = brightness
+                else:
+                    cap.release()  # Not better, discard
+            else:
+                cap.release()
+        except Exception as e:
+            logger.debug(f"Webcam index {index} error: {e}")
+
+    if best_cap is not None:
+        logger.info(f"[OK] Best physical webcam: index {best_index} (brightness={best_brightness:.1f})")
+    return best_cap, best_index, best_brightness
 
 
 class CameraHandler:
@@ -178,17 +197,11 @@ class CameraHandler:
                     self.is_opened = True
                     return
 
-            # ── Hardware Webcam ─────────────────────────────────────────────
+            # ── Hardware Webcam (scan all indices, pick brightest real camera) ─
             elif src_type == "webcam":
-                index = src.get("index", 0)
-                logger.info(f"Trying [{src_name}]: webcam index {index}")
-                cap, ok = _try_webcam(index)
-                if ok:
-                    self.cap = cap
-                    self.source = index
-                    self.source_name = src_name
-                    self.is_opened = True
-                    return
+                # Collect all enabled webcam indices from the full config
+                # to scan them together for best physical camera
+                pass  # handled after loop with _scan_best_webcam
 
             # ── Video File ──────────────────────────────────────────────────
             elif src_type == "video_file":
@@ -213,7 +226,22 @@ class CameraHandler:
                 except Exception as e:
                     logger.debug(f"Video file error: {e}")
 
-        # ── All sources exhausted → Synthetic Mode ──────────────────────────
+        # ── Webcam scan: try all enabled webcam indices, pick HIGHEST brightness ──
+        webcam_indices = [s.get("index", 0) for s in sources if s.get("type") == "webcam"]
+        if not webcam_indices:
+            webcam_indices = list(range(5))  # fallback: scan 0-4
+
+        logger.info(f"Scanning webcam indices {webcam_indices} for best physical camera...")
+        cap, best_idx, best_brightness = _scan_best_webcam(webcam_indices)
+        if cap is not None:
+            self.cap = cap
+            self.source = best_idx
+            self.source_name = f"Laptop Built-in Webcam (index {best_idx})"
+            self.is_opened = True
+            logger.info(f"[OK] Physical webcam locked: index {best_idx} brightness={best_brightness:.1f}")
+            return
+
+        # ── All sources exhausted → Synthetic Mode ──────────────────────────────
         logger.warning("No live camera source available. Running in synthetic simulation mode.")
         self.synthetic_mode = True
         self.source_name = "Synthetic Simulation (No Camera)"
