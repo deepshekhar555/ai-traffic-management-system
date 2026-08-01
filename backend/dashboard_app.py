@@ -252,6 +252,7 @@ def upload_csv_endpoint():
     res = get_ml_benchmarker().train_from_csv_bytes(content)
     return jsonify(res)
 
+@app.route('/report')
 @app.route('/api/download-research-report')
 def download_research_report():
     """

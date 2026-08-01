@@ -247,13 +247,30 @@
 
     <div class="section-title">🌐 Quick Access API Endpoints</div>
     <div class="api-links">
-        <a href="/api/stats" target="_blank" class="api-btn">📊 Live Stats API (/api/stats)</a>
-        <a href="/api/violations" target="_blank" class="api-btn">🚨 Violations API (/api/violations)</a>
-        <a href="/api/ml-model-comparison" target="_blank" class="api-btn" style="border-color: var(--accent-green); color: var(--accent-green);">🧠 ML Benchmark (/api/ml-model-comparison)</a>
-        <a href="/api/predict-traffic?hour=17&weather=Rain" target="_blank" class="api-btn" style="border-color: var(--accent-amber); color: var(--accent-amber);">🔮 Live Predict API (/api/predict-traffic)</a>
-        <a href="/api/hardware-status" target="_blank" class="api-btn">📟 Hardware Status (/api/hardware-status)</a>
-        <a href="/api/eco-impact" target="_blank" class="api-btn">🌱 Eco Offset API (/api/eco-impact)</a>
-        <a href="/report" target="_blank" class="api-btn" style="background: var(--accent-cyan); color: #000;">📄 Executive PDF Report (/report)</a>
+        <button onclick="openApiModal('/api/stats', '📊 Live System Statistics')" class="api-btn">📊 Live Stats API (/api/stats)</button>
+        <button onclick="openApiModal('/api/violations', '🚨 Traffic Violations Telemetry')" class="api-btn">🚨 Violations API (/api/violations)</button>
+        <button onclick="openApiModal('/api/ml-model-comparison', '🧠 ML Benchmarking Results')" class="api-btn" style="border-color: var(--accent-green); color: var(--accent-green);">🧠 ML Benchmark (/api/ml-model-comparison)</button>
+        <button onclick="openApiModal('/api/predict-traffic?hour=17&weather=Clear', '🔮 XGBoost Traffic Volume Predictor')" class="api-btn" style="border-color: var(--accent-amber); color: var(--accent-amber);">🔮 Live Predict API (/api/predict-traffic)</button>
+        <button onclick="openApiModal('/api/hardware-status', '📟 Physical Hardware & Sensor Status')" class="api-btn">📟 Hardware Status (/api/hardware-status)</button>
+        <button onclick="openApiModal('/api/eco-impact', '🌱 Environmental Carbon Offset Telemetry')" class="api-btn">🌱 Eco Offset API (/api/eco-impact)</button>
+        <a href="/report" download class="api-btn" style="background: var(--accent-cyan); color: #000; text-decoration: none;">📄 Download Executive PDF Report (/report)</a>
+    </div>
+
+    <!-- Glassmorphic Interactive API Inspector Modal Popup -->
+    <div id="api-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(3,7,18,0.85); backdrop-filter:blur(10px); z-index:999; justify-content:center; align-items:center;">
+        <div style="background:#0f172a; border:1px solid #38bdf8; border-radius:14px; width:90%; max-width:650px; max-height:85vh; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,0.6); display:flex; flex-direction:column; color:#f8fafc;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1e293b; padding-bottom:12px; margin-bottom:16px;">
+                <h3 id="modal-title" style="font-size:16px; font-weight:800; color:#38bdf8;">API Telemetry Inspector</h3>
+                <button onclick="closeApiModal()" style="background:#1e293b; color:#94a3b8; border:1px solid #334155; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer;">✕ Close</button>
+            </div>
+            <div id="modal-body" style="overflow-y:auto; flex:1; font-size:13px; font-family:monospace; line-height:1.6;">
+                Loading live telemetry stream...
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #1e293b; pt-12px; margin-top:16px; font-size:11px; color:#94a3b8;">
+                <span id="modal-endpoint-label">Endpoint: /api/stats</span>
+                <a id="modal-raw-link" href="#" target="_blank" style="color:#00e8a2; text-decoration:none; font-weight:700;">🔗 Open Raw JSON Stream ↗</a>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -323,6 +340,48 @@
                 }
             })
             .catch(e => alert('Error uploading dataset: ' + e));
+        }
+
+        function openApiModal(endpoint, title) {
+            const overlay = document.getElementById('api-modal-overlay');
+            const titleEl = document.getElementById('modal-title');
+            const bodyEl = document.getElementById('modal-body');
+            const labelEl = document.getElementById('modal-endpoint-label');
+            const linkEl = document.getElementById('modal-raw-link');
+
+            titleEl.innerText = title;
+            labelEl.innerText = 'Endpoint: ' + endpoint;
+            linkEl.href = endpoint;
+            bodyEl.innerHTML = '<div style="color:#38bdf8;">Fetching live API telemetry...</div>';
+            overlay.style.display = 'flex';
+
+            fetch(endpoint)
+                .then(r => r.json())
+                .then(data => {
+                    let html = '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">';
+                    for (const [k, v] of Object.entries(data)) {
+                        if (typeof v !== 'object') {
+                            html += `<div style="background:#1e293b; padding:10px; border-radius:8px; border:1px solid #334155;">
+                                        <div style="color:#94a3b8; font-size:11px; text-transform:uppercase;">${k.replace(/_/g, ' ')}</div>
+                                        <div style="color:#00e8a2; font-weight:700; font-size:13px; margin-top:2px;">${v}</div>
+                                     </div>`;
+                        }
+                    }
+                    html += '</div>';
+
+                    // Formatted Code Block
+                    html += `<div style="color:#94a3b8; font-size:11px; margin-bottom:4px; text-transform:uppercase;">Complete Telemetry Stream (Formatted)</div>`;
+                    html += `<pre style="background:#090d16; padding:12px; border-radius:8px; border:1px solid #1e293b; color:#38bdf8; overflow-x:auto;">${JSON.stringify(data, null, 2)}</pre>`;
+
+                    bodyEl.innerHTML = html;
+                })
+                .catch(err => {
+                    bodyEl.innerHTML = `<div style="color:#ef4444;">Failed to fetch API stream: ${err}</div>`;
+                });
+        }
+
+        function closeApiModal() {
+            document.getElementById('api-modal-overlay').style.display = 'none';
         }
 
         setInterval(updateTelemetry, 2000);
