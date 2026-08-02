@@ -390,6 +390,12 @@ def analysis_page():
     """Analysis Dashboard: Cumulative counts, density, and system efficiency comparison"""
     return render_template('analysis.html')
 
+@app.route('/diagnosis')
+@app.route('/traffic-diagnosis')
+def diagnosis_page():
+    """Citywide Traffic Diagnosis & Emergency Response Guidance Platform"""
+    return render_template('traffic_diagnosis.html')
+
 def _generate_lane_video_stream(lane_id):
     """Generates MJPEG video stream for a specific lane with OpenCV vehicle detection overlay"""
     video_path = _lane_videos.get(lane_id)

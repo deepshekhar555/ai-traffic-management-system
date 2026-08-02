@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TraffixAI — Citywide Traffic Diagnosis & Emergency Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #070913; color: #f8fafc; }
+
+        /* Top Header */
+        header {
+            position: absolute; top: 0; left: 0; width: 100%; height: 50px;
+            background: rgba(11, 15, 29, 0.9); backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.25);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; z-index: 10;
+        }
+        .header-title { font-size: 16px; font-weight: 900; color: #00e5ff; letter-spacing: 1px; }
+        .header-nav { display: flex; gap: 12px; }
+        .btn-nav {
+            background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15);
+            padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none; transition: all 0.2s;
+        }
+        .btn-nav:hover, .btn-nav.active { background: #00e5ff; color: #000; font-weight: 900; border-color: #00e5ff; }
+
+        /* Main Workspace */
+        #map-container { width: 100vw; height: calc(100vh - 120px); position: absolute; top: 50px; left: 0; z-index: 1; background: #05070e; }
+        canvas { width: 100%; height: 100%; }
+
+        /* Left Panel: Diagnosis AI Score & Incidents Overview */
+        .left-panel {
+            position: absolute; top: 65px; left: 20px; width: 320px; z-index: 5;
+            background: rgba(11, 15, 29, 0.9); backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .panel-title { font-size: 13px; font-weight: 900; color: #00e5ff; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+
+        .score-box {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 10px; padding: 12px 16px; margin-bottom: 16px;
+        }
+        .score-val { font-size: 36px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; }
+        .score-sub { font-size: 11px; color: #94a3b8; text-align: right; }
+
+        /* Right Panel: Unprocessed Incidents & Emergency Routing */
+        .right-panel {
+            position: absolute; top: 65px; right: 20px; width: 340px; z-index: 5;
+            background: rgba(11, 15, 29, 0.9); backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .incident-item {
+            background: rgba(255,255,255,0.03); border-left: 3px solid #ff3b30;
+            border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; font-size: 12px;
+        }
+        .incident-item.warning { border-left-color: #ffc400; }
+        .incident-name { font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
+        .incident-meta { color: #94a3b8; font-size: 11px; display: flex; justify-content: space-between; }
+
+        .btn-emergency {
+            width: 100%; padding: 12px; background: linear-gradient(90deg, #ff3b30, #ff9500);
+            border: none; border-radius: 8px; color: white; font-weight: 900; font-size: 13px;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4); transition: transform 0.2s;
+        }
+        .btn-emergency:hover { transform: translateY(-2px); }
+
+        /* Bottom Action & Timeline Bar */
+        .bottom-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 70px;
+            background: rgba(11, 15, 29, 0.95); backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(0, 229, 255, 0.25); z-index: 10;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+        }
+        .metric-group { display: flex; gap: 30px; }
+        .metric-item { text-align: center; }
+        .metric-val { font-size: 18px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; }
+        .metric-lbl { font-size: 10px; color: #94a3b8; text-transform: uppercase; }
+
+        /* Camera Guidance Overlay (Appears on Emergency Response) */
+        .guidance-overlay {
+            position: absolute; top: 120px; left: 50%; transform: translateX(-50%); z-index: 12;
+            width: 680px; background: rgba(10, 15, 29, 0.95); border: 2px solid #ff3b30;
+            border-radius: 12px; overflow: hidden; display: none; box-shadow: 0 15px 40px rgba(255, 59, 48, 0.5);
+        }
+        .guidance-header { background: #ff3b30; color: white; padding: 10px 16px; font-weight: 900; font-size: 13px; display: flex; justify-content: space-between; }
+        .guidance-body { position: relative; height: 260px; background: #000; }
+        .guidance-body img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+        .alert-box-overlay {
+            position: absolute; top: 60px; left: 160px; width: 220px; height: 110px;
+            border: 2px solid #ff3b30; background: rgba(255, 59, 48, 0.2);
+            border-radius: 6px; padding: 8px; color: white; font-size: 12px; font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse { 0% { border-color: #ff3b30; } 50% { border-color: #ffcc00; } 100% { border-color: #ff3b30; } }
+    </style>
+</head>
+<body>
+
+    <!-- Header Nav -->
+    <header>
+        <div class="header-title">🗺️ CITYWIDE TRAFFIC DIAGNOSIS & EMERGENCY PLATFORM</div>
+        <div class="header-nav">
+            <a href="/" class="btn-nav">Command Center</a>
+            <a href="/multi_dashboard" class="btn-nav">4-Lane Grid</a>
+            <a href="/twin3d" class="btn-nav">3D Digital Twin</a>
+            <a href="/diagnosis" class="btn-nav active">Diagnosis Platform</a>
+        </div>
+    </header>
+
+    <!-- Canvas City Map -->
+    <div id="map-container">
+        <canvas id="cityMap"></canvas>
+    </div>
+
+    <!-- Left Panel: AI Diagnosis Score & Incidents -->
+    <div class="left-panel">
+        <div class="panel-title">AI Diagnosis Health</div>
+        <div class="score-box">
+            <div class="score-val">63</div>
+            <div class="score-sub">
+                <div style="font-weight: 700; color: #00ff88;">+1 Today</div>
+                <div>AI Reasoning Active</div>
+            </div>
+        </div>
+
+        <div class="panel-title">Incidents Overview</div>
+        <div style="height: 140px;">
+            <canvas id="incidentChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Right Panel: Unprocessed Incidents & Emergency Response Button -->
+    <div class="right-panel">
+        <div class="panel-title">Unprocessed Incidents</div>
+
+        <div class="incident-item">
+            <div class="incident-name">Main St - North River Rd</div>
+            <div class="incident-meta">
+                <span>Expected Congestion in 12 min</span>
+                <span style="color: #ff3b30;">1.6 km</span>
+            </div>
+        </div>
+
+        <div class="incident-item warning">
+            <div class="incident-name">South Bird - Rainbow Rd</div>
+            <div class="incident-meta">
+                <span>Regular congestion in 1 min</span>
+                <span style="color: #ffc400;">2.4 km</span>
+            </div>
+        </div>
+
+        <div class="incident-item">
+            <div class="incident-name">Green Overpass Highway</div>
+            <div class="incident-meta">
+                <span>Accident logged 5 min ago</span>
+                <span style="color: #ff3b30;">0.3 km</span>
+            </div>
+        </div>
+
+        <button class="btn-emergency" onclick="triggerEmergencyResponse()">
+            🚨 Trigger Emergency Response
+        </button>
+    </div>
+
+    <!-- Live Camera Guidance Overlay -->
+    <div class="guidance-overlay" id="guidanceOverlay">
+        <div class="guidance-header">
+            <span>🚑 EMERGENCY AMBULANCE GUIDANCE STREAM (CAM-03)</span>
+            <span style="cursor: pointer;" onclick="closeGuidance()">✕ CLOSE</span>
+        </div>
+        <div class="guidance-body">
+            <img src="/video_feed/1" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800'">
+            <div class="alert-box-overlay">
+                🚨 EMERGENCY!<br>
+                Pull over on the right.<br>
+                Ambulance arriving in 12s.
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Metrics Bar -->
+    <div class="bottom-bar">
+        <div class="metric-group">
+            <div class="metric-item">
+                <div class="metric-val">2,054</div>
+                <div class="metric-lbl">Vehicles on Roads</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-val">340</div>
+                <div class="metric-lbl">Expressway Flow</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-val">34.0 km/h</div>
+                <div class="metric-lbl">Arterial Avg Speed</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-val">68%</div>
+                <div class="metric-lbl">Key Area Saturation</div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span style="font-size: 11px; color: #00ff88; font-weight: bold;">AUTHORIZE AI: ON</span>
+            <button class="btn-nav active" onclick="alert('AI Auto Execution Active!')">Auto Executing</button>
+        </div>
+    </div>
+
+    <script>
+        // Draw City Map Canvas with Road Networks & Congestion Nodes
+        const canvas = document.getElementById('cityMap');
+        const ctx = canvas.getContext('2d');
+        let emergencyActive = false;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 120;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawMap() {
+            ctx.fillStyle = '#05070e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw glowing city road network lines
+            ctx.strokeStyle = '#1a2238';
+            ctx.lineWidth = 4;
+
+            // Grid roads
+            for (let x = 100; x < canvas.width; x += 160) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for (let y = 80; y < canvas.height; y += 120) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
+
+            // Draw Main Arterial Highway (Glowing Cyan)
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(100, canvas.height / 2);
+            ctx.lineTo(canvas.width - 100, canvas.height / 2);
+            ctx.stroke();
+
+            // Draw Congestion Nodes (Pulsing Red Rings)
+            const nodes = [
+                { x: canvas.width * 0.35, y: canvas.height * 0.4, label: 'Main St - North River Rd' },
+                { x: canvas.width * 0.65, y: canvas.height * 0.6, label: 'South Bird - Rainbow Rd' }
+            ];
+
+            nodes.forEach(node => {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 16 + Math.sin(Date.now() * 0.005) * 4, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 59, 48, 0.25)';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff3b30';
+                ctx.fill();
+
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 12px Inter';
+                ctx.fillText(node.label, node.x + 12, node.y - 10);
+            });
+
+            // Draw Emergency Route if active (Glowing Cyan Route)
+            if (emergencyActive) {
+                ctx.strokeStyle = '#00ff88';
+                ctx.lineWidth = 8;
+                ctx.beginPath();
+                ctx.moveTo(nodes[0].x, nodes[0].y);
+                ctx.lineTo(nodes[1].x, nodes[1].y);
+                ctx.stroke();
+
+                ctx.fillStyle = '#00ff88';
+                ctx.font = 'bold 14px Inter';
+                ctx.fillText('🚑 EMERGENCY GREEN CORRIDOR PATH', (nodes[0].x + nodes[1].x)/2 - 100, (nodes[0].y + nodes[1].y)/2 - 15);
+            }
+
+            requestAnimationFrame(drawMap);
+        }
+
+        // Init ChartJS Incidents Bar Chart
+        const chartCtx = document.getElementById('incidentChart').getContext('2d');
+        new Chart(chartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Accident', 'Speeding', 'Congest.', 'Fault'],
+                datasets: [{
+                    data: [5, 12, 8, 3],
+                    backgroundColor: ['#ff3b30', '#ffc400', '#00e5ff', '#a855f7'],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                }
+            }
+        });
+
+        function triggerEmergencyResponse() {
+            emergencyActive = true;
+            document.getElementById('guidanceOverlay').style.display = 'block';
+        }
+
+        function closeGuidance() {
+            document.getElementById('guidanceOverlay').style.display = 'none';
+        }
+
+        window.onload = drawMap;
+    </script>
+</body>
+</html>
