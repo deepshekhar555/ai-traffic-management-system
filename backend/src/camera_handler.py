@@ -169,6 +169,7 @@ class CameraHandler:
         self.is_opened = False
         self.synthetic_mode = False
         self.source_name = "Synthetic Simulation"  # Human-readable label for UI
+        self.night_mode_active = False              # Auto night-mode via CLAHE
         self.open_camera()
 
     def open_camera(self):
@@ -277,6 +278,22 @@ class CameraHandler:
                 self.total_frames += 1
                 if frame.shape[1] != FRAME_WIDTH or frame.shape[0] != FRAME_HEIGHT:
                     frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
+                # ── Night Mode: auto CLAHE enhancement for low-light frames ──
+                brightness = float(frame.mean())
+                if brightness < 80:
+                    try:
+                        lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+                        l_ch, a_ch, b_ch = cv2.split(lab)
+                        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+                        l_ch = clahe.apply(l_ch)
+                        lab = cv2.merge([l_ch, a_ch, b_ch])
+                        frame = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+                        frame = cv2.convertScaleAbs(frame, alpha=1.15, beta=12)
+                        self.night_mode_active = True
+                    except Exception:
+                        self.night_mode_active = False
+                else:
+                    self.night_mode_active = False
                 return frame
             return self._generate_synthetic_frame()
         except Exception as e:

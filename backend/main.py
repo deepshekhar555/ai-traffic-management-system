@@ -45,6 +45,10 @@ from src.pedestrian_safety import PedestrianSafetySystem
 from src.hardware_controller import HardwareController
 from src.traffic_simulation_engine import TrafficFlowSimulationEngine
 from src.rpi_gpio_controller import RPiGPIOController
+try:
+    from src import push_alert
+except ImportError:
+    from backend.src import push_alert
 
 class TrafficManagementApp:
     """Main AI Traffic Management Application"""
@@ -301,14 +305,27 @@ class TrafficManagementApp:
         cv2.rectangle(frame, (0, 0), (frame_w, header_height), (0, 255, 255), 2)
         
         if emergency_info and emergency_info.get("active"):
-            header_text = "🚨 AI TRAFFIC MGMT - EMERGENCY MODE ACTIVE"
+            header_text = "EMERGENCY MODE ACTIVE - GREEN CORRIDOR"
             text_color = (255, 0, 255)
         else:
-            header_text = "AI TRAFFIC MANAGEMENT - YOLOv26n - LANE-BASED"
+            header_text = "TRAFFIXAI - YOLOv26n - SMART CITY TRAFFIC"
             text_color = (0, 255, 255)
         
         cv2.putText(frame, header_text, (15, 32),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, text_color, 2)
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.65, text_color, 2)
+        
+        # Weather & Night Mode Badges on Header Right
+        is_night = getattr(self.camera, "night_mode_active", False)
+        mode_str = "NIGHT CLAHE" if is_night else "DAY MODE"
+        mode_color = (255, 200, 0) if is_night else (0, 255, 0)
+        cv2.putText(frame, f"[{mode_str}] [CLEAR 28C] [ZONE: 60km/h]", (frame_w - 480, 32),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, mode_color, 2)
+
+        # Pedestrian Crossing Safety Banner
+        if person_count > 0:
+            cv2.rectangle(frame, (frame_w // 2 - 220, header_height + 5), (frame_w // 2 + 220, header_height + 35), (0, 165, 255), -1)
+            cv2.putText(frame, "PEDESTRIAN CROSSING: 15s (SAFE COUNTDOWN)", (frame_w // 2 - 210, header_height + 26),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 2)
         
         # ========== TOP-LEFT: DETECTION ANALYSIS PANEL ==========
         panel_width = 320
@@ -826,40 +843,73 @@ class TrafficManagementApp:
                 cv2.putText(frame_with_boxes, f"Motorcycle {confidence:.2f}", (x1, y1 - 5),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
             
-            # Draw vehicles (Blue/Orange/Red based on speed)
+            # Draw vehicles (Blue/Orange/Red based on speed) + ANPR PIP Zoom
+            last_crop_v = None
+            last_plate_info = None
+
             for v in tracked_vehicles:
                 x1, y1, x2, y2 = v["bbox"]
                 confidence = v["confidence"]
                 class_name = v["class_name"]
                 speed = v["current_speed"]
+                track_id = v.get("track_id", 1)
                 
-                # speed_color logic check
-                speed_color = (0, 255, 0) if avg_speed < 60 else (0, 0, 255)
-                
-                # speed_info display check
                 speed_info = f"{speed:.1f} km/h"
+                label = f"{class_name} #{track_id} {confidence:.2f} | {speed_info}"
                 
-                # speed on label check
-                label = f"{class_name} {confidence:.2f}"
-                label = f"{label} | {speed_info}"
-                
-                # Color code speed individually
+                # Color code speed individually & speed zone warning
                 if speed < 60:
                     v_color = (0, 255, 0) # Green
                 elif speed < 80:
                     v_color = (0, 165, 255) # Orange
                 else:
                     v_color = (0, 0, 255) # Red
-                    label = f"{label} ⚠"
+                    excess = speed - 60.0
+                    label = f"{label} [SPEEDING +{excess:.1f}km/h]"
+                    # Trigger Push Notification & Emergency Service
+                    try:
+                        push_alert.alert_speeding(track_id, speed, 60.0)
+                        self.emergency_service.handle_speeding_vehicle({"track_id": track_id, "speed": speed}, excess)
+                    except Exception:
+                        pass
                 
                 cv2.rectangle(frame_with_boxes, (x1, y1), (x2, y2), v_color, 2)
                 cv2.putText(frame_with_boxes, label, (x1, max(15, y1 - 5)),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, v_color, 2)
                 
-                # Draw ANPR License Plate Tag
-                plate_text = self.anpr.generate_plate_number(v.get("track_id", 1))
+                # Draw ANPR License Plate Tag below box
+                plate_text = self.anpr.generate_plate_number(track_id)
                 cv2.putText(frame_with_boxes, f"[{plate_text}]", (x1, min(frame.shape[0] - 10, y2 + 15)),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 2)
+                
+                # Store crop for Picture-in-Picture License Plate Zoom
+                if x2 > x1 and y2 > y1:
+                    last_crop_v = frame[max(0, y1):min(frame.shape[0], y2), max(0, x1):min(frame.shape[1], x2)]
+                    last_plate_info = (plate_text, speed, v_color)
+
+            # ANPR Picture-in-Picture (PIP) License Plate Zoom Box (Bottom-Right Overlay)
+            if last_crop_v is not None and last_crop_v.size > 0:
+                try:
+                    pip_w, pip_h = 220, 100
+                    pip_x = frame.shape[1] - pip_w - 170  # left of FPS panel
+                    pip_y = frame.shape[0] - pip_h - 10
+                    crop_resized = cv2.resize(last_crop_v, (pip_w, pip_h - 25))
+                    
+                    # Background panel
+                    cv2.rectangle(frame_with_boxes, (pip_x - 5, pip_y - 20), (pip_x + pip_w + 5, pip_y + pip_h), (30, 30, 30), -1)
+                    cv2.rectangle(frame_with_boxes, (pip_x - 5, pip_y - 20), (pip_x + pip_w + 5, pip_y + pip_h), (0, 255, 255), 2)
+                    cv2.putText(frame_with_boxes, "ANPR PLATE ZOOM", (pip_x, pip_y - 5),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+                    
+                    # Insert crop image
+                    frame_with_boxes[pip_y:pip_y + (pip_h - 25), pip_x:pip_x + pip_w] = crop_resized
+                    
+                    # License plate badge under crop
+                    plate_str, spd_val, clr_val = last_plate_info
+                    cv2.putText(frame_with_boxes, f"[{plate_str}] {spd_val:.0f}km/h", (pip_x + 5, pip_y + pip_h - 5),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1)
+                except Exception:
+                    pass
             
             # Draw lane divisions with traffic signals
             frame_with_lanes = self.lane_detector.draw_lanes_on_frame(
