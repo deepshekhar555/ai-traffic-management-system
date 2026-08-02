@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Lane Videos — TraffixAI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0d0f1a, #1a1c30);
+            color: white;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(25, 28, 48, 0.85);
+            border-radius: 12px;
+            padding: 35px 45px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 28px;
+            border-bottom: 2px solid #3d426b;
+            padding-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        p.subtitle {
+            color: #a0a5c0;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .file-group {
+            margin-bottom: 22px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #d1d5eb;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            background: #121424;
+            border: 1px solid #333857;
+            border-radius: 6px;
+            color: white;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #d946ef, #8b5cf6, #3b82f6);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(217, 70, 239, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Lane Videos</h1>
+        <p class="subtitle">Please upload one video file for each of the four lanes.</p>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <div class="file-group">
+                <label>Lane 1 Video:</label>
+                <input type="file" name="lane1" accept="video/*" required>
+            </div>
+            <div class="file-group">
+                <label>Lane 2 Video:</label>
+                <input type="file" name="lane2" accept="video/*" required>
+            </div>
+            <div class="file-group">
+                <label>Lane 3 Video:</label>
+                <input type="file" name="lane3" accept="video/*" required>
+            </div>
+            <div class="file-group">
+                <label>Lane 4 Video:</label>
+                <input type="file" name="lane4" accept="video/*" required>
+            </div>
+            <button type="submit" class="btn-submit">Upload and Start</button>
+        </form>
+    </div>
+</body>
+</html>

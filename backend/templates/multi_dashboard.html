@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Traffic Dashboard — TraffixAI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f1222, #181c38);
+            color: white;
+            margin: 0;
+            padding: 20px 40px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 25px;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .lane-card {
+            background: #14172b;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            position: relative;
+        }
+        .video-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .video-box {
+            flex: 1;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #2d3359;
+        }
+        .video-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* Traffic Light Box */
+        .traffic-light-box {
+            width: 50px;
+            background: #0a0b14;
+            border: 3px solid #2a2e4a;
+            border-radius: 25px;
+            padding: 10px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+        }
+        .light {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #222;
+            opacity: 0.25;
+            transition: all 0.3s ease;
+        }
+        .light.red.active {
+            background: #ff3b30;
+            box-shadow: 0 0 20px #ff3b30;
+            opacity: 1;
+        }
+        .light.yellow.active {
+            background: #ffcc00;
+            box-shadow: 0 0 20px #ffcc00;
+            opacity: 1;
+        }
+        .light.green.active {
+            background: #34c759;
+            box-shadow: 0 0 20px #34c759;
+            opacity: 1;
+        }
+        /* Info Overlay Bar */
+        .info-bar {
+            background: #000000;
+            border-radius: 6px;
+            margin-top: 12px;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            letter-spacing: 0.5px;
+            border: 1px solid #262a47;
+        }
+        .amb-alert {
+            color: #ff3b30;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        /* Bottom Control Buttons */
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 12px 28px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Traffic Dashboard</h1>
+
+    <div class="grid-container">
+        <!-- Lane 1 Card -->
+        <div class="lane-card">
+            <div class="video-wrapper">
+                <div class="traffic-light-box" id="tl-box-1">
+                    <div class="light red" id="light-r-1"></div>
+                    <div class="light yellow" id="light-y-1"></div>
+                    <div class="light green" id="light-g-1"></div>
+                </div>
+                <div class="video-box">
+                    <img src="/video_feed/1" alt="Lane 1 Stream" onerror="this.src='/static/no_signal.jpg'">
+                </div>
+            </div>
+            <div class="info-bar">
+                <span>Density: <span id="dens-1">0</span></span>
+                <span>Ambulance: <span id="amb-1">No</span></span>
+                <span>Time: <span id="time-1">--</span></span>
+            </div>
+        </div>
+
+        <!-- Lane 4 Card -->
+        <div class="lane-card">
+            <div class="video-wrapper">
+                <div class="traffic-light-box" id="tl-box-4">
+                    <div class="light red" id="light-r-4"></div>
+                    <div class="light yellow" id="light-y-4"></div>
+                    <div class="light green" id="light-g-4"></div>
+                </div>
+                <div class="video-box">
+                    <img src="/video_feed/4" alt="Lane 4 Stream" onerror="this.src='/static/no_signal.jpg'">
+                </div>
+            </div>
+            <div class="info-bar">
+                <span>Density: <span id="dens-4">0</span></span>
+                <span>Ambulance: <span id="amb-4">No</span></span>
+                <span>Time: <span id="time-4">--</span></span>
+            </div>
+        </div>
+
+        <!-- Lane 2 Card -->
+        <div class="lane-card">
+            <div class="video-wrapper">
+                <div class="traffic-light-box" id="tl-box-2">
+                    <div class="light red" id="light-r-2"></div>
+                    <div class="light yellow" id="light-y-2"></div>
+                    <div class="light green" id="light-g-2"></div>
+                </div>
+                <div class="video-box">
+                    <img src="/video_feed/2" alt="Lane 2 Stream" onerror="this.src='/static/no_signal.jpg'">
+                </div>
+            </div>
+            <div class="info-bar">
+                <span>Density: <span id="dens-2">0</span></span>
+                <span>Ambulance: <span id="amb-2">No</span></span>
+                <span>Time: <span id="time-2">--</span></span>
+            </div>
+        </div>
+
+        <!-- Lane 3 Card -->
+        <div class="lane-card">
+            <div class="video-wrapper">
+                <div class="traffic-light-box" id="tl-box-3">
+                    <div class="light red" id="light-r-3"></div>
+                    <div class="light yellow" id="light-y-3"></div>
+                    <div class="light green" id="light-g-3"></div>
+                </div>
+                <div class="video-box">
+                    <img src="/video_feed/3" alt="Lane 3 Stream" onerror="this.src='/static/no_signal.jpg'">
+                </div>
+            </div>
+            <div class="info-bar">
+                <span>Density: <span id="dens-3">0</span></span>
+                <span>Ambulance: <span id="amb-3">No</span></span>
+                <span>Time: <span id="time-3">--</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Buttons -->
+    <div class="control-buttons">
+        <a href="/analysis" class="btn">View Analysis</a>
+        <a href="/upload" class="btn">Upload New Videos</a>
+        <a href="/" class="btn">Back to Home</a>
+    </div>
+
+    <script>
+        function pollTelemetry() {
+            fetch('/api/multi_lane_status')
+                .then(r => r.json())
+                .then(data => {
+                    [1, 2, 3, 4].forEach(laneId => {
+                        const info = data.lanes ? data.lanes[laneId] : null;
+                        if (!info) return;
+                        
+                        // Update Density & Time
+                        document.getElementById('dens-' + laneId).innerText = info.density;
+                        document.getElementById('time-' + laneId).innerText = info.time_remaining ? (info.time_remaining + 's') : '--';
+                        
+                        // Update Ambulance tag
+                        const ambEl = document.getElementById('amb-' + laneId);
+                        if (info.ambulance) {
+                            ambEl.innerHTML = '<span class="amb-alert">YES!</span>';
+                        } else {
+                            ambEl.innerText = 'No';
+                        }
+                        
+                        // Update Lights
+                        const rLight = document.getElementById('light-r-' + laneId);
+                        const yLight = document.getElementById('light-y-' + laneId);
+                        const gLight = document.getElementById('light-g-' + laneId);
+                        
+                        rLight.classList.remove('active');
+                        yLight.classList.remove('active');
+                        gLight.classList.remove('active');
+                        
+                        if (info.signal === 'RED') rLight.classList.add('active');
+                        else if (info.signal === 'YELLOW' || info.signal === 'ORANGE') yLight.classList.add('active');
+                        else if (info.signal === 'GREEN') gLight.classList.add('active');
+                    });
+                })
+                .catch(err => console.log(err));
+        }
+
+        setInterval(pollTelemetry, 1000);
+        pollTelemetry();
+    </script>
+</body>
+</html>
