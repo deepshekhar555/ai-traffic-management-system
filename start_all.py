@@ -30,8 +30,9 @@ def kill_stale_ports(ports=(5000, 3000)):
 
 def launch_system():
     print("=" * 75)
-    print("TRAFFIX-AI: ALL-IN-ONE SMART CITY SYSTEM LAUNCHER")
-    print("   SIH 2026 Submission - Team CipherSquad")
+    print("TRAFFIXAI: AI-Powered Smart City Traffic Digital Twin")
+    print("   with Emergency Response & Congestion Intelligence")
+    print("   Bharat Nirman Track (PS1) | SIH 2026 | Team CipherSquad")
     print("=" * 75)
 
     kill_stale_ports((5000, 3000))
@@ -79,12 +80,13 @@ def launch_system():
         processes.append(("AI Core Engine", p_ai))
 
         print("\n" + "=" * 75)
-        print("[OK] ALL COMPONENTS STARTED SUCCESSFULLY!")
-        print("   - React Command Center UI   : http://localhost:3000")
-        print("   - Flask REST Telemetry API  : http://localhost:5000")
-        print("   - Real-Time 3D City Twin UI : http://localhost:5000/twin3d")
-        print("   - Executive Report PDF     : http://localhost:5000/report")
-        print("   Press Ctrl+C at any time to stop all services.")
+        print("[OK] TRAFFIXAI — ALL COMPONENTS STARTED SUCCESSFULLY!")
+        print("   - React Command Center UI      : http://localhost:3000")
+        print("   - Flask REST Telemetry API     : http://localhost:5000")
+        print("   - Real-Time 3D City Twin UI    : http://localhost:5000/twin3d")
+        print("   - Digital Twin Pro Workbench   : http://localhost:5000/digital-twin-pro")
+        print("   - Executive Research Report    : http://localhost:5000/report")
+        print("   Press Ctrl+C at any time to stop all TraffixAI services.")
         print("=" * 75 + "\n")
 
 

@@ -40,7 +40,7 @@ class ReportGenerator:
         html_content = f"""<!DOCTYPE html>
 <html>
 <head>
-    <title>Smart City Traffic Analytics Report</title>
+    <title>TraffixAI — Smart City Traffic Digital Twin | Executive Report</title>
     <style>
         body {{ font-family: Arial, sans-serif; margin: 40px; color: #222; background: #fff; }}
         .header {{ text-align: center; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 30px; }}
@@ -59,8 +59,9 @@ class ReportGenerator:
 </head>
 <body>
     <div class="header">
-        <h1>CITY TRAFFIC DIGITAL TWIN - EXECUTIVE REPORT</h1>
-        <p>Generated on: {datetime.now().strftime('%B %d, %Y - %H:%M:%S')} | Location: Traffic Management Center</p>
+        <h1>TRAFFIXAI — SMART CITY TRAFFIC DIGITAL TWIN</h1>
+        <h2 style="color:#0056b3;font-size:16px;margin:5px 0;">AI-Powered Emergency Response & Congestion Intelligence Platform</h2>
+        <p>SIH 2026 | Team CipherSquad | Track: Bharat Nirman (PS1) | Generated: {datetime.now().strftime('%B %d, %Y - %H:%M:%S')}</p>
     </div>
 
     <h2>1. Executive Summary & Volume Telemetry</h2>
@@ -144,7 +145,9 @@ class ReportGenerator:
     </table>
 
     <div class="footer">
-        <p>AI Traffic Digital Twin & Smart City Urban Planning System • Decode SIH 2026 Innovation Submission</p>
+        <p><strong>TraffixAI</strong> — AI-Powered Smart City Traffic Digital Twin with Emergency Response & Congestion Intelligence</p>
+        <p><em>Team CipherSquad: Deep Shekhar Halder | Sayan Pramanik | Soumyojit Banerjee | Suman Mondal | Kausturi Chakraborty | Rituraj Saha</em></p>
+        <p>SIH 2026 | Bharat Nirman Track (PS1) | Adamas University</p>
     </div>
 </body>
 </html>

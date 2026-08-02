@@ -1,8 +1,8 @@
 """
-AI Traffic Management System
-Real-time traffic monitoring using YOLOv26n detection
-with voice alerts and HSR monitoring
+TraffixAI — AI-Powered Smart City Traffic Digital Twin
+with Emergency Response & Congestion Intelligence
 """
+
 
 import cv2
 import time
@@ -51,7 +51,7 @@ class TrafficManagementApp:
     
     def __init__(self, camera_source=0):
         logger.info("=" * 70)
-        logger.info("Initializing AI Traffic Management System")
+        logger.info("Initializing TraffixAI — Smart City Traffic Digital Twin with Emergency Response & Congestion Intelligence")
         logger.info(f"Model: {MODEL_NAME} | Resolution: {FRAME_WIDTH}x{FRAME_HEIGHT}")
         logger.info("=" * 70)
         
@@ -936,7 +936,7 @@ class TrafficManagementApp:
         self.running = True
 
         # Configure OpenCV windows to be freely resizable and fit user screen
-        win_camera = "AI Traffic Management System - YOLOv26n"
+        win_camera = "TraffixAI — YOLOv26n Smart Detection"
         win_twin   = "AI Traffic Digital Twin (2D Spatial Map)"
         win_sim    = "AI Traffic Micro-Simulation Engine (SUMO/51WORLD Physics)"
         
@@ -964,7 +964,7 @@ class TrafficManagementApp:
                 
                 # Display — window title shows active camera source
                 cam_label = getattr(self.camera, 'source_name', 'Camera')
-                cv2.imshow(f"AI Traffic Management System - YOLOv26n | {cam_label}", processed_frame)
+                cv2.imshow(f"TraffixAI — YOLOv26n | {cam_label}", processed_frame)
                 
                 # Handle keyboard
                 key = cv2.waitKey(1) & 0xFF
@@ -1075,7 +1075,7 @@ class TrafficManagementApp:
 def main():
     """Entry point"""
     import argparse
-    parser = argparse.ArgumentParser(description="AI Traffic Management System")
+    parser = argparse.ArgumentParser(description="TraffixAI — AI-Powered Smart City Traffic Digital Twin with Emergency Response & Congestion Intelligence")
     parser.add_argument("--camera", type=str, default="0", help="Camera source (0, 1, video file, or DroidCam URL)")
     args = parser.parse_args()
     
