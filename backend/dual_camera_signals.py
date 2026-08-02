@@ -83,8 +83,9 @@ def run_dual_camera_signals(source1=0, source2=None):
         counts2 = [0]
 
         # Process Camera 1
-        dets1 = detector.detect_vehicles(frame1)
-        for d in dets1:
+        res1 = detector.detect_all_objects(frame1)
+        raw1 = res1.get("detections", [])
+        for d in raw1:
             cls = d.get('class_name', 'car')
             if cls in vehicle_classes:
                 counts1[0] += 1
@@ -93,8 +94,9 @@ def run_dual_camera_signals(source1=0, source2=None):
                 cv2.putText(frame1, f"{cls}", (x1, max(15, y1 - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1)
 
         # Process Camera 2
-        dets2 = detector.detect_vehicles(frame2)
-        for d in dets2:
+        res2 = detector.detect_all_objects(frame2)
+        raw2 = res2.get("detections", [])
+        for d in raw2:
             cls = d.get('class_name', 'car')
             if cls in vehicle_classes:
                 counts2[0] += 1
