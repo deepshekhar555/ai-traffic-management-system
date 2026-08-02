@@ -2,98 +2,137 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TraffixAI — Citywide Traffic Diagnosis & Emergency Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraffixAI — Traffic Diagnosis Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #070913; color: #f8fafc; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #080c16; color: #f8fafc; }
 
         /* Top Header */
         header {
             position: absolute; top: 0; left: 0; width: 100%; height: 50px;
-            background: rgba(11, 15, 29, 0.9); backdrop-filter: blur(14px);
+            background: rgba(10, 15, 29, 0.92); backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(0, 229, 255, 0.25);
-            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; z-index: 10;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; z-index: 20;
         }
-        .header-title { font-size: 16px; font-weight: 900; color: #00e5ff; letter-spacing: 1px; }
-        .header-nav { display: flex; gap: 12px; }
+        .header-title { font-size: 16px; font-weight: 900; color: #ffffff; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
+        .header-title span { color: #00e5ff; font-weight: 700; font-size: 13px; }
+        .header-nav { display: flex; gap: 10px; }
         .btn-nav {
-            background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15);
             padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none; transition: all 0.2s;
         }
-        .btn-nav:hover, .btn-nav.active { background: #00e5ff; color: #000; font-weight: 900; border-color: #00e5ff; }
+        .btn-nav:hover, .btn-nav.active { background: #00e5ff; color: #000; font-weight: 900; border-color: #00e5ff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
 
-        /* Main Workspace */
-        #map-container { width: 100vw; height: calc(100vh - 120px); position: absolute; top: 50px; left: 0; z-index: 1; background: #05070e; }
+        /* Main Canvas Viewport */
+        #map-container { width: 100vw; height: calc(100vh - 120px); position: absolute; top: 50px; left: 0; z-index: 1; background: #05070f; }
         canvas { width: 100%; height: 100%; }
 
         /* Left Panel: Diagnosis AI Score & Incidents Overview */
         .left-panel {
-            position: absolute; top: 65px; left: 20px; width: 320px; z-index: 5;
-            background: rgba(11, 15, 29, 0.9); backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            position: absolute; top: 65px; left: 20px; width: 310px; z-index: 10;
+            background: rgba(10, 15, 29, 0.9); backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 12px; padding: 18px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6);
         }
-        .panel-title { font-size: 13px; font-weight: 900; color: #00e5ff; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .panel-title { font-size: 14px; font-weight: 900; color: #ffffff; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 
+        /* Score Donut / Gauge Box */
         .score-box {
             display: flex; align-items: center; justify-content: space-between;
-            background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.3);
-            border-radius: 10px; padding: 12px 16px; margin-bottom: 16px;
+            background: rgba(0, 229, 255, 0.06); border: 1px solid rgba(0, 229, 255, 0.25);
+            border-radius: 12px; padding: 14px 18px; margin-bottom: 16px;
         }
-        .score-val { font-size: 36px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; }
-        .score-sub { font-size: 11px; color: #94a3b8; text-align: right; }
+        .gauge-circle {
+            width: 70px; height: 70px; border-radius: 50%;
+            background: conic-gradient(#00e5ff 0% 70%, #1e293b 70% 100%);
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .gauge-inner {
+            width: 54px; height: 54px; border-radius: 50%; background: #0a0f1d;
+            display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: #00e5ff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .score-info { text-align: right; }
+        .score-info .val-pos { color: #00ff88; font-weight: 800; font-size: 13px; }
+        .score-info .val-neg { color: #ff3b30; font-weight: 800; font-size: 13px; margin-top: 2px; }
 
-        /* Right Panel: Unprocessed Incidents & Emergency Routing */
+        /* Malfunctions Counter Box */
+        .malfunction-box {
+            display: flex; gap: 10px; margin-top: 14px;
+        }
+        .mal-card {
+            flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; padding: 10px; text-align: center;
+        }
+        .mal-num { font-size: 20px; font-weight: 900; color: #ff3b30; font-family: 'JetBrains Mono', monospace; }
+        .mal-lbl { font-size: 10px; color: #94a3b8; margin-top: 2px; }
+
+        /* Right Panel: Unprocessed Incidents & Emergency Response Button */
         .right-panel {
-            position: absolute; top: 65px; right: 20px; width: 340px; z-index: 5;
-            background: rgba(11, 15, 29, 0.9); backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            position: absolute; top: 65px; right: 20px; width: 350px; z-index: 10;
+            background: rgba(10, 15, 29, 0.9); backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 12px; padding: 18px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6); max-height: calc(100vh - 210px); overflow-y: auto;
         }
 
         .incident-item {
-            background: rgba(255,255,255,0.03); border-left: 3px solid #ff3b30;
-            border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; font-size: 12px;
+            background: rgba(255,255,255,0.03); border-left: 4px solid #ff3b30;
+            border-radius: 8px; padding: 11px 14px; margin-bottom: 10px; font-size: 12px;
         }
         .incident-item.warning { border-left-color: #ffc400; }
-        .incident-name { font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
-        .incident-meta { color: #94a3b8; font-size: 11px; display: flex; justify-content: space-between; }
+        .incident-item.success { border-left-color: #00ff88; }
+        .incident-name { font-weight: 800; color: #f8fafc; margin-bottom: 4px; font-size: 13px; }
+        .incident-meta { color: #94a3b8; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
 
         .btn-emergency {
-            width: 100%; padding: 12px; background: linear-gradient(90deg, #ff3b30, #ff9500);
-            border: none; border-radius: 8px; color: white; font-weight: 900; font-size: 13px;
-            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4); transition: transform 0.2s;
+            width: 100%; padding: 14px; background: linear-gradient(90deg, #ff3b30, #ff9500);
+            border: none; border-radius: 8px; color: white; font-weight: 900; font-size: 14px;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 12px;
+            box-shadow: 0 5px 20px rgba(255, 59, 48, 0.4); transition: transform 0.2s;
         }
         .btn-emergency:hover { transform: translateY(-2px); }
 
-        /* Bottom Action & Timeline Bar */
-        .bottom-bar {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 70px;
-            background: rgba(11, 15, 29, 0.95); backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(0, 229, 255, 0.25); z-index: 10;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+        /* Interactive Pins / Map Tooltips */
+        .map-pin {
+            position: absolute; z-index: 8; background: rgba(10, 15, 29, 0.92); backdrop-filter: blur(10px);
+            border: 1px solid #ffc400; border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 700;
+            color: #ffffff; cursor: pointer; box-shadow: 0 0 15px rgba(255, 196, 0, 0.4);
+            transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;
         }
-        .metric-group { display: flex; gap: 30px; }
-        .metric-item { text-align: center; }
-        .metric-val { font-size: 18px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; }
-        .metric-lbl { font-size: 10px; color: #94a3b8; text-transform: uppercase; }
+        .map-pin:hover { transform: scale(1.08); border-color: #00e5ff; box-shadow: 0 0 25px rgba(0, 229, 255, 0.6); }
 
-        /* Camera Guidance Overlay (Appears on Emergency Response) */
-        .guidance-overlay {
-            position: absolute; top: 120px; left: 50%; transform: translateX(-50%); z-index: 12;
-            width: 680px; background: rgba(10, 15, 29, 0.95); border: 2px solid #ff3b30;
-            border-radius: 12px; overflow: hidden; display: none; box-shadow: 0 15px 40px rgba(255, 59, 48, 0.5);
+        /* Bottom Action & Recommendations Bar */
+        .bottom-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 75px;
+            background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(0, 229, 255, 0.25); z-index: 15;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 25px;
         }
-        .guidance-header { background: #ff3b30; color: white; padding: 10px 16px; font-weight: 900; font-size: 13px; display: flex; justify-content: space-between; }
-        .guidance-body { position: relative; height: 260px; background: #000; }
+
+        .suggestions-row { display: flex; gap: 15px; flex: 1; margin: 0 25px; }
+        .sug-card {
+            flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; padding: 8px 12px; font-size: 11px; color: #cbd5e1;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .sug-num { background: #00e5ff; color: #000; font-weight: 900; border-radius: 4px; padding: 2px 6px; font-size: 10px; }
+
+        /* Camera Guidance Overlay */
+        .guidance-overlay {
+            position: absolute; top: 110px; left: 50%; transform: translateX(-50%); z-index: 25;
+            width: 720px; background: rgba(10, 15, 29, 0.96); border: 2px solid #ff3b30;
+            border-radius: 12px; overflow: hidden; display: none; box-shadow: 0 20px 50px rgba(255, 59, 48, 0.6);
+        }
+        .guidance-header { background: #ff3b30; color: white; padding: 10px 18px; font-weight: 900; font-size: 13px; display: flex; justify-content: space-between; }
+        .guidance-body { position: relative; height: 300px; background: #000; }
         .guidance-body img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
         .alert-box-overlay {
-            position: absolute; top: 60px; left: 160px; width: 220px; height: 110px;
-            border: 2px solid #ff3b30; background: rgba(255, 59, 48, 0.2);
-            border-radius: 6px; padding: 8px; color: white; font-size: 12px; font-weight: bold;
+            position: absolute; top: 70px; left: 200px; width: 260px; height: 120px;
+            border: 2px solid #ff3b30; background: rgba(255, 59, 48, 0.25);
+            border-radius: 8px; padding: 12px; color: white; font-size: 13px; font-weight: bold;
             animation: pulse 1s infinite;
         }
         @keyframes pulse { 0% { border-color: #ff3b30; } 50% { border-color: #ffcc00; } 100% { border-color: #ff3b30; } }
@@ -103,7 +142,9 @@
 
     <!-- Header Nav -->
     <header>
-        <div class="header-title">🗺️ CITYWIDE TRAFFIC DIAGNOSIS & EMERGENCY PLATFORM</div>
+        <div class="header-title">
+            🗺️ TRAFFIXAI <span>CITYWIDE TRAFFIC DIAGNOSIS PLATFORM</span>
+        </div>
         <div class="header-nav">
             <a href="/" class="btn-nav">Command Center</a>
             <a href="/multi_dashboard" class="btn-nav">4-Lane Grid</a>
@@ -112,58 +153,100 @@
         </div>
     </header>
 
-    <!-- Canvas City Map -->
+    <!-- Canvas City Map Viewport -->
     <div id="map-container">
         <canvas id="cityMap"></canvas>
     </div>
 
-    <!-- Left Panel: AI Diagnosis Score & Incidents -->
+    <!-- Map Pins (Matching Video 5 Pins) -->
+    <div class="map-pin" style="top: 260px; left: 400px;" onclick="zoomToSpot('Main St')">
+        <span>📍</span>
+        <div>Main St - North River Rd <br><small style="color: #ffc400;">Expected Congestion in 12 min</small></div>
+    </div>
+
+    <div class="map-pin" style="top: 380px; left: 680px;" onclick="zoomToSpot('South Bird')">
+        <span>📍</span>
+        <div>South Bird - Rainbow Rd <br><small style="color: #ff3b30;">Regular congestion in 1 min</small></div>
+    </div>
+
+    <!-- Left Panel: AI Diagnosis Health Score & Incidents -->
     <div class="left-panel">
-        <div class="panel-title">AI Diagnosis Health</div>
+        <div class="panel-title">Diagnosis</div>
         <div class="score-box">
-            <div class="score-val">63</div>
-            <div class="score-sub">
-                <div style="font-weight: 700; color: #00ff88;">+1 Today</div>
-                <div>AI Reasoning Active</div>
+            <div class="gauge-circle">
+                <div class="gauge-inner">63</div>
+            </div>
+            <div class="score-info">
+                <div class="val-pos">+1 Today</div>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">AI Reasoning Active</div>
+                <div class="val-neg">Weekly Solved: -3</div>
             </div>
         </div>
 
-        <div class="panel-title">Incidents Overview</div>
-        <div style="height: 140px;">
+        <div class="panel-title">Incidents Overview (28)</div>
+        <div style="height: 120px;">
             <canvas id="incidentChart"></canvas>
+        </div>
+
+        <div class="malfunction-box">
+            <div class="mal-card">
+                <div class="mal-num">5</div>
+                <div class="mal-lbl">Traffic Signal</div>
+            </div>
+            <div class="mal-card">
+                <div class="mal-num">2</div>
+                <div class="mal-lbl">Traffic LED Display</div>
+            </div>
         </div>
     </div>
 
-    <!-- Right Panel: Unprocessed Incidents & Emergency Response Button -->
+    <!-- Right Panel: Unprocessed Incidents & Emergency Routing -->
     <div class="right-panel">
         <div class="panel-title">Unprocessed Incidents</div>
 
         <div class="incident-item">
-            <div class="incident-name">Main St - North River Rd</div>
+            <div class="incident-name">Bamboo St - Hill Rd</div>
             <div class="incident-meta">
-                <span>Expected Congestion in 12 min</span>
-                <span style="color: #ff3b30;">1.6 km</span>
+                <span>1Day | Avg. 16.2 km/h</span>
+                <span style="color: #ff3b30; font-weight: 800;">2.0 km</span>
             </div>
         </div>
 
         <div class="incident-item warning">
-            <div class="incident-name">South Bird - Rainbow Rd</div>
+            <div class="incident-name">Cindy St - Upward Rd</div>
             <div class="incident-meta">
-                <span>Regular congestion in 1 min</span>
-                <span style="color: #ffc400;">2.4 km</span>
+                <span>2Day | Avg. 31.7 km/h</span>
+                <span style="color: #ffc400; font-weight: 800;">0.3 km</span>
             </div>
         </div>
 
         <div class="incident-item">
-            <div class="incident-name">Green Overpass Highway</div>
+            <div class="incident-name">New District Blvd - Cloud Rd</div>
             <div class="incident-meta">
-                <span>Accident logged 5 min ago</span>
-                <span style="color: #ff3b30;">0.3 km</span>
+                <span>1Day | Avg. 25.8 km/h</span>
+                <span style="color: #ff3b30; font-weight: 800;">0.8 km</span>
+            </div>
+        </div>
+
+        <div class="incident-item">
+            <div class="incident-name">Oriental Blvd - Hung Le Rd</div>
+            <div class="incident-meta">
+                <span>1Day | Avg. 26.3 km/h</span>
+                <span style="color: #ff3b30; font-weight: 800;">0.5 km</span>
+            </div>
+        </div>
+
+        <div class="panel-title" style="margin-top: 14px;">In Implementation</div>
+        <div class="incident-item success">
+            <div class="incident-name">North Blvd - New District Blvd</div>
+            <div class="incident-meta">
+                <span>1Day | Avg. 12.4 km/h</span>
+                <span style="color: #00ff88; font-weight: 800;">1.5 km</span>
             </div>
         </div>
 
         <button class="btn-emergency" onclick="triggerEmergencyResponse()">
-            🚨 Trigger Emergency Response
+            🚨 Emergency Response
         </button>
     </div>
 
@@ -183,38 +266,35 @@
         </div>
     </div>
 
-    <!-- Bottom Metrics Bar -->
+    <!-- Bottom Actions & Recommendations Bar -->
     <div class="bottom-bar">
-        <div class="metric-group">
-            <div class="metric-item">
-                <div class="metric-val">2,054</div>
-                <div class="metric-lbl">Vehicles on Roads</div>
+        <div class="suggestions-row">
+            <div class="sug-card">
+                <span class="sug-num">1</span>
+                <span>Add 4 buses at morning & evening peak to elevate crowd.</span>
             </div>
-            <div class="metric-item">
-                <div class="metric-val">340</div>
-                <div class="metric-lbl">Expressway Flow</div>
+            <div class="sug-card">
+                <span class="sug-num">2</span>
+                <span>Add guiding screens with real-time route suggestions.</span>
             </div>
-            <div class="metric-item">
-                <div class="metric-val">34.0 km/h</div>
-                <div class="metric-lbl">Arterial Avg Speed</div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-val">68%</div>
-                <div class="metric-lbl">Key Area Saturation</div>
+            <div class="sug-card">
+                <span class="sug-num">3</span>
+                <span>Improve 3 main intersections. Add left-turn bays.</span>
             </div>
         </div>
 
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 12px; align-items: center;">
             <span style="font-size: 11px; color: #00ff88; font-weight: bold;">AUTHORIZE AI: ON</span>
             <button class="btn-nav active" onclick="alert('AI Auto Execution Active!')">Auto Executing</button>
         </div>
     </div>
 
     <script>
-        // Draw City Map Canvas with Road Networks & Congestion Nodes
+        // High-Graphics Canvas Map Renderer with Glowing Vectors
         const canvas = document.getElementById('cityMap');
         const ctx = canvas.getContext('2d');
         let emergencyActive = false;
+        let isZoomed3D = false;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -224,63 +304,64 @@
         resizeCanvas();
 
         function drawMap() {
-            ctx.fillStyle = '#05070e';
+            ctx.fillStyle = '#05070f';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw glowing city road network lines
-            ctx.strokeStyle = '#1a2238';
-            ctx.lineWidth = 4;
+            // Draw City Coastline & Bay Shape (Matching Video 5 Vector Map)
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height * 0.3);
+            ctx.bezierCurveTo(canvas.width * 0.3, canvas.height * 0.1, canvas.width * 0.5, canvas.height * 0.8, canvas.width, canvas.height * 0.4);
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.fillStyle = '#081021';
+            ctx.fill();
 
-            // Grid roads
-            for (let x = 100; x < canvas.width; x += 160) {
+            // Draw Glowing Expressway & Arterial Road Grid Lines
+            ctx.strokeStyle = '#1e2d4d';
+            ctx.lineWidth = 3;
+            for (let x = 80; x < canvas.width; x += 140) {
                 ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
             }
-            for (let y = 80; y < canvas.height; y += 120) {
+            for (let y = 60; y < canvas.height; y += 110) {
                 ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
             }
 
-            // Draw Main Arterial Highway (Glowing Cyan)
+            // Draw Primary Arterial Highway (Glowing Cyan Vector)
             ctx.strokeStyle = '#00e5ff';
-            ctx.lineWidth = 6;
+            ctx.lineWidth = 5;
+            ctx.shadowColor = '#00e5ff';
+            ctx.shadowBlur = 15;
             ctx.beginPath();
-            ctx.moveTo(100, canvas.height / 2);
-            ctx.lineTo(canvas.width - 100, canvas.height / 2);
+            ctx.moveTo(80, canvas.height * 0.45);
+            ctx.lineTo(canvas.width - 80, canvas.height * 0.45);
             ctx.stroke();
+            ctx.shadowBlur = 0;
 
-            // Draw Congestion Nodes (Pulsing Red Rings)
-            const nodes = [
-                { x: canvas.width * 0.35, y: canvas.height * 0.4, label: 'Main St - North River Rd' },
-                { x: canvas.width * 0.65, y: canvas.height * 0.6, label: 'South Bird - Rainbow Rd' }
-            ];
+            // Draw 3D Building Boxes in High-Graphics Mode
+            if (isZoomed3D) {
+                ctx.fillStyle = '#0d182e';
+                ctx.strokeStyle = '#00e5ff';
+                ctx.lineWidth = 1;
 
-            nodes.forEach(node => {
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, 16 + Math.sin(Date.now() * 0.005) * 4, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 59, 48, 0.25)';
-                ctx.fill();
+                for (let bx = 300; bx < 800; bx += 90) {
+                    for (let by = 150; by < 400; by += 80) {
+                        ctx.fillRect(bx, by, 50, 40);
+                        ctx.strokeRect(bx, by, 50, 40);
+                    }
+                }
+            }
 
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, 6, 0, Math.PI * 2);
-                ctx.fillStyle = '#ff3b30';
-                ctx.fill();
-
-                ctx.fillStyle = '#f8fafc';
-                ctx.font = 'bold 12px Inter';
-                ctx.fillText(node.label, node.x + 12, node.y - 10);
-            });
-
-            // Draw Emergency Route if active (Glowing Cyan Route)
+            // Draw Emergency Green Corridor Path when active
             if (emergencyActive) {
                 ctx.strokeStyle = '#00ff88';
                 ctx.lineWidth = 8;
+                ctx.shadowColor = '#00ff88';
+                ctx.shadowBlur = 20;
                 ctx.beginPath();
-                ctx.moveTo(nodes[0].x, nodes[0].y);
-                ctx.lineTo(nodes[1].x, nodes[1].y);
+                ctx.moveTo(400, 260);
+                ctx.lineTo(680, 380);
                 ctx.stroke();
-
-                ctx.fillStyle = '#00ff88';
-                ctx.font = 'bold 14px Inter';
-                ctx.fillText('🚑 EMERGENCY GREEN CORRIDOR PATH', (nodes[0].x + nodes[1].x)/2 - 100, (nodes[0].y + nodes[1].y)/2 - 15);
+                ctx.shadowBlur = 0;
             }
 
             requestAnimationFrame(drawMap);
@@ -291,9 +372,9 @@
         new Chart(chartCtx, {
             type: 'bar',
             data: {
-                labels: ['Accident', 'Speeding', 'Congest.', 'Fault'],
+                labels: ['Signal', 'LED Disp.', 'Camera', 'Radar'],
                 datasets: [{
-                    data: [5, 12, 8, 3],
+                    data: [5, 2, 8, 3],
                     backgroundColor: ['#ff3b30', '#ffc400', '#00e5ff', '#a855f7'],
                     borderRadius: 4
                 }]
@@ -316,6 +397,11 @@
 
         function closeGuidance() {
             document.getElementById('guidanceOverlay').style.display = 'none';
+        }
+
+        function zoomToSpot(spotName) {
+            isZoomed3D = !isZoomed3D;
+            alert(`🔍 Zooming to ${spotName} [Multidimensional Regional Association Analysis Mode]`);
         }
 
         window.onload = drawMap;
