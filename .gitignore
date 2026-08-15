@@ -43,3 +43,10 @@ yarn-error.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+*.mp4
+*.mov
+*.pptx
+*.db
+__pycache__/
+*.pyc
