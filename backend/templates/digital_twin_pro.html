@@ -647,11 +647,17 @@
                         <div>Queue: ${g.virtual_queue_length_m ?? '-'} m</div>
                     `;
                 })
-                .catch(() => {});
+                .catch((err) => {
+                    const el = document.getElementById('sumo-live-panel');
+                    if (el) el.innerHTML = `<span style="color:#ff6b6b;">SUMO connection error: ${err}</span>`;
+                });
         }
         setInterval(pollSumoTelemetry, 3000);
 
-        window.onload = function() { initMap(); pollSumoTelemetry(); };
+        window.onload = function() {
+            try { initMap(); } catch (e) { console.error('initMap failed:', e); }
+            pollSumoTelemetry();
+        };
     </script>
 </body>
 </html>
