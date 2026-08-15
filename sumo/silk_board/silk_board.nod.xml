@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Silk Board Junction, Bengaluru: Hosur Road (N-S), Outer Ring Road (E-W),
+     plus Electronic City connector (SE leg). Approx real coords: 12.9166 N, 77.6234 E.
+     Modeled as a 5-leg signalized junction reflecting the real convergence. -->
+<nodes>
+    <node id="center"       x="0" y="0" type="traffic_light"/>
+    <node id="hosur_north"  x="0" y="300" type="priority"/>
+    <node id="hosur_south"  x="0" y="-300" type="priority"/>
+    <node id="orr_east"     x="300" y="0" type="priority"/>
+    <node id="orr_west"     x="-300" y="0" type="priority"/>
+    <node id="ec_connector" x="220" y="-220" type="priority"/>
+</nodes>

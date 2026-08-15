@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- VIP Road x Baguiati Main Road crossing, Kolkata. Approx real coords: 22.6114 N, 88.4258 E -->
+<nodes>
+    <node id="center" x="0" y="0" type="traffic_light"/>
+    <node id="north"  x="0" y="250" type="priority"/>
+    <node id="south"  x="0" y="-250" type="priority"/>
+    <node id="east"   x="250" y="0" type="priority"/>
+    <node id="west"   x="-250" y="0" type="priority"/>
+</nodes>

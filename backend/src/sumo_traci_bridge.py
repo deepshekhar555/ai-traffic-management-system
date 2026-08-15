@@ -54,18 +54,56 @@ class SUMOTraCIBridge:
     reading back genuine queue lengths / delays computed by SUMO's engine.
     """
 
-    def __init__(self, sumo_cfg_path: str = "sumo/intersection.sumocfg", gui: bool = False):
+    # Known site configs - pass site="baguiati" or site="silk_board" instead of
+    # a raw path to switch intersections without remembering folder layout.
+    SITE_CONFIGS = {
+        "generic":    "sumo/intersection.sumocfg",
+        "baguiati":   "sumo/baguiati/baguiati.sumocfg",       # VIP Road x Baguiati Main Road, Kolkata (primary)
+        "silk_board": "sumo/silk_board/silk_board.sumocfg",   # Hosur Rd x Outer Ring Rd, Bengaluru (secondary)
+    }
+
+    # Per-site: approach-code -> (route_id for injected vehicles, in-edge id to monitor).
+    # Approach code is matched against the start of the lane_id your detector reports
+    # (e.g. lane_id "HOSURN_lane0" matches "HOSURN"). Add an entry here whenever a
+    # new site/network is added.
+    SITE_ROUTE_MAPS = {
+        "generic": {
+            "N": ("N_to_S", "N_in"), "S": ("S_to_N", "S_in"),
+            "E": ("E_to_W", "E_in"), "W": ("W_to_E", "W_in"),
+        },
+        "baguiati": {
+            "N": ("N_to_S", "N_in"), "S": ("S_to_N", "S_in"),
+            "E": ("E_to_W", "E_in"), "W": ("W_to_E", "W_in"),
+        },
+        "silk_board": {
+            "HOSURN": ("HosurN_to_HosurS", "HosurN_in"),
+            "HOSURS": ("HosurS_to_HosurN", "HosurS_in"),
+            "ORRE":   ("ORR_E_to_ORR_W", "ORR_E_in"),
+            "ORRW":   ("ORR_W_to_ORR_E", "ORR_W_in"),
+            "EC":     ("EC_to_HosurN", "EC_in"),
+        },
+    }
+
+    def __init__(self, sumo_cfg_path: str = None, gui: bool = False, site: str = None):
+        """
+        Pass EITHER `site` (recommended - e.g. site="silk_board") to use the
+        known project-root-relative config path for that location, OR pass
+        `sumo_cfg_path` directly with your own path (e.g. when running this
+        file from a different working directory). If both are given,
+        `sumo_cfg_path` wins for the actual file location, while `site` still
+        selects the correct route map for that location's real edge names.
+        """
+        if site is not None and site not in self.SITE_CONFIGS:
+            raise ValueError(f"Unknown site '{site}'. Choose from: {list(self.SITE_CONFIGS.keys())}")
+        if sumo_cfg_path is None:
+            sumo_cfg_path = self.SITE_CONFIGS[site] if site else self.SITE_CONFIGS["generic"]
         self.sumo_cfg_path = sumo_cfg_path
+        self.site = site or "generic"
         self.gui = gui
         self.traci_active = False
         self.traci = None
         self._injected_vehicle_counter = 0
-        self._route_by_lane_prefix = {
-            "N": "N_to_S",
-            "S": "S_to_N",
-            "E": "E_to_W",
-            "W": "W_to_E",
-        }
+        self._route_map = self.SITE_ROUTE_MAPS.get(self.site, self.SITE_ROUTE_MAPS["generic"])
         self._init_sumo_traci()
 
     def _init_sumo_traci(self):
@@ -116,9 +154,11 @@ class SUMOTraCIBridge:
         if not self.traci_active:
             return self._emulated_fallback(telemetry)
 
-        approach = lane_id[0].upper() if lane_id and lane_id[0].upper() in self._route_by_lane_prefix else "N"
-        route_id = self._route_by_lane_prefix[approach]
-        in_edge = f"{approach}_in"
+        lane_upper = (lane_id or "").upper()
+        matched_approach = next((code for code in self._route_map if lane_upper.startswith(code)), None)
+        if matched_approach is None:
+            matched_approach = next(iter(self._route_map))  # fall back to first known approach
+        route_id, in_edge = self._route_map[matched_approach]
 
         # Inject vehicles proportional to observed count above what's already
         # running on that edge, so SUMO's density roughly mirrors the camera.
@@ -165,7 +205,7 @@ class SUMOTraCIBridge:
             return self._emulated_what_if_fallback(proposed_green_sec)
 
         try:
-            monitored_edges = ["N_in", "S_in", "E_in", "W_in"]
+            monitored_edges = [in_edge for _, in_edge in self._route_map.values()]
 
             def avg_wait():
                 waits = [self.traci.edge.getWaitingTime(e) for e in monitored_edges]
@@ -239,10 +279,22 @@ class SUMOTraCIBridge:
 
 
 if __name__ == "__main__":
-    bridge = SUMOTraCIBridge(sumo_cfg_path="../../sumo/intersection.sumocfg")
-    sync_res = bridge.sync_virtual_graph_state({"lane_id": "N_in_0", "vehicle_count": 6, "avg_speed_kmh": 38.0, "signal_phase": "GREEN"})
+    import sys as _sys
+    # Usage: python sumo_traci_bridge.py [generic|baguiati|silk_board]
+    site_arg = _sys.argv[1] if len(_sys.argv) > 1 else "generic"
+    if site_arg not in SUMOTraCIBridge.SITE_CONFIGS:
+        print(f"Unknown site '{site_arg}'. Choose from: {list(SUMOTraCIBridge.SITE_CONFIGS.keys())}")
+        _sys.exit(1)
+
+    # SITE_CONFIGS paths are relative to the project root; when running this
+    # file directly from backend/src for a local test, prefix with ../../
+    cfg_path = f"../../{SUMOTraCIBridge.SITE_CONFIGS[site_arg]}"
+
+    bridge = SUMOTraCIBridge(sumo_cfg_path=cfg_path, site=site_arg)
+    _test_lane_id = "HOSURN_lane0" if site_arg == "silk_board" else "N_in_0"
+    sync_res = bridge.sync_virtual_graph_state({"lane_id": _test_lane_id, "vehicle_count": 6, "avg_speed_kmh": 38.0, "signal_phase": "GREEN"})
     sim_res = bridge.simulate_what_if_signal_override(proposed_green_sec=45)
-    print(f"[OK] SUMOTraCIBridge tested. traci_active={bridge.traci_active}")
+    print(f"[OK] SUMOTraCIBridge tested for site='{site_arg}'. traci_active={bridge.traci_active}")
     print(f"  Graph Sync: {sync_res}")
     print(f"  What-If: {sim_res}")
     bridge.close()

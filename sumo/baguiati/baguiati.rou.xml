@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- VIP Road (E-W) carries heavier through-traffic than Baguiati Main Road (N-S), matching real conditions -->
+<routes>
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="4.5" minGap="2.5" maxSpeed="16.7"/>
+    <vType id="auto" accel="2.2" decel="4.0" sigma="0.6" length="2.8" minGap="2.0" maxSpeed="12.0"/>
+    <vType id="bus" accel="1.8" decel="3.5" sigma="0.4" length="10.0" minGap="3.0" maxSpeed="14.0"/>
+
+    <route id="N_to_S" edges="N_in S_out"/>
+    <route id="S_to_N" edges="S_in N_out"/>
+    <route id="E_to_W" edges="E_in W_out"/>
+    <route id="W_to_E" edges="W_in E_out"/>
+
+    <flow id="flow_NS_car" type="car" route="N_to_S" begin="0" end="3600" vehsPerHour="150"/>
+    <flow id="flow_SN_car" type="car" route="S_to_N" begin="0" end="3600" vehsPerHour="150"/>
+    <flow id="flow_NS_auto" type="auto" route="N_to_S" begin="0" end="3600" vehsPerHour="80"/>
+
+    <flow id="flow_EW_car" type="car" route="E_to_W" begin="0" end="3600" vehsPerHour="320"/>
+    <flow id="flow_WE_car" type="car" route="W_to_E" begin="0" end="3600" vehsPerHour="320"/>
+    <flow id="flow_EW_bus" type="bus" route="E_to_W" begin="0" end="3600" vehsPerHour="20"/>
+    <flow id="flow_WE_bus" type="bus" route="W_to_E" begin="0" end="3600" vehsPerHour="20"/>
+</routes>

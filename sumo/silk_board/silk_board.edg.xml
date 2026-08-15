@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hosur Road and Outer Ring Road are both wide 3-4 lane arterials in reality;
+     Electronic City connector is the ramp leg. -->
+<edges>
+    <edge id="HosurN_in"  from="hosur_north" to="center" numLanes="4" speed="16.7"/>
+    <edge id="HosurN_out" from="center" to="hosur_north" numLanes="4" speed="16.7"/>
+    <edge id="HosurS_in"  from="hosur_south" to="center" numLanes="4" speed="16.7"/>
+    <edge id="HosurS_out" from="center" to="hosur_south" numLanes="4" speed="16.7"/>
+    <edge id="ORR_E_in"   from="orr_east" to="center" numLanes="4" speed="16.7"/>
+    <edge id="ORR_E_out"  from="center" to="orr_east" numLanes="4" speed="16.7"/>
+    <edge id="ORR_W_in"   from="orr_west" to="center" numLanes="4" speed="16.7"/>
+    <edge id="ORR_W_out"  from="center" to="orr_west" numLanes="4" speed="16.7"/>
+    <edge id="EC_in"      from="ec_connector" to="center" numLanes="2" speed="13.9"/>
+    <edge id="EC_out"     from="center" to="ec_connector" numLanes="2" speed="13.9"/>
+</edges>
