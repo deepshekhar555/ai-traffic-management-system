@@ -27,6 +27,23 @@ except ImportError:
 import json
 import numpy as np
 
+# Single persistent SUMO bridge per site, reused across requests. Launching a
+# brand-new SUMO subprocess on every HTTP request was the root cause of the
+# what-if endpoint silently falling back to emulated data: TraCI can only
+# bind one live SUMO instance per port, so a second bridge created while the
+# first was still running failed to connect and fell back automatically.
+_sumo_bridge_cache = {}
+
+def _get_sumo_bridge(site: str = "baguiati"):
+    try:
+        from src.sumo_traci_bridge import SUMOTraCIBridge
+    except ImportError:
+        from backend.src.sumo_traci_bridge import SUMOTraCIBridge
+
+    if site not in _sumo_bridge_cache:
+        _sumo_bridge_cache[site] = SUMOTraCIBridge(site=site)
+    return _sumo_bridge_cache[site]
+
 templates_dir = _backend_dir / "templates"
 static_dir = _backend_dir / "static"
 app = Flask(__name__, template_folder=str(templates_dir), static_folder=str(static_dir))
@@ -92,13 +109,11 @@ def get_live_camera_telemetry():
 def get_sumo_traci_telemetry():
     """Get live SUMO TraCI Graph Sync & Spatio-Temporal Graph Neural Network (STGCN) Predictions"""
     try:
-        from src.sumo_traci_bridge import SUMOTraCIBridge
         from src.graph_gnn_predictor import SpatioTemporalGraphPredictor
     except ImportError:
-        from backend.src.sumo_traci_bridge import SUMOTraCIBridge
         from backend.src.graph_gnn_predictor import SpatioTemporalGraphPredictor
 
-    bridge = SUMOTraCIBridge(site="baguiati")  # real intersection, not the generic placeholder
+    bridge = _get_sumo_bridge("baguiati")  # reuses the one persistent live simulation
     stgcn = SpatioTemporalGraphPredictor()
 
     telem_file = _root_dir / "data" / "live_camera_telemetry.json"
@@ -123,13 +138,9 @@ def get_sumo_traci_telemetry():
 def simulate_what_if_endpoint():
     """Execute What-If TraCI Signal Timing Scenario Simulation"""
     from flask import request
-    try:
-        from src.sumo_traci_bridge import SUMOTraCIBridge
-    except ImportError:
-        from backend.src.sumo_traci_bridge import SUMOTraCIBridge
 
     green_sec = int(request.args.get('green_sec', 45))
-    bridge = SUMOTraCIBridge(site="baguiati")
+    bridge = _get_sumo_bridge("baguiati")  # SAME persistent bridge as telemetry endpoint
     result = bridge.simulate_what_if_signal_override(proposed_green_sec=green_sec)
     return jsonify(result)
 
