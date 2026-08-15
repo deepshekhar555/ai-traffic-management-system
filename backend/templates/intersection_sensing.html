@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraffixAI — Full Intersection Digital Twin Sensing Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #050711; color: #f8fafc; }
+
+        /* Top Header Navigation (English, EasyTraffic / 51WORLD Style) */
+        header {
+            height: 55px; background: rgba(10, 15, 29, 0.95); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; z-index: 1000;
+        }
+        .header-title { font-size: 16px; font-weight: 900; color: #ffffff; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+        .header-title span { color: #00e5ff; }
+
+        .header-tabs { display: flex; gap: 6px; }
+        .btn-tab {
+            background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15);
+            padding: 7px 18px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s;
+        }
+        .btn-tab.active, .btn-tab:hover { background: #00e5ff; color: #000; font-weight: 900; border-color: #00e5ff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
+
+        /* Main Workspace Layout */
+        .workspace { position: absolute; top: 55px; left: 0; width: 100vw; height: calc(100vh - 55px); background: #04060d; overflow: hidden; }
+
+        /* Left Panel: Real-Time Sensing Counters & Violation Checklist */
+        .left-panel {
+            position: absolute; top: 15px; left: 15px; width: 310px; z-index: 500;
+            background: rgba(10, 15, 29, 0.92); backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 16px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.7); max-height: calc(100vh - 165px); overflow-y: auto;
+        }
+        .panel-title { font-size: 13px; font-weight: 900; color: #00e5ff; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px dashed rgba(0, 229, 255, 0.2); padding-bottom: 6px; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+        .stat-box { background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 8px; padding: 8px; text-align: center; }
+        .stat-num { font-size: 20px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; }
+        .stat-lbl { font-size: 9px; color: #94a3b8; margin-top: 2px; }
+
+        .violation-row { display: flex; justify-content: space-between; font-size: 11px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .violation-name { color: #cbd5e1; }
+        .violation-count { font-weight: 800; color: #ff3b30; font-family: 'JetBrains Mono', monospace; }
+        .violation-count.zero { color: #00ff88; }
+
+        /* Main Aerial Sensing Canvas */
+        #sensingCanvas { width: 100%; height: calc(100% - 110px); position: absolute; top: 0; left: 0; z-index: 1; }
+
+        /* Bottom CCTV Camera Strip (Matching Video 9) */
+        .bottom-cam-strip {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 110px;
+            background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(0, 229, 255, 0.3); z-index: 500;
+            display: flex; gap: 10px; padding: 8px 15px; overflow-x: auto;
+        }
+        .cam-thumb {
+            flex: 0 0 160px; height: 92px; background: #000; border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 8px; overflow: hidden; position: relative; cursor: pointer;
+        }
+        .cam-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .cam-tag {
+            position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.7);
+            color: #00e5ff; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="header-title">
+            🌐 TRAFFIXAI <span>FULL INTERSECTION DIGITAL TWIN SENSING PLATFORM</span>
+        </div>
+        <div class="header-tabs">
+            <button class="btn-tab active" id="btn-fullview" onclick="showView('full')">Intersection Full View Sensing</button>
+            <button class="btn-tab" id="btn-incidents" onclick="showView('incidents')">Historical Incident Management</button>
+            <button class="btn-tab" id="btn-analytics" onclick="showView('analytics')">Statistical Analytics</button>
+            <a href="/digital-twin-pro" class="btn-tab" style="background: #00e5ff; color: #000; font-weight: 900;">3D View ↗</a>
+        </div>
+    </header>
+
+    <!-- Historical Incidents Modal Drawer -->
+    <div id="incidentsModal" style="display:none; position:fixed; top:70px; right:20px; width:420px; max-height:calc(100vh - 150px); background:rgba(10,15,29,0.95); border:1px solid #00e5ff; border-radius:12px; padding:18px; z-index:9999; color:white; overflow-y:auto;">
+        <div style="font-weight:900; color:#00e5ff; font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+            <span>📋 Historical Incident & Violation Logs</span>
+            <span style="cursor:pointer; color:#ff3b30;" onclick="closeModal('incidentsModal')">✕</span>
+        </div>
+        <div style="font-size:12px; line-height:1.8;">
+            <div style="background:rgba(255,59,48,0.15); border-left:3px solid #ff3b30; padding:8px; margin-bottom:8px; border-radius:4px;">
+                <strong>🚨 Red-Light Jump #CH-9402</strong><br>Plate: KA-01-MJ-4820 · Time: 14:22:04 · Fine: ₹1,000
+            </div>
+            <div style="background:rgba(255,196,0,0.15); border-left:3px solid #ffc400; padding:8px; margin-bottom:8px; border-radius:4px;">
+                <strong>⚡ Over-Speeding #CH-9401</strong><br>Speed: 78 km/h (Limit: 50 km/h) · Time: 14:15:30
+            </div>
+            <div style="background:rgba(0,255,136,0.15); border-left:3px solid #00ff88; padding:8px; margin-bottom:8px; border-radius:4px;">
+                <strong>🚑 Emergency Preemption #EP-104</strong><br>Ambulance A-12 Green Corridor Active · Saved 4.2 mins
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistical Analytics Modal -->
+    <div id="analyticsModal" style="display:none; position:fixed; top:70px; right:20px; width:480px; height:400px; background:rgba(10,15,29,0.95); border:1px solid #00e5ff; border-radius:12px; padding:18px; z-index:9999; color:white;">
+        <div style="font-weight:900; color:#00e5ff; font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+            <span>📊 Intersection Statistical Analytics</span>
+            <span style="cursor:pointer; color:#ff3b30;" onclick="closeModal('analyticsModal')">✕</span>
+        </div>
+        <div style="height:320px;">
+            <canvas id="modalChartCanvas"></canvas>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <!-- Sensing Canvas -->
+        <canvas id="sensingCanvas"></canvas>
+
+        <!-- Left Panel: Real-Time Sensing Counters & Violation Checklist -->
+        <div class="left-panel">
+            <div class="panel-title">Real-Time Intersection Sensing</div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-num" id="val-motor">72</div>
+                    <div class="stat-lbl">Motor Vehicles</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num" id="val-nonmotor" style="color: #ffc400;">10</div>
+                    <div class="stat-lbl">Non-Motorized</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num" id="val-ped" style="color: #00ff88;">4</div>
+                    <div class="stat-lbl">Pedestrians</div>
+                </div>
+            </div>
+
+            <div class="panel-title">Cumulative Event Checklist (Today)</div>
+            <div class="violation-row">
+                <span class="violation-name">🚗 Motor Vehicles Tracked</span>
+                <span class="violation-count zero" style="color:#00e5ff;">562</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">🚶 Pedestrians Detected</span>
+                <span class="violation-count zero" style="color:#00ff88;">723</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">⚡ Over-Speeding Violation</span>
+                <span class="violation-count zero">0</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">🔀 Illegal Lane Change</span>
+                <span class="violation-count zero">0</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">🅿️ Illegal Parking Zone</span>
+                <span class="violation-count zero">0</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">🪖 No Helmet Violation</span>
+                <span class="violation-count">238</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">⛔ Wrong-Way Driving</span>
+                <span class="violation-count zero">0</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">🎽 Unbelted Driver</span>
+                <span class="violation-count zero">0</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">🚶 Pedestrian Crossing Safety</span>
+                <span class="violation-count zero">0</span>
+            </div>
+            <div class="violation-row">
+                <span class="violation-name">🚥 Yellow Light Jump</span>
+                <span class="violation-count zero">0</span>
+            </div>
+        </div>
+
+        <!-- Bottom CCTV Cameras Strip (Matching Video 9) -->
+        <div class="bottom-cam-strip">
+            <div class="cam-thumb" onclick="openCam(1)">
+                <img src="/video_feed/1" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'">
+                <div class="cam-tag">CAM-01 (North Approach)</div>
+            </div>
+            <div class="cam-thumb" onclick="openCam(2)">
+                <img src="/video_feed/2" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'">
+                <div class="cam-tag">CAM-02 (East Approach)</div>
+            </div>
+            <div class="cam-thumb" onclick="openCam(3)">
+                <img src="/video_feed/3" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'">
+                <div class="cam-tag">CAM-03 (South Approach)</div>
+            </div>
+            <div class="cam-thumb" onclick="openCam(4)">
+                <img src="/video_feed/4" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'">
+                <div class="cam-tag">CAM-04 (West Approach)</div>
+            </div>
+            <div class="cam-thumb" onclick="openCam(1)">
+                <img src="/video_feed/1" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'">
+                <div class="cam-tag">CAM-05 (Pedestrian Overhead)</div>
+            </div>
+            <div class="cam-thumb" onclick="openCam(2)">
+                <img src="/video_feed/2" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'">
+                <div class="cam-tag">CAM-06 (ANPR License Plate Zoom)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // High-Graphics Canvas LiDAR Radar & 3D Sensing Renderer
+        const canvas = document.getElementById('sensingCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 165;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let radarRadius = 0;
+        let frameCount = 0;
+
+        function drawSensingScene() {
+            frameCount++;
+            ctx.fillStyle = '#04060d';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2 + 100;
+            const centerY = canvas.height / 2;
+
+            // Draw Aerial Road Intersection Lines
+            ctx.strokeStyle = '#121a2e';
+            ctx.lineWidth = 80;
+            ctx.beginPath(); ctx.moveTo(centerX, 0); ctx.lineTo(centerX, canvas.height); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(canvas.width, centerY); ctx.stroke();
+
+            // Yellow Center Dividing Lines
+            ctx.strokeStyle = '#ffc400';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath(); ctx.moveTo(centerX, 0); ctx.lineTo(centerX, canvas.height); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(canvas.width, centerY); ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw Pulsing Concentric Cyan LiDAR Radar Rings (Matching Video 9)
+            radarRadius = (radarRadius + 1.5) % 220;
+            for (let r = radarRadius; r < 240; r += 45) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(0, 229, 255, ${1 - r / 240})`;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+
+            // Draw Animated Vehicles with Glowing Cyan Bounding Boxes & Trajectories
+            for (let i = 0; i < 16; i++) {
+                const vx = (centerX - 200 + ((frameCount * 3 + i * 40) % 500));
+                const vy = centerY + (i % 2 === 0 ? -25 : 25);
+
+                // Trajectory trailing line
+                ctx.strokeStyle = i % 2 === 0 ? '#00e5ff' : '#00ff88';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(vx - 30, vy); ctx.lineTo(vx, vy); ctx.stroke();
+
+                // 3D Bounding Box
+                ctx.strokeStyle = '#00e5ff';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(vx, vy - 10, 24, 18);
+
+                // Vehicle tag
+                ctx.fillStyle = '#00e5ff';
+                ctx.font = 'bold 9px Inter';
+                ctx.fillText(`CAR #${i+10}`, vx, vy - 14);
+            }
+
+            // Live Telemetry Dynamic Numbers Update
+            if (frameCount % 30 === 0) {
+                document.getElementById('val-motor').innerText = 68 + Math.floor(Math.random() * 8);
+                document.getElementById('val-nonmotor').innerText = 9 + Math.floor(Math.random() * 4);
+                document.getElementById('val-ped').innerText = 4 + Math.floor(Math.random() * 3);
+            }
+
+            requestAnimationFrame(drawSensingScene);
+        }
+
+        function openCam(camId) {
+            alert(`Opening Live 3D Perception Feed for CAM-0${camId}`);
+        }
+
+        let modalChartInit = false;
+        function showView(view) {
+            document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
+
+            if (view === 'full') {
+                document.getElementById('btn-fullview').classList.add('active');
+                closeModal('incidentsModal');
+                closeModal('analyticsModal');
+            } else if (view === 'incidents') {
+                document.getElementById('btn-incidents').classList.add('active');
+                closeModal('analyticsModal');
+                document.getElementById('incidentsModal').style.display = 'block';
+            } else if (view === 'analytics') {
+                document.getElementById('btn-analytics').classList.add('active');
+                closeModal('incidentsModal');
+                document.getElementById('analyticsModal').style.display = 'block';
+
+                if (!modalChartInit) {
+                    modalChartInit = true;
+                    new Chart(document.getElementById('modalChartCanvas').getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Motor Vehicles', 'Pedestrians', 'No-Helmet', 'Speeding', 'Red-Light Jump'],
+                            datasets: [{ label: 'Real-Time Volume & Violations', data: [562, 723, 238, 42, 18], backgroundColor: ['#00e5ff', '#00ff88', '#ff3b30', '#ffc400', '#a855f7'] }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            }
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        }
+
+        window.onload = drawSensingScene;
+    </script>
+</body>
+</html>

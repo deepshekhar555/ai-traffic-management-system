@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Default traffic light program. Your rl_signal_agent.py / surtrac_controller.py
+  will override phase durations live over TraCI at runtime - this is just the
+  fallback/default program SUMO loads on startup.
+-->
+<tlLogics>
+    <tlLogic id="center" type="static" programID="0" offset="0">
+        <phase duration="30" state="GGrrGGrr"/>
+        <phase duration="4"  state="yyrryyrr"/>
+        <phase duration="30" state="rrGGrrGG"/>
+        <phase duration="4"  state="rryyrryy"/>
+    </tlLogic>
+</tlLogics>

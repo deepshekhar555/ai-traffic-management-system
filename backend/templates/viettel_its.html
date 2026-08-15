@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viettel VTSS / ITS — Urban Ecosystem & TOC Control Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #060914; color: #f8fafc; }
+
+        header {
+            height: 55px; background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(220, 38, 38, 0.4);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000;
+        }
+        .logo-title { font-size: 15px; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+        .logo-title span { color: #ef4444; }
+
+        .tab-menu { display: flex; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 8px; }
+        .tab-btn {
+            background: transparent; color: #cbd5e1; border: none; padding: 6px 12px;
+            border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+        }
+        .tab-btn.active, .tab-btn:hover { background: #ef4444; color: #fff; font-weight: 900; box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+
+        .workspace { height: calc(100vh - 55px); position: relative; overflow: hidden; }
+
+        /* V-TSS Live Camera Map View */
+        #tss-view { width: 100%; height: 100%; display: grid; grid-template-columns: 280px 1fr; }
+        .cam-sidebar { background: rgba(10, 15, 29, 0.95); border-right: 1px solid rgba(239, 68, 68, 0.3); padding: 15px; overflow-y: auto; }
+        .cam-item { padding: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; margin-bottom: 8px; font-size: 12px; cursor: pointer; }
+        .cam-item:hover { border-color: #ef4444; color: #ef4444; }
+
+        #map-container { width: 100%; height: 100%; }
+
+        /* V-TOC Violation Analytics Dashboard View */
+        #toc-view {
+            width: 100%; height: 100%; display: none; padding: 20px;
+            overflow-y: auto; background: #04060e;
+        }
+        .toc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 15px; }
+        .toc-card { background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 18px; height: 260px; }
+        .toc-title { font-size: 12px; font-weight: 900; color: #ef4444; text-transform: uppercase; margin-bottom: 10px; }
+
+        .stat-banner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px; }
+        .stat-box { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 14px; border-radius: 8px; }
+        .stat-val { font-size: 26px; font-weight: 900; color: #ef4444; font-family: 'JetBrains Mono', monospace; }
+
+        /* Video Popup Window on Map */
+        .leaflet-popup-content-wrapper { background: #0a0f1d; color: white; border: 1px solid #ef4444; border-radius: 8px; }
+        .leaflet-popup-tip { background: #ef4444; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-title">🇻🇳 VIETTEL <span>VTSS / ITS URBAN ECOSYSTEM & TOC CONTROL CENTER</span></div>
+        <div class="tab-menu">
+            <button class="tab-btn active" id="tab-tss" onclick="switchMode('tss')">📷 V-TSS Live Map Surveillance</button>
+            <button class="tab-btn" id="tab-toc" onclick="switchMode('toc')">📊 V-TOC Violation Analytics</button>
+            <button class="tab-btn" onclick="alert('V-TSP Simulation Mode Active')">🔮 V-TSP Simulation</button>
+            <button class="tab-btn" onclick="alert('V-TDM Tolling Active')">💳 V-TDM Tolling</button>
+            <button class="tab-btn" onclick="alert('V-PTM Public Transport Active')">🚌 V-PTM Metro/Bus</button>
+        </div>
+        <div>
+            <a href="/" style="color: #cbd5e1; font-size: 12px; font-weight: bold; text-decoration: none;">← Main Portal</a>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <!-- V-TSS Live Surveillance Map View (Matching Video 12) -->
+        <div id="tss-view">
+            <div class="cam-sidebar">
+                <div style="font-size: 12px; font-weight: 900; color: #ef4444; margin-bottom: 12px;">📷 Viettel Surveillance Cameras (TSS)</div>
+                <div class="cam-item" onclick="focusCam(0)">🔴 001_ITS Radar BAN - SIE</div>
+                <div class="cam-item" onclick="focusCam(1)">🔴 003_ITS Near BURGER KING</div>
+                <div class="cam-item" onclick="focusCam(2)">🔴 006_ITS Damnak Spa</div>
+                <div class="cam-item" onclick="focusCam(3)">🔴 008_ITS Sok San St</div>
+                <div class="cam-item" onclick="focusCam(4)">🔴 010_ITS Stop Makara</div>
+                <div class="cam-item" onclick="focusCam(5)">🔴 011_ITS Stop Tanway</div>
+            </div>
+            <div id="map-container"></div>
+        </div>
+
+        <!-- V-TOC Violation Analytics Dashboard (Matching Video 12) -->
+        <div id="toc-view">
+            <div class="stat-banner">
+                <div class="stat-box"><div style="font-size:11px; color:#94a3b8;">Total Recorded Violations</div><div class="stat-val">43,441</div></div>
+                <div class="stat-box"><div style="font-size:11px; color:#94a3b8;">Failure to Obey Signal</div><div class="stat-val" style="color:#ff3b30;">24,574</div></div>
+                <div class="stat-box"><div style="font-size:11px; color:#94a3b8;">Speeding Over Limit</div><div class="stat-val" style="color:#ffc400;">14,504</div></div>
+                <div class="stat-box"><div style="font-size:11px; color:#94a3b8;">Auto Processing Rate</div><div class="stat-val" style="color:#00ff88;">98.4%</div></div>
+            </div>
+
+            <div class="toc-grid">
+                <div class="toc-card">
+                    <div class="toc-title">Traffic Violation Type Statistics</div>
+                    <canvas id="chartTypes"></canvas>
+                </div>
+                <div class="toc-card">
+                    <div class="toc-title">Violation Ratio by Surveillance Point</div>
+                    <canvas id="chartSurveillance"></canvas>
+                </div>
+                <div class="toc-card">
+                    <div class="toc-title">License Plate Color Distribution</div>
+                    <canvas id="chartPlates"></canvas>
+                </div>
+            </div>
+
+            <div class="toc-grid" style="margin-top: 15px;">
+                <div class="toc-card" style="grid-column: span 2;">
+                    <div class="toc-title">Top Time Frames with Traffic Violations During the Day</div>
+                    <canvas id="chartPeakTime"></canvas>
+                </div>
+                <div class="toc-card">
+                    <div class="toc-title">Violation Processing Status</div>
+                    <div style="font-size:12px; line-height: 2; margin-top: 10px;">
+                        <div>⏳ <strong>Pending Violations:</strong> 2</div>
+                        <div>🔍 <strong>Pending Approval:</strong> 2</div>
+                        <div>📬 <strong>Informed Parties:</strong> 1</div>
+                        <div>✅ <strong>Processed & Evidenced:</strong> 43,436</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        const hanoiCoords = [21.0285, 105.8542];
+        const camNodes = [
+            { name: '001_ITS Radar BAN - SIE', lat: 21.0315, lng: 105.8510 },
+            { name: '003_ITS Near BURGER KING', lat: 21.0285, lng: 105.8542 },
+            { name: '006_ITS Damnak Spa', lat: 21.0255, lng: 105.8570 },
+            { name: '008_ITS Sok San St', lat: 21.0335, lng: 105.8580 },
+            { name: '010_ITS Stop Makara', lat: 21.0225, lng: 105.8500 },
+            { name: '011_ITS Stop Tanway', lat: 21.0355, lng: 105.8450 }
+        ];
+
+        function initMap() {
+            map = L.map('map-container', { attributionControl: false }).setView(hanoiCoords, 14);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+
+            camNodes.forEach((node, idx) => {
+                const marker = L.circleMarker([node.lat, node.lng], {
+                    radius: 8, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.9
+                }).addTo(map);
+
+                marker.bindPopup(`
+                    <div style="padding:6px; text-align:center;">
+                        <strong style="color:#ef4444;">${node.name}</strong><br>
+                        <div style="margin-top:6px; background:#000; padding:4px; border-radius:4px;">
+                            <img src="/video_feed/${(idx%4)+1}" width="200" height="120" style="object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300'">
+                        </div>
+                        <span style="font-size:10px; color:#00ff88; font-weight:bold;">LIVE 5G STREAM ACTIVE</span>
+                    </div>
+                `);
+            });
+        }
+
+        function focusCam(idx) {
+            const node = camNodes[idx];
+            map.flyTo([node.lat, node.lng], 16);
+        }
+
+        function switchMode(mode) {
+            if (mode === 'tss') {
+                document.getElementById('tss-view').style.display = 'grid';
+                document.getElementById('toc-view').style.display = 'none';
+                document.getElementById('tab-tss').classList.add('active');
+                document.getElementById('tab-toc').classList.remove('active');
+            } else {
+                document.getElementById('tss-view').style.display = 'none';
+                document.getElementById('toc-view').style.display = 'block';
+                document.getElementById('tab-tss').classList.remove('active');
+                document.getElementById('tab-toc').classList.add('active');
+                initCharts();
+            }
+        }
+
+        let chartsInit = false;
+        function initCharts() {
+            if (chartsInit) return;
+            chartsInit = true;
+
+            // Violation Types Bar Chart
+            new Chart(document.getElementById('chartTypes').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Signal Jump', 'Speeding', 'Line Jump', 'Wrong Way', 'Illegal Park'],
+                    datasets: [{ label: 'Violations', data: [24574, 14504, 4546, 1200, 890], backgroundColor: '#ef4444' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Surveillance Ratio Donut
+            new Chart(document.getElementById('chartSurveillance').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Burger King', 'Stop 7Makara', 'Sok San', 'Other'],
+                    datasets: [{ data: [35, 25, 20, 20], backgroundColor: ['#ef4444', '#ff9500', '#00e5ff', '#a855f7'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Plate Colors Donut
+            new Chart(document.getElementById('chartPlates').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['White Plate', 'Yellow Plate', 'Blue Plate', 'Red Plate'],
+                    datasets: [{ data: [40119, 2093, 1028, 4], backgroundColor: ['#ffffff', '#ffc400', '#00e5ff', '#ff3b30'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Peak Time Frame Histogram
+            new Chart(document.getElementById('chartPeakTime').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['06:30-07:00', '07:00-07:30', '07:30-08:00', '08:00-08:30', '17:00-17:30', '17:30-18:00'],
+                    datasets: [{ label: 'Peak Hour Violations', data: [185, 180, 175, 174, 162, 190], backgroundColor: '#00e5ff' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        window.onload = initMap;
+    </script>
+</body>
+</html>

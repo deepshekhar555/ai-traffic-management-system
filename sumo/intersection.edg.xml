@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Edges (road segments) connecting each approach to the center junction.
+  numLanes/speed should match your real intersection's lane count and
+  speed limit (speed is in m/s: 13.9 m/s ~= 50 km/h).
+-->
+<edges>
+    <edge id="N_in"  from="north" to="center" numLanes="2" speed="13.9"/>
+    <edge id="N_out" from="center" to="north" numLanes="2" speed="13.9"/>
+    <edge id="S_in"  from="south" to="center" numLanes="2" speed="13.9"/>
+    <edge id="S_out" from="center" to="south" numLanes="2" speed="13.9"/>
+    <edge id="E_in"  from="east"  to="center" numLanes="2" speed="13.9"/>
+    <edge id="E_out" from="center" to="east"  numLanes="2" speed="13.9"/>
+    <edge id="W_in"  from="west"  to="center" numLanes="2" speed="13.9"/>
+    <edge id="W_out" from="center" to="west"  numLanes="2" speed="13.9"/>
+</edges>

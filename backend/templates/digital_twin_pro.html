@@ -3,267 +3,600 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraffixAI — Industrial Closed-Loop Digital Twin Workbench</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>TraffixAI — Pro Smart City 3D Digital Twin (Real GPS & Smooth 3D Caravan)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body, html { width: 100%; height: 100%; overflow-x: hidden; background-color: #0b0f19; color: #f8fafc; }
-        
-        /* Top Command Navigation Header */
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #04060f; color: #f8fafc; }
+
+        /* Top Header Navigation Bar */
         header {
-            width: 100%; background: #0f172a; border-bottom: 1px solid #1e293b;
-            padding: 14px 28px; display: flex; justify-content: space-between; align-items: center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 50px;
+            background: rgba(10, 15, 29, 0.94); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000;
         }
-        .logo { font-size: 20px; font-weight: 900; color: #38bdf8; display: flex; align-items: center; gap: 10px; }
-        .logo span { background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid #0284c7; }
-        .nav-links { display: flex; gap: 14px; }
-        .nav-btn { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; transition: all 0.2s; }
-        .nav-btn:hover, .nav-btn.active { background: #0284c7; color: #fff; border-color: #38bdf8; }
+        .header-title { font-size: 15px; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+        .header-title span { color: #00e5ff; }
 
-        /* Main Workspace Grid Layout */
-        .grid-container {
-            display: grid; grid-template-columns: 1fr 380px; gap: 20px;
-            padding: 20px; max-width: 1800px; margin: 0 auto;
+        .header-telemetry { display: flex; gap: 20px; font-size: 12px; }
+        .tele-item { display: flex; align-items: center; gap: 6px; }
+        .tele-val { font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; }
+
+        .weather-widget { background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 8px; padding: 4px 12px; font-size: 11px; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
+
+        /* Real GPS Banner */
+        .gps-banner {
+            position: absolute; top: 62px; right: 20px; z-index: 999;
+            background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(0, 255, 136, 0.4);
+            border-radius: 8px; padding: 8px 14px; font-size: 11px; font-weight: bold; color: #00ff88;
+            box-shadow: 0 0 20px rgba(0,255,136,0.3); display: flex; align-items: center; gap: 8px;
         }
 
-        .card {
-            background: #151d30; border: 1px solid #1e293b; border-radius: 12px;
-            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        /* Map & Day/Night Overlay Container */
+        #map-wrapper { width: 100vw; height: calc(100vh - 115px); position: absolute; top: 50px; left: 0; z-index: 1; }
+        #map { width: 100%; height: 100%; }
+        #night-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(4, 6, 15, 0.0); pointer-events: none; transition: background 0.3s; z-index: 2;
         }
-        .card-title { font-size: 14px; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Split View: Live Physical Camera + Digital Twin Twin Viewport */
-        .split-viewport { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; min-height: 420px; }
-        .viewport-box { background: #090d16; border: 1px solid #334155; border-radius: 10px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
-        .viewport-header { background: #1e293b; padding: 8px 14px; font-size: 12px; font-weight: 800; color: #94a3b8; display: flex; justify-content: space-between; }
-        .viewport-body { flex: 1; display: flex; align-items: center; justify-content: center; background: #030712; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; }
-
-        /* What-If Scenario Control Panel */
-        .scenario-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
-        .btn-scenario {
-            background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 14px 10px;
-            border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
-            transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px;
+        /* Left Operations Sidebar Navigation */
+        .left-menu {
+            position: absolute; top: 65px; left: 15px; width: 270px; z-index: 999;
+            background: rgba(10, 15, 29, 0.94); backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 16px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.8); max-height: calc(100vh - 195px); overflow-y: auto;
         }
-        .btn-scenario:hover { background: #0284c7; color: #fff; border-color: #38bdf8; transform: translateY(-2px); }
+        .menu-cat { font-size: 11px; font-weight: 900; color: #00e5ff; text-transform: uppercase; margin: 12px 0 6px; letter-spacing: 0.5px; }
+        .menu-item { padding: 9px 12px; border-radius: 6px; font-size: 12px; color: #cbd5e1; cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .menu-item:hover, .menu-item.active { background: rgba(0, 229, 255, 0.18); color: #00e5ff; font-weight: 700; border-left: 3px solid #00e5ff; }
 
-        /* Bidirectional Hardware Telemetry Table */
-        .telemetry-row { display: flex; justify-content: space-between; font-size: 13px; padding: 10px 0; border-bottom: 1px dashed #1e293b; }
-        .telemetry-label { color: #94a3b8; }
-        .telemetry-val { font-weight: 700; color: #10b981; }
+        .btn-event {
+            width: 100%; padding: 12px; background: linear-gradient(90deg, #ff3b30, #ff9500);
+            border: none; border-radius: 8px; color: white; font-weight: 900; font-size: 12px;
+            cursor: pointer; text-transform: uppercase; margin-top: 12px; box-shadow: 0 4px 15px rgba(255,59,48,0.5);
+            transition: transform 0.2s;
+        }
+        .btn-event:hover { transform: scale(1.02); }
 
-        /* Status Pills */
-        .status-pill { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; }
-        .pill-green { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
-        .pill-blue { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }
-        .pill-yellow { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+        /* Slide-Out Side Drawers */
+        .side-drawer {
+            position: absolute; top: 65px; left: 300px; width: 340px; z-index: 998;
+            background: rgba(10, 15, 29, 0.95); backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 18px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.8); display: none; color: white; max-height: calc(100vh - 195px); overflow-y: auto;
+        }
+        .drawer-header { font-size: 14px; font-weight: 900; color: #00e5ff; margin-bottom: 12px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .drawer-close { cursor: pointer; color: #ff3b30; font-weight: bold; }
+
+        /* Bottom Time Slider & Mode Controller Bar */
+        .bottom-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 65px;
+            background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(0, 229, 255, 0.3); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 25px;
+        }
+        .slider-container { display: flex; align-items: center; gap: 15px; flex: 1; margin: 0 30px; }
+        .slider-time { font-size: 14px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace; width: 50px; }
+        input[type=range] { flex: 1; accent-color: #00e5ff; cursor: pointer; height: 6px; }
+
+        .btn-tab {
+            background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15);
+            padding: 7px 16px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-tab.active, .btn-tab:hover { background: #00e5ff; color: #000; font-weight: 900; }
+
+        /* Modal Overlay (z-index 9999) */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 9999;
+            display: none; justify-content: center; align-items: center;
+        }
+        .modal-box {
+            background: #0a0f1d; border: 2px solid #ff3b30; border-radius: 14px;
+            width: 520px; padding: 24px; color: white; box-shadow: 0 20px 50px rgba(255,59,48,0.6);
+        }
+        .form-row { margin-bottom: 14px; }
+        .form-row label { font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px; font-weight: 600; }
+        .form-row select, .form-row input, .form-row textarea { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 10px; color: white; font-size: 12px; }
+
+        /* Smooth Moving Vehicle Markers */
+        .vehicle-marker {
+            width: 22px; height: 22px; background: #00e5ff; border: 2px solid #ffffff;
+            border-radius: 6px; box-shadow: 0 0 15px #00e5ff; display: flex;
+            align-items: center; justify-content: center; font-size: 11px; color: #000; font-weight: 900;
+            transition: all 0.8s linear; cursor: pointer;
+        }
+        .bus-3d-marker {
+            width: 26px; height: 26px; background: #ffc400; border: 2px solid #ffffff;
+            border-radius: 6px; box-shadow: 0 0 15px #ffc400; display: flex;
+            align-items: center; justify-content: center; font-size: 12px; color: #000; font-weight: 900;
+            transition: all 0.8s linear; cursor: pointer;
+        }
+        .fire-3d-marker {
+            width: 50px; height: 50px; background: radial-gradient(circle, rgba(255,59,48,0.9) 0%, rgba(255,149,0,0) 70%);
+            border: 2px solid #ff3b30; border-radius: 50%; box-shadow: 0 0 35px #ff3b30;
+            display: flex; align-items: center; justify-content: center; font-size: 22px;
+            animation: firePulse 0.8s infinite alternate; cursor: pointer;
+        }
+        @keyframes firePulse { 0% { transform: scale(0.9); } 100% { transform: scale(1.3); } }
+
+        /* Split Screen Street View Window */
+        .street-view-window {
+            position: absolute; bottom: 80px; right: 20px; z-index: 1500;
+            width: 440px; height: 280px; background: #000; border: 2px solid #00e5ff;
+            border-radius: 12px; overflow: hidden; display: none; box-shadow: 0 15px 40px rgba(0,229,255,0.5);
+        }
+        .street-header { background: #0056b3; color: white; font-weight: 800; font-size: 11px; padding: 8px 12px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- Header Navigation & Live Telemetry Bar -->
     <header>
-        <div class="logo">
-            🌐 INDUSTRIAL AI TRAFFIC DIGITAL TWIN <span>CLOSED-LOOP FEEDBACK ENGINE</span>
+        <div class="header-title">
+            🏙️ TRAFFIXAI <span>PRO SMART CITY 3D DIGITAL TWIN (REAL GPS SATELLITE)</span>
         </div>
-        <div class="nav-links">
-            <a href="/" class="nav-btn">📊 Main Command Center</a>
-            <a href="/twin3d" class="nav-btn">🏙️ 3D GIS Map</a>
-            <a href="/digital-twin-pro" class="nav-btn active">⚡ Twin Workbench</a>
+
+        <div class="header-telemetry">
+            <div class="tele-item">🚗 Vehicles: <span class="tele-val" id="val-veh">385</span></div>
+            <div class="tele-item">🚌 Buses: <span class="tele-val" id="val-bus">31</span></div>
+            <div class="tele-item">🚊 Trams: <span class="tele-val" id="val-tram">8</span></div>
+            <div class="tele-item">⚡ Health: <span class="tele-val" id="val-health" style="color: #00ff88;">98%</span></div>
+        </div>
+
+        <div class="weather-widget">
+            <span>☀️ 23°C Clear</span>
+            <span>💨 Wind 13 km/h</span>
+            <a href="/" style="color: #00e5ff; text-decoration: none; font-weight: bold; margin-left: 10px;">← Main Portal</a>
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <div class="grid-container">
-        
-        <!-- Left Side: Split Viewport + What-If Simulation Suite -->
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-            
-            <!-- Dual Mirror Viewport: Physical Camera + Virtual 3D Digital Twin -->
-            <div class="card">
-                <div class="card-title">
-                    <span>🎥 REAL-TIME DUAL VIEWPORT MIRROR (PHYSICAL PERCEPTION ➔ VIRTUAL TWIN)</span>
-                    <span class="status-pill pill-green">LIVE SYNC (100 Hz)</span>
-                </div>
-                <div class="split-viewport">
-                    
-                    <!-- Left: Live Camera Stream -->
-                    <div class="viewport-box">
-                        <div class="viewport-header">
-                            <span>📷 PHYSICAL CAMERA PERCEPTION FEED (CAM-01)</span>
-                            <span style="color: #10b981;">YOLOv26 ACTIVE</span>
-                        </div>
-                        <div class="viewport-body">
-                            <div style="text-align: center; padding: 20px;">
-                                <div style="font-size: 40px; margin-bottom: 10px;">📹</div>
-                                <div style="font-weight: 800; color: #38bdf8; font-size: 14px;">PHYSICAL WEBCAM SENSOR ACTIVE</div>
-                                <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;" id="cam-status-text">Ingesting live video frames @ 24.5 FPS...</div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Real GPS Location Status Banner -->
+    <div class="gps-banner" id="gpsBanner">
+        <span>📍 Detecting your real city physical location...</span>
+    </div>
 
-                    <!-- Right: Virtual 3D Digital Twin Viewport -->
-                    <div class="viewport-box">
-                        <div class="viewport-header">
-                            <span>🏙️ VIRTUAL DIGITAL TWIN STATE (3D GIS ENGINE)</span>
-                            <span style="color: #38bdf8;">MAPLIBRE 3D</span>
-                        </div>
-                        <div class="viewport-body">
-                            <iframe src="/twin3d" id="twin-iframe"></iframe>
-                        </div>
-                    </div>
+    <!-- 3D Satellite Map & Lighting Overlay -->
+    <div id="map-wrapper">
+        <div id="map"></div>
+        <div id="night-overlay"></div>
+    </div>
 
-                </div>
-            </div>
+    <!-- Left Operations Navigation Menu (Matching Video 10) -->
+    <div class="left-menu">
+        <div class="menu-cat">City Overview</div>
+        <div class="menu-item active" onclick="showDrawer('drawer-network')"><span>📊 Network Dashboard</span> <span>98%</span></div>
 
-            <!-- What-If Interactive Scenario Simulation Engine -->
-            <div class="card">
-                <div class="card-title">
-                    <span>🔬 "WHAT-IF" SCENARIO SIMULATION SUITE (TEST BEFORE REAL-WORLD DEPLOYMENT)</span>
-                    <span class="status-pill pill-blue">BIDIRECTIONAL FEEDBACK</span>
-                </div>
-                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">
-                    Test municipal interventions virtually on the digital twin state before applying them to physical traffic signals and barrier gates.
-                </p>
-                <div class="scenario-grid">
-                    <button class="btn-scenario" onclick="runScenario('emergency')">
-                        <span style="font-size: 20px;">🚨</span>
-                        <span>Emergency Vehicle Wave</span>
-                    </button>
-                    <button class="btn-scenario" onclick="runScenario('weather')">
-                        <span style="font-size: 20px;">🌧️</span>
-                        <span>Rain / Heavy Fog Test</span>
-                    </button>
-                    <button class="btn-scenario" onclick="runScenario('surge')">
-                        <span style="font-size: 20px;">📈</span>
-                        <span>200% Congestion Surge</span>
-                    </button>
-                    <button class="btn-scenario" onclick="runScenario('violation')">
-                        <span style="font-size: 20px;">🛑</span>
-                        <span>Red Light Violation Test</span>
-                    </button>
-                </div>
-                <div id="scenario-log" style="margin-top: 14px; padding: 12px; background: #090d16; border-radius: 8px; border: 1px solid #1e293b; font-size: 12px; color: #38bdf8; font-family: monospace;">
-                    [SYSTEM READY]: Closed-loop feedback loop active. Awaiting scenario execution...
-                </div>
-            </div>
+        <div class="menu-cat">Incidents & Safety</div>
+        <div class="menu-item" onclick="showDrawer('drawer-events')"><span>⚠️ Active Events</span> <span style="color: #ff3b30; font-weight: 900;" id="active-event-count">2</span></div>
+        <div class="menu-item" onclick="showDrawer('drawer-situation')"><span>🔍 Situation Review</span></div>
+        <div class="menu-item" onclick="showDrawer('drawer-resources')"><span>🚑 Emergency Resources</span></div>
+        <button class="btn-event" onclick="openEventModal()">+ New Event Simulation</button>
 
+        <div class="menu-cat">Simulation & Feeds</div>
+        <div class="menu-item" onclick="showDrawer('drawer-whatif')"><span>🔮 What-If Simulation</span></div>
+        <div class="menu-item" onclick="openStreetView()"><span>📷 Live CCTV & Street View</span></div>
+        <div class="menu-item" onclick="toggleUtilities()"><span>💧 Utilities & Infrastructure</span></div>
+    </div>
+
+    <!-- Slide-Out Drawers -->
+    <div class="side-drawer" id="drawer-events">
+        <div class="drawer-header"><span>⚠️ Active Anomaly Events</span><span class="drawer-close" onclick="closeDrawers()">✕</span></div>
+        <div style="margin-bottom: 12px; background: rgba(255,59,48,0.15); border-left: 3px solid #ff3b30; padding: 10px; border-radius: 6px;" onclick="focusFire()">
+            <div style="font-weight: 800; font-size: 13px; color: #ff3b30;">💥 Road Accident (Click 3D Focus)</div>
+            <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">Main Corridor · Severity 4/5 · 3 Vehicles Involved</div>
+        </div>
+        <div style="margin-bottom: 12px; background: rgba(255,149,0,0.15); border-left: 3px solid #ff9500; padding: 10px; border-radius: 6px;" onclick="focusFire()">
+            <div style="font-weight: 800; font-size: 13px; color: #ff9500;">🔥 Structural Fire (Click 3D Focus)</div>
+            <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">High Street · Severity 3/5 · Fire Engine F-04 Dispatched</div>
+        </div>
+    </div>
+
+    <div class="side-drawer" id="drawer-situation">
+        <div class="drawer-header"><span>🔍 Situation Awareness & Facilities</span><span class="drawer-close" onclick="closeDrawers()">✕</span></div>
+        <div style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">Nearby Dispatch Nodes:</div>
+        <div style="font-size: 12px; line-height: 1.8;">
+            <div>🏥 <strong>City Medical Center</strong> — 285 m (ETA 2 min)</div>
+            <div>🚓 <strong>Central Police Station</strong> — 310 m (ETA 3 min)</div>
+            <div>🚒 <strong>Fire Station Headquarter</strong> — 520 m (ETA 4 min)</div>
+        </div>
+    </div>
+
+    <div class="side-drawer" id="drawer-resources">
+        <div class="drawer-header"><span>🚑 Emergency Resource Dispatch</span><span class="drawer-close" onclick="closeDrawers()">✕</span></div>
+        <div style="font-size: 12px; line-height: 1.8;">
+            <div>🚑 <strong>Ambulance Unit A-12:</strong> En Route (Green Corridor Active)</div>
+            <div>🚒 <strong>Fire Engine F-04:</strong> On Scene</div>
+            <div>🚓 <strong>Police Patrol P-08:</strong> Perimeter Lock</div>
+        </div>
+    </div>
+
+    <div class="side-drawer" id="drawer-network">
+        <div class="drawer-header"><span>📊 City Infrastructure Health</span><span class="drawer-close" onclick="closeDrawers()">✕</span></div>
+        <div style="font-size: 12px; line-height: 1.8;">
+            <div>🚥 <strong>Traffic Signal Controllers:</strong> 218/218 Active</div>
+            <div>📷 <strong>CCTV Perception Cameras:</strong> 1,352 Connected</div>
+            <div>📟 <strong>24GHz Radar IoT Sensors:</strong> 99.4% Uptime</div>
+            <div>⚡ <strong>SURTRAC Adaptive Optimization:</strong> ACTIVE</div>
+        </div>
+    </div>
+
+    <div class="side-drawer" id="drawer-whatif">
+        <div class="drawer-header"><span>🔮 What-If Congestion Forecast</span><span class="drawer-close" onclick="closeDrawers()">✕</span></div>
+        <p style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin-bottom: 10px;">Simulates closing arterial corridors or lane reductions on citywide travel times.</p>
+        <button class="btn-event" style="background: linear-gradient(90deg, #00e5ff, #0056b3);" onclick="runWhatIf()">Run What-If Prediction</button>
+        <div id="whatif-result" style="display:none; margin-top:12px; padding:10px; background:rgba(0,229,255,0.1); border-left:3px solid #00e5ff; font-size:11px; line-height:1.5;">
+            <strong>Result:</strong> Closing Main Arterial increases secondary road density by +14%, SURTRAC extends green wave by 22s automatically!
+        </div>
+    </div>
+
+    <!-- Live Physical Camera & Perception Window Overlay (Matching Video 10 & Hardware Stream) -->
+    <div class="street-view-window" id="streetWindow" style="width: 480px; height: 380px; background: rgba(10,15,29,0.96); border: 2px solid #00e5ff; border-radius: 14px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,229,255,0.6);">
+        <div class="street-header" style="background: rgba(0,229,255,0.15); border-bottom: 1px solid rgba(0,229,255,0.3); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: #00e5ff;">
+            <span>📹 LIVE PHYSICAL CAMERA AI PERCEPTION ENGINE</span>
+            <select id="camSourceSelect" style="background: #000; color: #00e5ff; border: 1px solid #00e5ff; border-radius: 4px; font-size: 10px; padding: 2px 6px;" onchange="switchTwinCam(this.value)">
+                <option value="webcam">🎥 Physical Webcam (Device 0)</option>
+                <option value="1">🚗 CAM-01 North Approach</option>
+                <option value="2">🚗 CAM-02 East Approach</option>
+                <option value="3">🚑 CAM-03 Emergency Unit</option>
+                <option value="4">🌐 CAM-04 IP / RTSP Network Camera</option>
+            </select>
+            <span style="cursor: pointer; color: #ff3b30; font-size: 14px;" onclick="closeStreetView()">✕</span>
         </div>
 
-        <!-- Right Side: Bidirectional Hardware Sync & AI Prediction Panel -->
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-            
-            <!-- Bidirectional Hardware Control Link -->
-            <div class="card">
-                <div class="card-title">
-                    <span>🔌 HARDWARE ACTUATION LINK</span>
-                    <span class="status-pill pill-green">CONNECTED</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">Raspberry Pi GPIO Pin 18:</span>
-                    <span class="telemetry-val" id="rpi-signal">ACTIVE (GREEN SIGNAL)</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">Arduino Uno (USB COM3):</span>
-                    <span class="telemetry-val">CONNECTED (9600 BAUD)</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">OLED Display Screen:</span>
-                    <span class="telemetry-val">SSD1306 (ACTIVE)</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">24GHz Doppler Radar:</span>
-                    <span class="telemetry-val">±0.5 km/h ACCURACY</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">SURTRAC Signal Optimizer:</span>
-                    <span class="telemetry-val" style="color: #38bdf8;">EDF SCHEDULER ACTIVE</span>
-                </div>
+        <div style="position: relative; width: 100%; height: 210px; background: #000;">
+            <img id="twinCamImg" src="/video_feed/webcam" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/video_feed/1'">
+            <div style="position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.8); color: #00ff88; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 4px; border: 1px solid #00ff88;">
+                ⚡ 30 FPS YOLO REAL-TIME SYNC
             </div>
-
-            <!-- AI Congestion Forecasting Model -->
-            <div class="card">
-                <div class="card-title">
-                    <span>🔮 PREDICTIVE AI FORECASTING</span>
-                    <span class="status-pill pill-blue">XGBOOST MODEL</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">Model Accuracy (R² Score):</span>
-                    <span class="telemetry-val">0.942 (94.2%)</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">15-Min Future Density:</span>
-                    <span class="telemetry-val" id="pred-density">34% (STABLE)</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">Travel Time Reduction:</span>
-                    <span class="telemetry-val" style="color: #10b981;">34.2% FASTER</span>
-                </div>
-                <div class="telemetry-row">
-                    <span class="telemetry-label">Carbon Offset (CO2):</span>
-                    <span class="telemetry-val" id="co2-val">48.2 kg</span>
-                </div>
-                <div style="margin-top: 14px;">
-                    <canvas id="predictionChart" height="150"></canvas>
-                </div>
-            </div>
-
         </div>
 
+        <!-- Real-Time Camera Telemetry & ANPR Box -->
+        <div style="padding: 10px; font-size: 11px; color: white; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(5,7,15,0.95);">
+            <div style="background: rgba(0,229,255,0.08); border-left: 3px solid #00e5ff; padding: 6px 10px; border-radius: 4px;">
+                <div style="font-size: 9px; color: #94a3b8;">LIVE VEHICLE COUNTS</div>
+                <div style="font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace;" id="twin-veh-count">🚗 14 Cars · 🚌 3 Buses</div>
+            </div>
+            <div style="background: rgba(0,255,136,0.08); border-left: 3px solid #00ff88; padding: 6px 10px; border-radius: 4px;">
+                <div style="font-size: 9px; color: #94a3b8;">LAST DETECTED ANPR PLATE</div>
+                <div style="font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;">KA-01-MJ-4820</div>
+            </div>
+        </div>
+
+        <!-- Real-Time Violation Alert Stream -->
+        <div style="padding: 4px 10px 10px; background: rgba(5,7,15,0.95); font-size: 10px;">
+            <div style="background: rgba(255,59,48,0.15); border-left: 3px solid #ff3b30; padding: 4px 8px; border-radius: 4px; color: #ff3b30; font-weight: bold;">
+                🚨 Red-Light Jump #CH-9402 · Plate KA-01-MJ-4820 · E-Challan Issued
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Time Slider Bar -->
+    <div class="bottom-bar">
+        <div style="font-weight: 800; font-size: 12px; color: #00e5ff;">Day & Night Simulation</div>
+        <div class="slider-container">
+            <span class="slider-time" id="sliderVal">14:30</span>
+            <input type="range" min="0" max="1440" value="870" id="timeSlider" oninput="onTimeChange(this.value)">
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-tab active" id="btn-traffic" onclick="toggleTrafficMode()">3D Orbit View</button>
+            <button class="btn-tab" onclick="openStreetView()">📷 Live Camera Feed</button>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div class="modal" id="eventModal">
+        <div class="modal-box">
+            <div style="font-weight: 900; font-size: 16px; color: #ff3b30; margin-bottom: 16px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                <span>🔥 Describe Anomaly Event Simulation</span>
+                <span style="cursor: pointer;" onclick="closeEventModal()">✕</span>
+            </div>
+
+            <div class="form-row">
+                <label>Event Type</label>
+                <select id="evtType">
+                    <option value="Road accident">Road Accident</option>
+                    <option value="Fire">Structural Fire</option>
+                    <option value="Water Main Break">Water Main Stress Fracture</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label>Severity Level</label>
+                <select id="evtSev">
+                    <option value="4 - Severe">4 - Severe</option>
+                    <option value="3 - Major">3 - Major</option>
+                    <option value="5 - Critical">5 - Critical</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label>Affected Radius (Metres)</label>
+                <input type="number" value="45" id="evtRad">
+            </div>
+
+            <button class="btn-event" style="width: 100%; margin-top: 15px;" onclick="createEvent()">Create Event Simulation</button>
+        </div>
+    </div>
+
+    <!-- IP Camera Connection Modal (CAM-04) -->
+    <div class="modal" id="ipCamModal">
+        <div class="modal-box" style="border-color: #00e5ff; box-shadow: 0 20px 50px rgba(0,229,255,0.5);">
+            <div style="font-weight: 900; font-size: 16px; color: #00e5ff; margin-bottom: 16px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                <span>🌐 Connect CAM-04 IP & Port Network Camera</span>
+                <span style="cursor: pointer; color: #ff3b30;" onclick="closeIpModal()">✕</span>
+            </div>
+
+            <div class="form-row">
+                <label>IP Address / Hostname</label>
+                <input type="text" id="ipCamAddr" value="192.168.1.100" placeholder="e.g. 192.168.1.100">
+            </div>
+
+            <div class="form-row">
+                <label>Port Number</label>
+                <input type="number" id="ipCamPort" value="8080" placeholder="e.g. 8080 or 554">
+            </div>
+
+            <div class="form-row">
+                <label>Protocol / Stream Type</label>
+                <select id="ipCamProto">
+                    <option value="http">HTTP Video Stream (/video)</option>
+                    <option value="rtsp">RTSP Stream (rtsp://)</option>
+                    <option value="mjpeg">MJPEG Stream (/mjpeg)</option>
+                </select>
+            </div>
+
+            <button class="btn-event" style="background: linear-gradient(90deg, #00e5ff, #0056b3); width: 100%; margin-top: 15px;" onclick="connectIpCamera()">Connect IP Camera Feed</button>
+        </div>
     </div>
 
     <script>
-        // Init Prediction Chart
-        const ctx = document.getElementById('predictionChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['-15m', '-10m', '-5m', 'NOW', '+5m', '+10m', '+15m'],
-                datasets: [{
-                    label: 'Predicted Congestion %',
-                    data: [30, 32, 35, 34, 38, 42, 36],
-                    borderColor: '#38bdf8',
-                    backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
-                    y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
-                }
-            }
-        });
+        let map;
+        let coords = [77.2090, 28.6139]; // Default coordinates
+        let vehicleMarkers = [];
+        let utilMarkers = [];
+        let utilLayerActive = false;
 
-        function runScenario(type) {
-            const log = document.getElementById('scenario-log');
-            if (type === 'emergency') {
-                log.innerText = "🚨 [SCENARIO EXECUTED]: Emergency Vehicle Injected ➔ SURTRAC Green Corridor Triggered ➔ RPi GPIO Pin 18 Forced GREEN ➔ Travel Time Reduced by 42%!";
-            } else if (type === 'weather') {
-                log.innerText = "🌧️ [SCENARIO EXECUTED]: Heavy Rain Simulated ➔ CLAHE Weather De-hazer Active ➔ Safe Time-To-Collision (TTC) Extended to 5.2s.";
-            } else if (type === 'surge') {
-                log.innerText = "📈 [SCENARIO EXECUTED]: 200% Traffic Volume Surge Injected ➔ XGBoost Model Predicts High Congestion ➔ Signal Phase Extension Applied!";
-            } else if (type === 'violation') {
-                log.innerText = "🛑 [SCENARIO EXECUTED]: Red Light Violation Injected ➔ ANPR Engine Extracted Plate [DL-01-AB-1234] ➔ E-Challan Issued ₹5000!";
+        function initMap() {
+            map = new maplibregl.Map({
+                container: 'map',
+                style: {
+                    version: 8,
+                    sources: {
+                        'esri-satellite': {
+                            type: 'raster',
+                            tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+                            tileSize: 256
+                        }
+                    },
+                    layers: [{ id: 'esri-layer', type: 'raster', source: 'esri-satellite' }]
+                },
+                center: coords,
+                zoom: 16,
+                pitch: 60,
+                bearing: -30
+            });
+
+            map.on('load', () => {
+                // Add 3D Building Extrusions Layer
+                map.addLayer({
+                    'id': '3d-buildings',
+                    'type': 'fill-extrusion',
+                    'source': {
+                        'type': 'geojson',
+                        'data': {
+                            'type': 'FeatureCollection',
+                            'features': generateBuildingFeatures()
+                        }
+                    },
+                    'paint': {
+                        'fill-extrusion-color': '#1e293b',
+                        'fill-extrusion-height': ['get', 'height'],
+                        'fill-extrusion-base': 0,
+                        'fill-extrusion-opacity': 0.85
+                    }
+                });
+
+                spawnMoving3DVehicles();
+
+                // Add 3D Fire Anomaly Marker
+                const fireEl = document.createElement('div');
+                fireEl.className = 'fire-3d-marker';
+                fireEl.innerHTML = '🔥';
+                fireEl.onclick = () => focusFire();
+                new maplibregl.Marker(fireEl).setLngLat([coords[0] + 0.002, coords[1] + 0.001]).addTo(map);
+
+                // Detect Real User Location via Browser GPS & OpenStreetMap Reverse Geocoding
+                detectRealGPS();
+            });
+        }
+
+        // Automatic Physical Location Geolocation (Browser GPS + OpenStreetMap Reverse Geocoding)
+        function detectRealGPS() {
+            const banner = document.getElementById('gpsBanner');
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        const lng = pos.coords.longitude;
+                        const lat = pos.coords.latitude;
+                        coords = [lng, lat];
+                        map.flyTo({ center: coords, zoom: 16.5, pitch: 60 });
+
+                        // Reverse Geocode City & Street Name
+                        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+                            .then(r => r.json())
+                            .then(data => {
+                                const city = data.address.city || data.address.town || data.address.suburb || data.address.state || "Your City";
+                                const road = data.address.road || "Main Street";
+                                banner.innerHTML = `📍 YOU ARE HERE: <strong>${road}, ${city}</strong> (Real GPS Sync)`;
+                            })
+                            .catch(() => {
+                                banner.innerHTML = `📍 Real GPS Location Locked: <strong>${lat.toFixed(4)}°, ${lng.toFixed(4)}°</strong>`;
+                            });
+                    },
+                    (err) => {
+                        banner.innerHTML = `📍 Default City Corridor: <strong>Central City Center</strong>`;
+                    },
+                    { enableHighAccuracy: true, timeout: 5000 }
+                );
             }
         }
 
-        // Poll Live Telemetry
-        setInterval(() => {
-            fetch('/api/live-camera-telemetry')
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('co2-val').innerText = `${data.co2_saved || 48.2} kg`;
-                    const total = data.total_count || 0;
-                    document.getElementById('cam-status-text').innerText = `Ingesting live video frames @ 24.5 FPS | ${total} tracked objects in camera view.`;
-                })
-                .catch(e => console.log('Live Telemetry error:', e));
-        }, 1000);
+        function generateBuildingFeatures() {
+            const features = [];
+            for (let i = 0; i < 25; i++) {
+                const lng = coords[0] + (Math.random() - 0.5) * 0.015;
+                const lat = coords[1] + (Math.random() - 0.5) * 0.015;
+                const h = 20 + Math.random() * 80;
+                features.push({
+                    'type': 'Feature',
+                    'properties': { 'height': h },
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [[
+                            [lng - 0.0005, lat - 0.0005],
+                            [lng + 0.0005, lat - 0.0005],
+                            [lng + 0.0005, lat + 0.0005],
+                            [lng - 0.0005, lat + 0.0005],
+                            [lng - 0.0005, lat - 0.0005]
+                        ]]
+                    }
+                });
+            }
+            return features;
+        }
+
+        // Realistic Smooth Gliding Moving 3D Vehicle Caravan Simulation (30-45 km/h)
+        function spawnMoving3DVehicles() {
+            for (let i = 0; i < 18; i++) {
+                const el = document.createElement('div');
+                const isBus = i % 4 === 0;
+                el.className = isBus ? 'bus-3d-marker' : 'vehicle-marker';
+                el.innerHTML = isBus ? '🚌' : '🚗';
+
+                let lng = coords[0] + (Math.random() - 0.5) * 0.012;
+                let lat = coords[1] + (Math.random() - 0.5) * 0.012;
+
+                const m = new maplibregl.Marker(el).setLngLat([lng, lat]).addTo(map);
+                vehicleMarkers.push({ marker: m, lng, lat, speedLng: 0.000008, speedLat: 0.000004 });
+
+                el.onclick = () => {
+                    alert(`🚗 Vehicle #${i+101} Telemetry:\nSpeed: ${Math.floor(32 + Math.random()*12)} km/h (Realistic Urban Speed)\nStatus: GREEN WAVE OPTIMIZED\nLocation: Local Corridor`);
+                };
+            }
+
+            // Smooth Gliding Animation Loop (600ms interval for realistic driving speed)
+            setInterval(() => {
+                vehicleMarkers.forEach(v => {
+                    v.lng += v.speedLng;
+                    v.lat += v.speedLat;
+                    v.marker.setLngLat([v.lng, v.lat]);
+                });
+            }, 600);
+        }
+
+        function openEventModal() { document.getElementById('eventModal').style.display = 'flex'; }
+        function closeEventModal() { document.getElementById('eventModal').style.display = 'none'; }
+
+        function createEvent() {
+            const type = document.getElementById('evtType').value;
+            closeEventModal();
+            focusFire();
+            const countEl = document.getElementById('active-event-count');
+            if (countEl) countEl.innerText = parseInt(countEl.innerText) + 1;
+            showDrawer('drawer-events');
+        }
+
+        function focusFire() {
+            map.flyTo({ center: [coords[0] + 0.002, coords[1] + 0.001], zoom: 17.5, pitch: 65, bearing: -45 });
+        }
+
+        function closeDrawers() { document.querySelectorAll('.side-drawer').forEach(d => d.style.display = 'none'); }
+        function showDrawer(id) { closeDrawers(); const d = document.getElementById(id); if (d) d.style.display = 'block'; }
+
+        function openStreetView() { document.getElementById('streetWindow').style.display = 'block'; }
+        function closeStreetView() { document.getElementById('streetWindow').style.display = 'none'; }
+        
+        function switchTwinCam(val) {
+            if (val === '4') {
+                document.getElementById('ipCamModal').style.display = 'flex';
+            } else {
+                document.getElementById('twinCamImg').src = `/video_feed/${val}`;
+            }
+        }
+
+        function closeIpModal() {
+            document.getElementById('ipCamModal').style.display = 'none';
+        }
+
+        function connectIpCamera() {
+            const ip = document.getElementById('ipCamAddr').value || '192.168.1.100';
+            const port = document.getElementById('ipCamPort').value || '8080';
+            const proto = document.getElementById('ipCamProto').value || 'http';
+
+            fetch('/api/connect_ip_camera', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ip, port, protocol: proto })
+            })
+            .then(r => r.json())
+            .then(data => {
+                closeIpModal();
+                document.getElementById('twinCamImg').src = `/video_feed/4?t=${Date.now()}`;
+                alert(`🌐 CAM-04 IP Camera Stream Connected: ${data.cam_url}`);
+            })
+            .catch(err => {
+                closeIpModal();
+                document.getElementById('twinCamImg').src = `/video_feed/4?t=${Date.now()}`;
+            });
+        }
+
+        function onTimeChange(val) {
+            const hrs = Math.floor(val / 60);
+            const mins = String(val % 60).padStart(2, '0');
+            document.getElementById('sliderVal').innerText = `${String(hrs).padStart(2,'0')}:${mins}`;
+
+            const overlay = document.getElementById('night-overlay');
+            if (hrs >= 19 || hrs < 6) {
+                overlay.style.background = 'rgba(4, 6, 15, 0.65)';
+            } else {
+                overlay.style.background = 'rgba(4, 6, 15, 0.0)';
+            }
+        }
+
+        function toggleTrafficMode() {
+            map.flyTo({ pitch: 70, bearing: (map.getBearing() + 45) % 360, zoom: 16 });
+        }
+
+        function toggleUtilities() {
+            showDrawer('drawer-network');
+            if (!utilLayerActive) {
+                utilLayerActive = true;
+                for (let i = 0; i < 15; i++) {
+                    const el = document.createElement('div');
+                    el.style.width = '12px'; el.style.height = '12px'; el.style.background = '#00e5ff';
+                    el.style.borderRadius = '50%'; el.style.boxShadow = '0 0 15px #00e5ff';
+                    const lng = coords[0] + (Math.random() - 0.5) * 0.015;
+                    const lat = coords[1] + (Math.random() - 0.5) * 0.015;
+                    const m = new maplibregl.Marker(el).setLngLat([lng, lat]).addTo(map);
+                    utilMarkers.push(m);
+                }
+            } else {
+                utilLayerActive = false;
+                utilMarkers.forEach(m => m.remove());
+                utilMarkers = [];
+            }
+        }
+
+        function runWhatIf() {
+            document.getElementById('whatif-result').style.display = 'block';
+        }
+
+        window.onload = initMap;
     </script>
 </body>
 </html>

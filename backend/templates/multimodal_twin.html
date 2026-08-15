@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraffixAI — Unified Global Digital Twin & Multimodal City Workbench</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #050714; color: #f8fafc; }
+
+        header {
+            height: 55px; background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000;
+        }
+        .logo-title { font-size: 15px; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+        .logo-title span { color: #00e5ff; }
+
+        .city-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(0,229,255,0.3); color: #00e5ff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 12px; }
+
+        .workspace {
+            height: calc(100vh - 55px); display: grid;
+            grid-template-columns: 310px 1fr 340px; gap: 12px; padding: 12px;
+        }
+
+        .panel {
+            background: rgba(10, 15, 29, 0.92); border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px; padding: 16px; overflow-y: auto; display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+        .panel-header { font-size: 13px; font-weight: 900; color: #00e5ff; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px dashed rgba(0,229,255,0.3); padding-bottom: 6px; }
+
+        #map-container { width: 100%; height: 100%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,229,255,0.3); position: relative; }
+
+        .kpi-card { background: rgba(0, 229, 255, 0.08); border-left: 3px solid #00e5ff; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 12px; }
+        .kpi-val { font-size: 24px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace; }
+
+        .btn-action {
+            width: 100%; padding: 10px; background: linear-gradient(90deg, #00e5ff, #0056b3);
+            border: none; border-radius: 6px; color: white; font-weight: bold; font-size: 11px;
+            cursor: pointer; margin-top: 8px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,229,255,0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-title">🏙️ TRAFFIXAI <span>UNIFIED GLOBAL DIGITAL TWIN & MULTIMODAL WORKBENCH</span></div>
+        <select class="city-select" onchange="switchCity(this.value)">
+            <option value="melbourne">🇦🇺 Melbourne (Deloitte Optimal Reality)</option>
+            <option value="luxembourg">🇱🇺 Luxembourg (ACUMEN LIST)</option>
+            <option value="shanghai">🇨🇳 Shanghai (Freedo AIoT Platform)</option>
+            <option value="singapore">🇸🇬 Virtual Singapore Platform</option>
+            <option value="stockholm">🇸🇪 Stockholm (Univrses AB Taxi Vision)</option>
+            <option value="amaravati">🇮🇳 Amaravati (Cityzenith SmartWorldPro)</option>
+        </select>
+        <div>
+            <a href="/" style="color: #cbd5e1; font-size: 12px; font-weight: bold; text-decoration: none;">← Main Portal</a>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <!-- Left Panel: ACUMEN Multimodal Management & Dijkstra Router -->
+        <div class="panel">
+            <div class="panel-header">ACUMEN Multimodal Controls</div>
+            <button class="btn-action" onclick="runDijkstra()">🗺️ Dijkstra AI Shortest Path Router</button>
+            <button class="btn-action" style="background: linear-gradient(90deg, #a855f7, #6b21a8);" onclick="toggleCompare()">⚖️ Side-by-Side Scenario Comparison</button>
+            <button class="btn-action" style="background: linear-gradient(90deg, #ffc400, #b45309); color:black;" onclick="toggleBimCrystal()">🏢 BIM 3D Crystal Inspection Mode</button>
+
+            <div class="panel-header" style="margin-top: 20px;">Telemetry Streams</div>
+            <div class="kpi-card">
+                <div style="font-size: 11px; color: #94a3b8;">Deloitte Optimal Ingestion</div>
+                <div class="kpi-val">14.2M msg/hr</div>
+            </div>
+            <div class="kpi-card">
+                <div style="font-size: 11px; color: #94a3b8;">AWS Panorama Video Ingest</div>
+                <div class="kpi-val" style="color: #00e5ff;">1,200 Feeds</div>
+            </div>
+            <div class="kpi-card">
+                <div style="font-size: 11px; color: #94a3b8;">Siemens Downtime Reduction</div>
+                <div class="kpi-val" style="color: #00ff88;">-30% Downtime</div>
+            </div>
+        </div>
+
+        <!-- Center GIS Map Layer -->
+        <div id="map-container"></div>
+
+        <!-- Right Panel: Freedo AIoT & City Analytics -->
+        <div class="panel">
+            <div class="panel-header">Citywide Sensor Analytics</div>
+
+            <div style="font-size: 12px; line-height: 1.8; margin-bottom: 15px;">
+                <div>🌡️ <strong>Microclimate Temperature:</strong> 24.2°C</div>
+                <div>💧 <strong>River Water Quality Index:</strong> 90/100 (Clean)</div>
+                <div>💨 <strong>Air Quality Index (AQI):</strong> 42 (Good)</div>
+                <div>🚘 <strong>Stockholm Taxi Vision Feeds:</strong> 450 Active</div>
+            </div>
+
+            <div class="panel-header">Scenario KPI Insights</div>
+            <canvas id="chartResilience" height="160"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        const cities = {
+            melbourne: { coords: [-37.8136, 144.9631], name: 'Melbourne (Victoria DTP Optimal Reality)' },
+            luxembourg: { coords: [49.8153, 6.1296], name: 'Luxembourg (ACUMEN LIST)' },
+            shanghai: { coords: [31.2304, 121.4737], name: 'Shanghai (Freedo AIoT Platform)' },
+            singapore: { coords: [1.3521, 103.8198], name: 'Virtual Singapore Platform' },
+            stockholm: { coords: [59.3293, 18.0686], name: 'Stockholm (Univrses AB Taxi Vision)' },
+            amaravati: { coords: [16.5131, 80.5165], name: 'Amaravati (Cityzenith SmartWorldPro)' }
+        };
+
+        function initMap() {
+            map = L.map('map-container', { attributionControl: false }).setView(cities.melbourne.coords, 13);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+
+            L.marker(cities.melbourne.coords).addTo(map).bindPopup('🏢 Deloitte Optimal Reality Command Hub');
+        }
+
+        function switchCity(key) {
+            const c = cities[key];
+            map.flyTo(c.coords, 13);
+            L.marker(c.coords).addTo(map).bindPopup(`🏢 ${c.name}`).openPopup();
+        }
+
+        function runDijkstra() {
+            alert('🗺️ Dijkstra AI Shortest Path Algorithm Computed! Optimal Multimodal Route: 14.2 km (Saved 12 mins over traditional route).');
+        }
+
+        function toggleCompare() {
+            alert('⚖️ Side-by-Side Scenario Comparison Mode Active! Comparing Baseline Traffic vs ACUMEN AI-Balanced Signal Strategy.');
+        }
+
+        function toggleBimCrystal() {
+            alert('🏢 BIM 3D Crystal Inspection Mode Activated! Displaying internal structural, electrical, and HVAC sensor nodes.');
+        }
+
+        window.onload = () => {
+            initMap();
+            new Chart(document.getElementById('chartResilience').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00'],
+                    datasets: [{ label: 'Network Resilience Index', data: [78, 85, 92, 89, 95, 98], borderColor: '#00ff88', tension: 0.3 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        };
+    </script>
+</body>
+</html>

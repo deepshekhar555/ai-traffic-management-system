@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Baseline traffic demand so the simulation isn't empty when SUMO starts.
+  Your backend will ADD vehicles on top of this via TraCI based on real
+  YOLO detection counts (see sumo_traci_bridge.py) - this file just gives
+  a sane default so `sumo-gui` looks alive if you open it manually.
+-->
+<routes>
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="4.5" minGap="2.5" maxSpeed="16.7"/>
+
+    <route id="N_to_S" edges="N_in S_out"/>
+    <route id="S_to_N" edges="S_in N_out"/>
+    <route id="E_to_W" edges="E_in W_out"/>
+    <route id="W_to_E" edges="W_in E_out"/>
+
+    <flow id="flow_NS" type="car" route="N_to_S" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_SN" type="car" route="S_to_N" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_EW" type="car" route="E_to_W" begin="0" end="3600" vehsPerHour="220"/>
+    <flow id="flow_WE" type="car" route="W_to_E" begin="0" end="3600" vehsPerHour="220"/>
+</routes>

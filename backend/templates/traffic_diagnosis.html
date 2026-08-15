@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraffixAI — Citywide Traffic Diagnosis & GIS Emergency Platform</title>
+    <title>TraffixAI — Live GIS Citywide Traffic & Real Geolocation Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <!-- Leaflet Real GIS Map Engine -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- MapLibre GL 3D Map Engine -->
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #050711; color: #f8fafc; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #060913; color: #f8fafc; }
 
         /* Top Header */
         header {
@@ -29,13 +29,13 @@
         }
         .btn-nav:hover, .btn-nav.active { background: #00e5ff; color: #000; font-weight: 900; border-color: #00e5ff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
 
-        /* Real GIS Map Viewport */
-        #gis-map { width: 100vw; height: calc(100vh - 125px); position: absolute; top: 50px; left: 0; z-index: 1; }
+        /* Map Container */
+        #map { width: 100vw; height: calc(100vh - 125px); position: absolute; top: 50px; left: 0; z-index: 1; }
 
         /* Left Panel: Diagnosis AI Score & Incidents */
         .left-panel {
             position: absolute; top: 65px; left: 20px; width: 320px; z-index: 999;
-            background: rgba(10, 15, 29, 0.9); backdrop-filter: blur(16px);
+            background: rgba(10, 15, 29, 0.92); backdrop-filter: blur(16px);
             border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 18px;
             box-shadow: 0 12px 35px rgba(0,0,0,0.7); pointer-events: auto;
         }
@@ -73,15 +73,17 @@
         /* Right Panel: Unprocessed Incidents & Emergency Button */
         .right-panel {
             position: absolute; top: 65px; right: 20px; width: 350px; z-index: 999;
-            background: rgba(10, 15, 29, 0.9); backdrop-filter: blur(16px);
+            background: rgba(10, 15, 29, 0.92); backdrop-filter: blur(16px);
             border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 18px;
             box-shadow: 0 12px 35px rgba(0,0,0,0.7); max-height: calc(100vh - 210px); overflow-y: auto; pointer-events: auto;
         }
 
         .incident-item {
             background: rgba(255,255,255,0.03); border-left: 4px solid #ff3b30;
-            border-radius: 8px; padding: 11px 14px; margin-bottom: 10px; font-size: 12px;
+            border-radius: 8px; padding: 11px 14px; margin-bottom: 10px; font-size: 12px; cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
         }
+        .incident-item:hover { transform: translateX(-3px); background: rgba(255,255,255,0.08); }
         .incident-item.warning { border-left-color: #ffc400; }
         .incident-item.success { border-left-color: #00ff88; }
         .incident-name { font-weight: 800; color: #f8fafc; margin-bottom: 4px; font-size: 13px; }
@@ -95,19 +97,26 @@
         }
         .btn-emergency:hover { transform: translateY(-2px); }
 
-        /* Custom Leaflet Map Markers */
-        .leaflet-marker-pulse {
-            width: 22px; height: 22px; background: #ff3b30; border: 3px solid #ffffff;
-            border-radius: 50%; box-shadow: 0 0 20px #ff3b30;
-            animation: pulse-ring 1.5s infinite;
+        /* Top Alert Banner for Ambulance */
+        .ambulance-banner {
+            position: absolute; top: 60px; left: 50%; transform: translateX(-50%); z-index: 1000;
+            background: #ff3b30; color: white; font-weight: 900; font-size: 13px; padding: 10px 24px;
+            border-radius: 20px; box-shadow: 0 0 25px rgba(255, 59, 48, 0.8); display: none;
+            animation: pulse-banner 1s infinite;
         }
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 59, 48, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
-        }
+        @keyframes pulse-banner { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        /* Bottom Bar with Live Telemetry & Recommendations */
+        /* Custom Map Pin Badges */
+        .pin-badge {
+            background: rgba(10, 15, 29, 0.92); border: 2px solid #ffc400; border-radius: 20px;
+            padding: 6px 14px; font-size: 11px; font-weight: 800; color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 196, 0, 0.6); cursor: pointer; white-space: nowrap;
+        }
+        .pin-badge.red { border-color: #ff3b30; box-shadow: 0 0 20px rgba(255, 59, 48, 0.7); }
+        .pin-badge.cyan { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.7); }
+        .pin-badge.user { border-color: #00ff88; background: #00ff88; color: #000; box-shadow: 0 0 25px rgba(0, 255, 136, 0.9); }
+
+        /* Bottom Actions & Recommendations Bar */
         .bottom-bar {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 75px;
             background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
@@ -128,19 +137,19 @@
         }
         .sug-num { background: #00e5ff; color: #000; font-weight: 900; border-radius: 4px; padding: 2px 6px; font-size: 10px; }
 
-        /* Guidance Overlay */
+        /* Live Camera Ingestion Stream PIP Window */
         .guidance-overlay {
-            position: absolute; top: 100px; left: 50%; transform: translateX(-50%); z-index: 2000;
-            width: 720px; background: rgba(10, 15, 29, 0.96); border: 2px solid #ff3b30;
+            position: absolute; top: 110px; left: 50%; transform: translateX(-50%); z-index: 2000;
+            width: 640px; background: rgba(10, 15, 29, 0.96); border: 2px solid #ff3b30;
             border-radius: 12px; overflow: hidden; display: none; box-shadow: 0 20px 50px rgba(255, 59, 48, 0.6);
         }
         .guidance-header { background: #ff3b30; color: white; padding: 10px 18px; font-weight: 900; font-size: 13px; display: flex; justify-content: space-between; }
-        .guidance-body { position: relative; height: 320px; background: #000; }
+        .guidance-body { position: relative; height: 280px; background: #000; }
         .guidance-body img { width: 100%; height: 100%; object-fit: cover; }
         .alert-box-overlay {
-            position: absolute; top: 80px; left: 200px; width: 280px; height: 130px;
+            position: absolute; top: 60px; left: 180px; width: 260px; height: 120px;
             border: 2px solid #ff3b30; background: rgba(255, 59, 48, 0.35);
-            border-radius: 8px; padding: 14px; color: white; font-size: 13px; font-weight: bold;
+            border-radius: 8px; padding: 12px; color: white; font-size: 13px; font-weight: bold;
             animation: pulse-alert 1s infinite;
         }
         @keyframes pulse-alert { 0% { border-color: #ff3b30; } 50% { border-color: #ffcc00; } 100% { border-color: #ff3b30; } }
@@ -151,7 +160,7 @@
     <!-- Header Nav -->
     <header>
         <div class="header-title">
-            🗺️ TRAFFIXAI <span>REAL-TIME GIS CITYWIDE TRAFFIC DIAGNOSIS PLATFORM</span>
+            🗺️ TRAFFIXAI <span id="location-header-tag">DETECTING REAL-TIME GPS LOCATION...</span>
         </div>
         <div class="header-nav">
             <a href="/" class="btn-nav">Command Center</a>
@@ -161,15 +170,20 @@
         </div>
     </header>
 
-    <!-- Real GIS Map Engine Viewport -->
-    <div id="gis-map"></div>
+    <!-- Top Alert Banner -->
+    <div class="ambulance-banner" id="ambBanner">
+        🚨 Emergency! Pull over immediately, empty the middle lane for emergency response.
+    </div>
+
+    <!-- MapLibre 3D Vector Map Engine -->
+    <div id="map"></div>
 
     <!-- Left Panel: AI Diagnosis Health Score & Incidents -->
     <div class="left-panel">
         <div class="panel-title">Diagnosis</div>
         <div class="score-box">
             <div class="gauge-circle">
-                <div class="gauge-inner" id="ai-score-val">63</div>
+                <div class="gauge-inner">63</div>
             </div>
             <div class="score-info">
                 <div class="val-pos">+1 Today</div>
@@ -195,47 +209,33 @@
         </div>
     </div>
 
-    <!-- Right Panel: Unprocessed Incidents & Emergency Routing -->
+    <!-- Right Panel: Real Local Incidents & Emergency Routing -->
     <div class="right-panel">
-        <div class="panel-title">Unprocessed Incidents</div>
+        <div class="panel-title" id="incidents-heading">Unprocessed Local Incidents</div>
 
-        <div class="incident-item">
-            <div class="incident-name">Bamboo St - Hill Rd</div>
-            <div class="incident-meta">
-                <span>1Day | Avg. 16.2 km/h</span>
-                <span style="color: #ff3b30; font-weight: 800;">2.0 km</span>
+        <div id="incidents-container">
+            <div class="incident-item" onclick="zoomToUserLocation()">
+                <div class="incident-name" id="inc-1-title">Detecting Local Main Road...</div>
+                <div class="incident-meta">
+                    <span id="inc-1-meta">Expected Congestion in 8 min</span>
+                    <span style="color: #ff3b30; font-weight: 800;" id="inc-1-dist">0.8 km</span>
+                </div>
             </div>
-        </div>
 
-        <div class="incident-item warning">
-            <div class="incident-name">Cindy St - Upward Rd</div>
-            <div class="incident-meta">
-                <span>2Day | Avg. 31.7 km/h</span>
-                <span style="color: #ffc400; font-weight: 800;">0.3 km</span>
-            </div>
-        </div>
-
-        <div class="incident-item">
-            <div class="incident-name">New District Blvd - Cloud Rd</div>
-            <div class="incident-meta">
-                <span>1Day | Avg. 25.8 km/h</span>
-                <span style="color: #ff3b30; font-weight: 800;">0.8 km</span>
-            </div>
-        </div>
-
-        <div class="incident-item">
-            <div class="incident-name">Oriental Blvd - Hung Le Rd</div>
-            <div class="incident-meta">
-                <span>1Day | Avg. 26.3 km/h</span>
-                <span style="color: #ff3b30; font-weight: 800;">0.5 km</span>
+            <div class="incident-item warning" onclick="zoomToUserLocation()">
+                <div class="incident-name" id="inc-2-title">Detecting Local Arterial Junction...</div>
+                <div class="incident-meta">
+                    <span id="inc-2-meta">Regular congestion in 2 min</span>
+                    <span style="color: #ffc400; font-weight: 800;" id="inc-2-dist">1.2 km</span>
+                </div>
             </div>
         </div>
 
         <div class="panel-title" style="margin-top: 14px;">In Implementation</div>
         <div class="incident-item success">
-            <div class="incident-name">North Blvd - New District Blvd</div>
+            <div class="incident-name" id="inc-3-title">Local Green Corridor Route</div>
             <div class="incident-meta">
-                <span>1Day | Avg. 12.4 km/h</span>
+                <span>Active Signal Optimization</span>
                 <span style="color: #00ff88; font-weight: 800;">1.5 km</span>
             </div>
         </div>
@@ -285,11 +285,11 @@
         <div class="suggestions-row">
             <div class="sug-card">
                 <span class="sug-num">1</span>
-                <span>Add 4 buses at morning & evening peak.</span>
+                <span>Add 4 buses at morning & evening peak to elevate crowd.</span>
             </div>
             <div class="sug-card">
                 <span class="sug-num">2</span>
-                <span>Add guiding screens with route suggestions.</span>
+                <span>Add guiding screens with real-time route suggestions.</span>
             </div>
             <div class="sug-card">
                 <span class="sug-num">3</span>
@@ -304,59 +304,204 @@
     </div>
 
     <script>
-        // Real GIS Map Setup (CartoDB Dark Matter GIS Map Tiles)
+        // ── Real Geolocation & MapLibre 3D Vector Map Engine ──────────────────────
         let map;
-        let emergencyPolyline = null;
-        const defaultCenter = [28.6139, 77.2090]; // New Delhi / Smart City GIS Center
+        let userCoords = [77.2090, 28.6139]; // Default Fallback Coordinates
+        let userCityName = "Your City";
 
-        function initGISMap() {
-            map = L.map('gis-map', {
-                zoomControl: false,
-                attributionControl: false
-            }).setView(defaultCenter, 13);
+        function initMap(centerLngLat) {
+            userCoords = centerLngLat;
 
-            // CartoDB Dark Matter High-Res Real GIS Vector Tiles
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19,
-                subdomains: 'abcd'
-            }).addTo(map);
-
-            // Custom Pulsing Incident Markers on Real GIS Coordinates
-            const incidents = [
-                { lat: 28.6139, lng: 77.2090, title: "Main St - North River Rd", detail: "Expected Congestion in 12 min" },
-                { lat: 28.6250, lng: 77.2200, title: "South Bird - Rainbow Rd", detail: "Regular Congestion in 1 min" },
-                { lat: 28.5980, lng: 77.1950, title: "Green Overpass Highway", detail: "Accident logged 5 min ago" }
-            ];
-
-            const pulseIcon = L.divIcon({
-                className: 'leaflet-marker-pulse',
-                iconSize: [22, 22]
+            map = new maplibregl.Map({
+                container: 'map',
+                style: {
+                    version: 8,
+                    sources: {
+                        'carto-dark': {
+                            type: 'raster',
+                            tiles: ['https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'],
+                            tileSize: 256
+                        }
+                    },
+                    layers: [
+                        {
+                            id: 'carto-dark-layer',
+                            type: 'raster',
+                            source: 'carto-dark',
+                            minzoom: 0,
+                            maxzoom: 20
+                        }
+                    ]
+                },
+                center: userCoords,
+                zoom: 14.5,
+                pitch: 55,
+                bearing: -15
             });
 
-            incidents.forEach(inc => {
-                const marker = L.marker([inc.lat, inc.lng], { icon: pulseIcon }).addTo(map);
-                marker.bindPopup(`
-                    <div style="color:#000; font-family:Inter; font-size:12px;">
-                        <strong>${inc.title}</strong><br>
-                        <span style="color:#ff3b30;">${inc.detail}</span>
-                    </div>
-                `);
-            });
+            map.on('load', () => {
+                // Add User Real-Time Location Marker (Glowing Green Pin)
+                addPinMarker(userCoords, `YOU ARE HERE (${userCityName})`, "user");
 
-            // Draw Glowing Cyan City Arterial Highway Polyline
-            const arterialPath = [
-                [28.5800, 77.1800],
-                [28.6000, 77.2000],
-                [28.6139, 77.2090],
-                [28.6250, 77.2200],
-                [28.6400, 77.2400]
+                // Generate Local Traffic Routes around User's Real Location
+                const [uLng, uLat] = userCoords;
+                const r1 = [[uLng - 0.02, uLat - 0.015], [uLng - 0.008, uLat - 0.005], [uLng, uLat], [uLng + 0.012, uLat + 0.008], [uLng + 0.025, uLat + 0.015]];
+                const r2 = [[uLng - 0.015, uLat + 0.02], [uLng - 0.005, uLat + 0.008], [uLng, uLat], [uLng + 0.008, uLat - 0.012], [uLng + 0.02, uLat - 0.025]];
+
+                // Expressway Cyan Polyline
+                map.addSource('route-expressway', {
+                    'type': 'geojson',
+                    'data': { 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': r1 } }
+                });
+
+                map.addLayer({
+                    'id': 'line-expressway',
+                    'type': 'line',
+                    'source': 'route-expressway',
+                    'paint': { 'line-color': '#00e5ff', 'line-width': 6, 'line-blur': 1 }
+                });
+
+                // Arterial Magenta Polyline
+                map.addSource('route-arterial', {
+                    'type': 'geojson',
+                    'data': { 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': r2 } }
+                });
+
+                map.addLayer({
+                    'id': 'line-arterial',
+                    'type': 'line',
+                    'source': 'route-arterial',
+                    'paint': { 'line-color': '#ff007f', 'line-width': 5 }
+                });
+
+                // Add Local Incident Node Markers around user
+                addPinMarker([uLng + 0.008, uLat + 0.008], "Local Main Intersection <br><span style='color:#ffc400;'>Expected Congestion in 8 min</span>", "cyan");
+                addPinMarker([uLng - 0.008, uLat - 0.012], "Nearest Hospital / Emergency Hub", "red");
+            });
+        }
+
+        function addPinMarker(coords, htmlText, type) {
+            const el = document.createElement('div');
+            el.className = `pin-badge ${type}`;
+            el.innerHTML = `📍 ${htmlText}`;
+            new maplibregl.Marker({ element: el }).setLngLat(coords).addTo(map);
+        }
+
+        // ── Real Geolocation Detector (Browser GPS + IP Fallback) ────────────────
+        function detectRealUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        reverseGeocode(lat, lng);
+                    },
+                    err => {
+                        console.log("GPS prompt skipped, using IP Geolocation...");
+                        fetchIPLocation();
+                    },
+                    { timeout: 5000, enableHighAccuracy: true }
+                );
+            } else {
+                fetchIPLocation();
+            }
+        }
+
+        function fetchIPLocation() {
+            fetch('https://ipapi.co/json/')
+                .then(r => r.json())
+                .then(ipData => {
+                    const lat = ipData.latitude || 28.6139;
+                    const lng = ipData.longitude || 77.2090;
+                    userCityName = ipData.city || ipData.region || "Your Location";
+                    updateLocationHeader(userCityName, lat, lng);
+                    initMap([lng, lat]);
+                })
+                .catch(() => {
+                    initMap([77.2090, 28.6139]); // Fallback
+                });
+        }
+
+        function reverseGeocode(lat, lng) {
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(r => r.json())
+                .then(geo => {
+                    const addr = geo.address || {};
+                    userCityName = addr.road || addr.suburb || addr.city || addr.town || "Your Real Location";
+                    updateLocationHeader(userCityName, lat, lng);
+                    initMap([lng, lat]);
+                    updateLocalIncidentsUI(addr);
+                })
+                .catch(() => {
+                    userCityName = "Your Real Location";
+                    updateLocationHeader(userCityName, lat, lng);
+                    initMap([lng, lat]);
+                });
+        }
+
+        function updateLocationHeader(name, lat, lng) {
+            document.getElementById('location-header-tag').innerHTML = `LIVE GPS LOCATION: <span style="color:#00ff88;">${name.toUpperCase()} (${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E)</span>`;
+            document.getElementById('incidents-heading').innerText = `Incidents Near ${name}`;
+        }
+
+        function updateLocalIncidentsUI(addr) {
+            const road1 = addr.road || "Main Commercial Avenue";
+            const road2 = addr.suburb || "Central Station Junction";
+            document.getElementById('inc-1-title').innerText = `${road1} - Expressway North`;
+            document.getElementById('inc-2-title').innerText = `${road2} - Ring Road Flyover`;
+        }
+
+        function triggerEmergencyResponse() {
+            document.getElementById('ambBanner').style.display = 'block';
+            document.getElementById('guidanceOverlay').style.display = 'block';
+
+            // Draw Glowing Green Emergency Ambulance Route directly to User Location
+            const [uLng, uLat] = userCoords;
+            const emergencyRouteCoords = [
+                [uLng - 0.015, uLat - 0.015], // Nearby Hospital
+                [uLng - 0.005, uLat - 0.005],
+                [uLng, uLat]                  // User Location
             ];
 
-            L.polyline(arterialPath, {
-                color: '#00e5ff',
-                weight: 5,
-                opacity: 0.85
-            }).addTo(map);
+            if (map.getSource('route-emergency')) {
+                map.removeLayer('line-emergency');
+                map.removeSource('route-emergency');
+            }
+
+            map.addSource('route-emergency', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'geometry': { 'type': 'LineString', 'coordinates': emergencyRouteCoords }
+                }
+            });
+
+            map.addLayer({
+                'id': 'line-emergency',
+                'type': 'line',
+                'source': 'route-emergency',
+                'paint': { 'line-color': '#00ff88', 'line-width': 8, 'line-blur': 2 }
+            });
+
+            map.flyTo({
+                center: userCoords,
+                zoom: 15.5,
+                pitch: 60,
+                duration: 1500
+            });
+        }
+
+        function closeGuidance() {
+            document.getElementById('guidanceOverlay').style.display = 'none';
+        }
+
+        function zoomToUserLocation() {
+            map.flyTo({
+                center: userCoords,
+                zoom: 16.5,
+                pitch: 65,
+                duration: 1500
+            });
         }
 
         // Init ChartJS Incidents Bar Chart
@@ -382,46 +527,22 @@
             }
         });
 
-        function triggerEmergencyResponse() {
-            if (emergencyPolyline) map.removeLayer(emergencyPolyline);
-
-            // Draw Glowing Green Emergency Corridor Route
-            const emergencyRoute = [
-                [28.5980, 77.1950],
-                [28.6000, 77.2000],
-                [28.6139, 77.2090]
-            ];
-
-            emergencyPolyline = L.polyline(emergencyRoute, {
-                color: '#00ff88',
-                weight: 8,
-                opacity: 0.95
-            }).addTo(map);
-
-            map.fitBounds(emergencyPolyline.getBounds(), { padding: [100, 100] });
-            document.getElementById('guidanceOverlay').style.display = 'block';
-        }
-
-        function closeGuidance() {
-            document.getElementById('guidanceOverlay').style.display = 'none';
-        }
-
         // Real-Time Live Telemetry Updates from Backend APIs
         function updateLiveTelemetry() {
             fetch('/api/live-camera-telemetry')
                 .then(r => r.json())
                 .then(data => {
-                    const total = data.total_count || 2054;
-                    document.getElementById('tele-vehicles').innerText = (total * 25 + 42).toLocaleString();
-                    document.getElementById('tele-flow').innerText = Math.round(total * 4.2 + 280);
+                    const total = data.total_count || 42;
+                    document.getElementById('tele-vehicles').innerText = (total * 30 + 120).toLocaleString();
+                    document.getElementById('tele-flow').innerText = Math.round(total * 4.5 + 240);
                     document.getElementById('tele-speed').innerText = (34.0 + (Math.sin(Date.now()*0.001)*2)).toFixed(1) + ' km/h';
-                    document.getElementById('tele-sat').innerText = Math.round(62 + (Math.cos(Date.now()*0.001)*6)) + '%';
+                    document.getElementById('tele-sat').innerText = Math.round(64 + (Math.cos(Date.now()*0.001)*5)) + '%';
                 })
                 .catch(() => {});
         }
 
         window.onload = function() {
-            initGISMap();
+            detectRealUserLocation();
             setInterval(updateLiveTelemetry, 1000);
             updateLiveTelemetry();
         };

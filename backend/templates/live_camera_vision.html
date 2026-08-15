@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraffixAI — Live Physical Camera AI Vision & Perception Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #050712; color: #f8fafc; }
+
+        header {
+            height: 55px; background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; z-index: 1000;
+        }
+        .header-title { font-size: 16px; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+        .header-title span { color: #00e5ff; }
+
+        .hardware-badge { background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); color: #00ff88; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+
+        /* Workspace Grid */
+        .workspace {
+            height: calc(100vh - 55px); display: grid;
+            grid-template-columns: 1.4fr 0.8fr; gap: 14px; padding: 14px;
+        }
+
+        /* Left Live Physical Webcam Feed Box */
+        .video-box-container {
+            background: #000; border: 2px solid rgba(0, 229, 255, 0.4);
+            border-radius: 14px; overflow: hidden; position: relative; display: flex; flex-direction: column;
+            box-shadow: 0 15px 40px rgba(0, 229, 255, 0.25);
+        }
+        .video-bar {
+            background: rgba(10, 15, 29, 0.95); padding: 10px 16px; font-size: 13px; font-weight: 900;
+            color: #00e5ff; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        .video-stream-el { width: 100%; height: calc(100% - 45px); object-fit: contain; background: #000; }
+
+        /* Right Real-Time AI Perception Telemetry Panel */
+        .telemetry-panel {
+            background: rgba(10, 15, 29, 0.92); border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 14px; padding: 20px; overflow-y: auto; display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+        .panel-header { font-size: 13px; font-weight: 900; color: #00e5ff; margin-bottom: 14px; text-transform: uppercase; border-bottom: 1px dashed rgba(0,229,255,0.3); padding-bottom: 6px; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 8px; padding: 12px; }
+        .stat-val { font-size: 28px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; }
+        .stat-lbl { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+
+        .cam-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
+
+        .alert-box { background: rgba(255,59,48,0.15); border-left: 4px solid #ff3b30; padding: 12px; border-radius: 6px; margin-top: 15px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            📹 TRAFFIXAI <span>LIVE PHYSICAL CAMERA AI PERCEPTION ENGINE</span>
+        </div>
+        <div class="hardware-badge">⚡ 30 FPS Live OpenCV + YOLOv26 Hardware Feed</div>
+        <div>
+            <a href="/" style="color: #cbd5e1; font-size: 12px; font-weight: bold; text-decoration: none;">← Exit Portal</a>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <!-- Left: Live Physical Webcam Stream -->
+        <div class="video-box-container">
+            <div class="video-bar">
+                <span>📹 Live Physical Camera Stream</span>
+                <select class="cam-select" id="camSourceSelect" onchange="switchCamSource(this.value)">
+                    <option value="webcam">🎥 Physical Webcam (Device 0)</option>
+                    <option value="1">🚗 CAM-01 North Approach</option>
+                    <option value="2">🚗 CAM-02 East Approach</option>
+                    <option value="3">🚑 CAM-03 Emergency Unit</option>
+                    <option value="4">🌐 CAM-04 IP / RTSP Network Camera</option>
+                </select>
+            </div>
+            <img id="liveFeedImg" src="/video_feed/webcam" class="video-stream-el" onerror="this.src='/video_feed/1'">
+        </div>
+
+        <!-- Right: Real-Time Telemetry & Violation Stream -->
+        <div class="telemetry-panel">
+            <div class="panel-header">Real-Time Object Perception Telemetry</div>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-val" id="cnt-cars">14</div>
+                    <div class="stat-lbl">🚗 Passenger Cars</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" id="cnt-buses" style="color: #ffc400;">3</div>
+                    <div class="stat-lbl">🚌 Transit Buses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" id="cnt-trucks" style="color: #a855f7;">2</div>
+                    <div class="stat-lbl">🚚 Freight Trucks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" id="cnt-peds" style="color: #00ff88;">6</div>
+                    <div class="stat-lbl">🚶 Pedestrians</div>
+                </div>
+            </div>
+
+            <div class="panel-header">ANPR License Plate Reader</div>
+            <div style="background: #000; border: 1px solid #00e5ff; padding: 12px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">LAST DETECTED LICENSE PLATE</div>
+                <div style="font-size: 22px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;" id="anpr-plate">KA-01-MJ-4820</div>
+            </div>
+
+            <div class="panel-header" style="margin-top: 20px;">AI Violation Incident Stream</div>
+            <div class="alert-box" id="incident-box">
+                <div style="font-weight: 900; color: #ff3b30;">🚥 Red-Light Jump Detected</div>
+                <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">Plate KA-01-MJ-4820 · Auto-E-Challan #CH-84920 Issued</div>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="/digital-twin-pro" class="btn-primary" style="display: block; width: 100%; padding: 12px; background: linear-gradient(90deg, #00e5ff, #0056b3); color: white; text-decoration: none; font-weight: 900; border-radius: 8px;">Sync Live Telemetry to 3D Digital Twin ↗</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- IP Camera Config Modal (CAM-04) -->
+    <div id="ipCamModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:#0a0f1d; border:2px solid #00e5ff; border-radius:14px; width:460px; padding:24px; color:white; box-shadow:0 20px 50px rgba(0,229,255,0.5);">
+            <div style="font-weight:900; font-size:15px; color:#00e5ff; margin-bottom:16px; display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">
+                <span>🌐 Connect CAM-04 IP & Port Network Camera</span>
+                <span style="cursor:pointer; color:#ff3b30;" onclick="closeIpModal()">✕</span>
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">IP Address / Hostname</label>
+                <input type="text" id="ipCamAddr" value="192.168.1.100" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Port Number</label>
+                <input type="number" id="ipCamPort" value="8080" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Stream Protocol</label>
+                <select id="ipCamProto" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+                    <option value="http">HTTP Video Stream (/video)</option>
+                    <option value="rtsp">RTSP Stream (rtsp://)</option>
+                    <option value="mjpeg">MJPEG Stream (/mjpeg)</option>
+                </select>
+            </div>
+            <button style="width:100%; padding:10px; background:linear-gradient(90deg, #00e5ff, #0056b3); border:none; border-radius:6px; color:white; font-weight:bold; cursor:pointer;" onclick="connectIpCamera()">Connect IP Camera Feed</button>
+        </div>
+    </div>
+
+    <script>
+        function switchCamSource(val) {
+            if (val === '4') {
+                document.getElementById('ipCamModal').style.display = 'flex';
+            } else {
+                document.getElementById('liveFeedImg').src = `/video_feed/${val}`;
+            }
+        }
+
+        function closeIpModal() {
+            document.getElementById('ipCamModal').style.display = 'none';
+        }
+
+        function connectIpCamera() {
+            const ip = document.getElementById('ipCamAddr').value || '192.168.1.100';
+            const port = document.getElementById('ipCamPort').value || '8080';
+            const proto = document.getElementById('ipCamProto').value || 'http';
+
+            fetch('/api/connect_ip_camera', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ip, port, protocol: proto })
+            })
+            .then(r => r.json())
+            .then(data => {
+                closeIpModal();
+                document.getElementById('liveFeedImg').src = `/video_feed/4?t=${Date.now()}`;
+                alert(`🌐 CAM-04 IP Camera Connected: ${data.cam_url}`);
+            })
+            .catch(err => {
+                closeIpModal();
+                document.getElementById('liveFeedImg').src = `/video_feed/4?t=${Date.now()}`;
+            });
+        }
+
+        // Live Telemetry Polling
+        setInterval(() => {
+            fetch('/api/live-camera-telemetry')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.vehicle_count) {
+                        document.getElementById('cnt-cars').innerText = data.vehicle_count || 14;
+                        document.getElementById('cnt-peds').innerText = data.person_count || 6;
+                    }
+                })
+                .catch(() => {});
+        }, 1500);
+    </script>
+</body>
+</html>

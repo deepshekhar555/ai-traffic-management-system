@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraffixAI — Smart City Management Portal (Drone, CCTV, IoT & Alerts)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #070914; color: #f8fafc; }
+
+        header {
+            height: 55px; background: rgba(10, 15, 29, 0.95); border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; z-index: 1000;
+        }
+        .logo-title { font-size: 16px; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+        .logo-title span { color: #00e5ff; }
+
+        .tab-menu { display: flex; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 8px; }
+        .tab-btn {
+            background: transparent; color: #cbd5e1; border: none; padding: 6px 16px;
+            border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+        }
+        .tab-btn.active, .tab-btn:hover { background: #00e5ff; color: #000; font-weight: 900; }
+
+        .workspace { height: calc(100vh - 55px); display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; padding: 14px; }
+
+        .module-card {
+            background: rgba(10, 15, 29, 0.88); border: 1px solid rgba(0, 229, 255, 0.25);
+            border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .card-bar {
+            background: rgba(0, 229, 255, 0.1); border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+            padding: 10px 16px; font-size: 12px; font-weight: 800; color: #00e5ff; display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-body { flex: 1; position: relative; }
+        .mini-map { width: 100%; height: 100%; }
+
+        /* Modal Overlay */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #0a0f1d; border: 2px solid #00e5ff; border-radius: 14px;
+            width: 700px; max-height: 85vh; padding: 24px; overflow-y: auto; color: white;
+        }
+        .modal-header { display: flex; justify-content: space-between; font-weight: 900; font-size: 16px; color: #00e5ff; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .btn-close { cursor: pointer; color: #ff3b30; font-size: 18px; }
+
+        .table-custom { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .table-custom th { background: rgba(0, 229, 255, 0.15); color: #00e5ff; padding: 10px; text-align: left; }
+        .table-custom td { border-bottom: 1px solid rgba(255,255,255,0.06); padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-title">🚁 TRAFFIXAI <span>SMART CITY MANAGEMENT PORTAL</span></div>
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="switchView('dashboard')">Dashboard</button>
+            <button class="tab-btn" onclick="openModal('droneModal')">Drone Management</button>
+            <button class="tab-btn" onclick="openModal('alertsModal')">Alerts & Notifications</button>
+            <button class="tab-btn" onclick="openModal('statsModal')">Statistics</button>
+        </div>
+        <div>
+            <a href="/" style="color: #cbd5e1; font-size: 12px; font-weight: bold; text-decoration: none;">← Exit Portal</a>
+        </div>
+    </header>
+
+    <!-- 4 Main Quadrant Dashboard Grid -->
+    <div class="workspace">
+        <!-- 1. Drone Monitoring Quadrant -->
+        <div class="module-card">
+            <div class="card-bar">
+                <span>🚁 Drone Monitoring</span>
+                <span style="color: #00ff88;">3 Active Stations</span>
+            </div>
+            <div class="card-body">
+                <div id="map-drone" class="mini-map"></div>
+            </div>
+        </div>
+
+        <!-- 2. CCTV Monitoring Quadrant -->
+        <div class="module-card">
+            <div class="card-bar">
+                <span>📷 CCTV Surveillance</span>
+                <span style="color: #00e5ff;">YOLOv8 Vision Active</span>
+            </div>
+            <div class="card-body">
+                <div id="map-cctv" class="mini-map"></div>
+            </div>
+        </div>
+
+        <!-- 3. Drone Mission Planner Quadrant -->
+        <div class="module-card">
+            <div class="card-bar">
+                <span>🎯 Mission Planner</span>
+                <span style="color: #ffc400;">4 Flight Missions Active</span>
+            </div>
+            <div class="card-body">
+                <div id="map-mission" class="mini-map"></div>
+            </div>
+        </div>
+
+        <!-- 4. IoT Traffic Jam Sensor Quadrant -->
+        <div class="module-card">
+            <div class="card-bar">
+                <span>📟 IoT Sensor Network</span>
+                <span style="color: #a855f7;">24GHz Doppler Sync</span>
+            </div>
+            <div class="card-body">
+                <div id="map-iot" class="mini-map"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drone Management Modal -->
+    <div class="modal" id="droneModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>🛸 Drone Inventory & Fleet Management</span>
+                <span class="btn-close" onclick="closeModal('droneModal')">✕</span>
+            </div>
+            <table class="table-custom">
+                <thead>
+                    <tr><th>Name</th><th>Type</th><th>Manufacturer</th><th>Price</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Mavic Air 2</td><td>DJI</td><td>DJI</td><td>$799</td><td><button onclick="alert('Viewing Mavic Air 2 Specs')">View</button></td></tr>
+                    <tr><td>DJI Phantom 4 Pro v2.0</td><td>DJI</td><td>DJI</td><td>$1,799</td><td><button onclick="alert('Viewing Phantom Specs')">View</button></td></tr>
+                    <tr><td>Anafi</td><td>Parrot</td><td>Parrot</td><td>$699</td><td><button onclick="alert('Viewing Anafi Specs')">View</button></td></tr>
+                    <tr><td>EVO II</td><td>Autel</td><td>Autel Robotics</td><td>$1,499</td><td><button onclick="alert('Viewing EVO Specs')">View</button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Alerts & Notifications Modal -->
+    <div class="modal" id="alertsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>🚨 Incident & Accident Reports</span>
+                <span class="btn-close" onclick="closeModal('alertsModal')">✕</span>
+            </div>
+            <table class="table-custom">
+                <thead>
+                    <tr><th>ID</th><th>Type</th><th>City</th><th>Day</th><th>Location</th></tr>
+                </thead>
+                <tbody>
+                    <tr style="color: #ff3b30;"><td>1</td><td>Car on Fire</td><td>San Francisco</td><td>Monday</td><td>Hayes Valley, San Francisco, CA</td></tr>
+                    <tr style="color: #ffc400;"><td>2</td><td>Car Collision</td><td>Oakland</td><td>Monday</td><td>Broadway, Downtown Oakland, CA</td></tr>
+                    <tr style="color: #ff3b30;"><td>3</td><td>Truck Rollover</td><td>Daly City</td><td>Monday</td><td>Washington St, Daly City, CA</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>📊 Smart City Speedometer & Traffic Statistics</span>
+                <span class="btn-close" onclick="closeModal('statsModal')">✕</span>
+            </div>
+            <div style="height: 220px;">
+                <canvas id="statChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Init 4 Leaflet Maps for Quadrants
+        const coords = [28.6139, 77.2090];
+
+        function initMaps() {
+            ['map-drone', 'map-cctv', 'map-mission', 'map-iot'].forEach(id => {
+                const m = L.map(id, { zoomControl: false, attributionControl: false }).setView(coords, 13);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(m);
+
+                L.marker(coords).addTo(m).bindPopup(`Active Node: ${id}`);
+            });
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function switchView(view) { alert(`Switched to ${view}`); }
+
+        new Chart(document.getElementById('statChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{ label: 'Drone Missions', data: [12, 19, 15, 25, 22, 30, 28], borderColor: '#00e5ff', fill: false }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        window.onload = initMaps;
+    </script>
+</body>
+</html>

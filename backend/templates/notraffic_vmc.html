@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraffixAI — NoTraffic Virtual Management Center (VMC) & Priority Policy Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #060914; color: #f8fafc; }
+
+        header {
+            height: 55px; background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; z-index: 1000;
+        }
+        .logo-title { font-size: 16px; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+        .logo-title span { color: #00e5ff; }
+
+        .hardware-badge { background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); color: #00e5ff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+
+        .workspace {
+            height: calc(100vh - 55px); display: grid;
+            grid-template-columns: 310px 1fr; gap: 12px; padding: 12px; position: relative;
+        }
+
+        /* Left VMC Priority Policy Drawer (Matching Video 15) */
+        .vmc-menu {
+            background: rgba(10, 15, 29, 0.94); border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px; padding: 18px; overflow-y: auto; display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+        .vmc-header { font-size: 13px; font-weight: 900; color: #00e5ff; margin-bottom: 14px; text-transform: uppercase; border-bottom: 1px dashed rgba(0,229,255,0.3); padding-bottom: 6px; }
+
+        .policy-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 8px; font-size: 12px; }
+        .policy-item label { display: flex; align-items: center; gap: 8px; font-weight: bold; }
+
+        .btn-apply {
+            width: 100%; padding: 12px; background: linear-gradient(90deg, #00e5ff, #0056b3);
+            border: none; border-radius: 8px; color: white; font-weight: 900; font-size: 12px;
+            cursor: pointer; text-transform: uppercase; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,229,255,0.4);
+        }
+
+        #map-container { width: 100%; height: 100%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,229,255,0.3); position: relative; }
+
+        /* Floating AR V2X Information Cards (Matching Video 15) */
+        .ar-card {
+            position: absolute; z-index: 500; background: rgba(10, 15, 29, 0.92); border-radius: 8px; padding: 10px 14px;
+            font-size: 11px; font-weight: bold; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px); animation: floatCard 2s infinite alternate;
+        }
+        .ar-card.green { border: 2px solid #00ff88; color: #00ff88; top: 80px; right: 40px; }
+        .ar-card.red { border: 2px solid #ff3b30; color: #ff3b30; top: 180px; right: 40px; }
+        .ar-card.yellow { border: 2px solid #ffc400; color: #ffc400; top: 280px; right: 40px; }
+
+        @keyframes floatCard { 0% { transform: translateY(0); } 100% { transform: translateY(-6px); } }
+
+        /* Stats Grid */
+        .specs-banner { position: absolute; bottom: 20px; left: 340px; z-index: 500; display: flex; gap: 12px; }
+        .spec-pill { background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(0,229,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #00e5ff; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-title">⚡ NOTRAFFIC <span>VIRTUAL MANAGEMENT CENTER (VMC) & PRIORITY POLICY ENGINE</span></div>
+        <div class="hardware-badge">99.99% Detection Accuracy · 360° Vision Sensor Fusion</div>
+        <div>
+            <a href="/" style="color: #cbd5e1; font-size: 12px; font-weight: bold; text-decoration: none;">← Main Portal</a>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <!-- Left: Virtual Management Center (VMC) Priority Policy Panel (Matching Video 15) -->
+        <div class="vmc-menu">
+            <div class="vmc-header">VMC Priority Policy Configurator</div>
+
+            <div class="policy-item">
+                <label>🚶 Pedestrian Priority</label>
+                <input type="checkbox" id="pol-ped" checked>
+            </div>
+            <div class="policy-item">
+                <label>🚗 Passenger Vehicle Priority</label>
+                <input type="checkbox" id="pol-car" checked>
+            </div>
+            <div class="policy-item">
+                <label>🚛 Heavy Truck / Freight</label>
+                <input type="checkbox" id="pol-truck">
+            </div>
+            <div class="policy-item">
+                <label>🛵 Motorcycle / Scooter</label>
+                <input type="checkbox" id="pol-moto" checked>
+            </div>
+            <div class="policy-item">
+                <label>🚲 Bicycle Dedicated Phase</label>
+                <input type="checkbox" id="pol-bike">
+            </div>
+            <div class="policy-item">
+                <label>🚌 Transit Signal Priority (TSP)</label>
+                <input type="checkbox" id="pol-tsp" checked>
+            </div>
+            <div class="policy-item">
+                <label>🚑 Emergency Vehicle Preemption</label>
+                <input type="checkbox" id="pol-evp" checked>
+            </div>
+
+            <button class="btn-apply" onclick="applyVmcPolicy()">Apply Autonomous VMC Policy</button>
+
+            <div class="vmc-header" style="margin-top: 20px;">V2X Mesh Network Sync</div>
+            <div style="font-size: 11px; color: #94a3b8; line-height: 1.6;">
+                ✔ Autonomous Intersection-to-Intersection Mesh Communication<br>
+                ✔ Eye-Level Human Vision Perception<br>
+                ✔ Plug-and-Play AI Sensor Hardware
+            </div>
+        </div>
+
+        <!-- Center Map & AR V2X Cards (Matching Video 15) -->
+        <div id="map-container">
+            <!-- Floating AR V2X Cards -->
+            <div class="ar-card green">
+                🚦 TIME TO GREEN: <span id="time-to-green">14</span> SECONDS
+            </div>
+            <div class="ar-card red">
+                ⚠️ ACCIDENT AHEAD! TURN RIGHT ➔
+            </div>
+            <div class="ar-card yellow">
+                🚶 PEDESTRIAN DETECTED AROUND CORNER — SLOW DOWN 40 km/h
+            </div>
+
+            <!-- Bottom Specs Banner -->
+            <div class="specs-banner">
+                <div class="spec-pill">✂️ Cutting Congestion</div>
+                <div class="spec-pill">🛡️ Improving Safety</div>
+                <div class="spec-pill">🌱 Reducing CO2 Emissions</div>
+                <div class="spec-pill">🚀 Connected Autonomous Era</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        const coords = [28.6139, 77.2090];
+
+        function initMap() {
+            map = L.map('map-container', { attributionControl: false }).setView(coords, 15);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+
+            L.marker(coords).addTo(map).bindPopup('🚦 NoTraffic VMC Autonomous Node');
+
+            // Countdown timer for AR card
+            let t = 14;
+            setInterval(() => {
+                t = t > 1 ? t - 1 : 16;
+                document.getElementById('time-to-green').innerText = t;
+            }, 1000);
+        }
+
+        function applyVmcPolicy() {
+            alert('⚡ Autonomous VMC Priority Policy Applied! NoTraffic App Engine retiming all 218 intersection signals in real time.');
+        }
+
+        window.onload = initMap;
+    </script>
+</body>
+</html>

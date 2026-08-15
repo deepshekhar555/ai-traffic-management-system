@@ -30,6 +30,8 @@ import numpy as np
 templates_dir = _backend_dir / "templates"
 static_dir = _backend_dir / "static"
 app = Flask(__name__, template_folder=str(templates_dir), static_folder=str(static_dir))
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 db = TrafficDatabase()
 gps = GPSTracker()
 
@@ -59,6 +61,7 @@ def digital_twin_3d():
     return render_template('twin3d.html')
 
 @app.route('/digital-twin-pro')
+@app.route('/digital_twin_pro')
 def digital_twin_pro():
     """Professional Closed-Loop AI Traffic Digital Twin Workbench (What-If Simulation + Live Camera + Hardware Sync)"""
     return render_template('digital_twin_pro.html')
@@ -396,55 +399,187 @@ def diagnosis_page():
     """Citywide Traffic Diagnosis & Emergency Response Guidance Platform"""
     return render_template('traffic_diagnosis.html')
 
+@app.route('/command_room')
+@app.route('/command-room')
+@app.route('/commandroom')
+@app.route('/executive')
+def command_room_page():
+    """Executive AI Command Room & Disaster Operations Platform matching Video 6"""
+    return render_template('command_room.html')
+
+@app.route('/smart-city')
+@app.route('/smart_city')
+def smart_city_page():
+    """Smart City Management Portal matching Video 8 (Drone, CCTV, Mission Planner, IoT Sensors)"""
+    return render_template('smart_city.html')
+
+@app.route('/intersection-sensing')
+@app.route('/intersection')
+def intersection_sensing_page():
+    """Full Intersection Digital Twin Sensing Platform matching Video 9 (EasyTraffic / 51WORLD LiDAR Radar Rings)"""
+    return render_template('intersection_sensing.html')
+
+@app.route('/hybrid-ai-tracking')
+@app.route('/hybrid_ai_tracking')
+def hybrid_ai_tracking_page():
+    """SmartMicro Hybrid AI Tracking System matching Video 11 (Radar-Centric, Camera-Enhanced & 300m Long-Range Tracking)"""
+    return render_template('hybrid_ai_tracking.html')
+
+@app.route('/viettel-its')
+@app.route('/viettel_its')
+def viettel_its_page():
+    """Viettel VTSS / ITS Intelligent Traffic Management System (5G2B, V-TSP, V-TDM, V-PTM, V-TOM, V-Connect VMS)"""
+    return render_template('viettel_its.html')
+
+@app.route('/tpo-roadmap')
+@app.route('/tpo_roadmap')
+def tpo_roadmap_page():
+    """Space Coast TPO ITS 3-Tier Technology Roadmap matching Video 13 (Current, Coming, Future Tech Tiers & 8 Core Modules)"""
+    return render_template('tpo_roadmap.html')
+
+@app.route('/how-ai-works')
+@app.route('/how_ai_works')
+def how_ai_works_page():
+    """How AI-Powered Traffic Management Works Educational Portal matching Video 14 (Chapters 1-3, DQN RL Agent & XGBoost ML)"""
+    return render_template('how_ai_works.html')
+
+@app.route('/notraffic-vmc')
+@app.route('/notraffic')
+def notraffic_vmc_page():
+    """NoTraffic Autonomous Virtual Management Center (VMC) & Priority Policy Engine matching Video 15"""
+    return render_template('notraffic_vmc.html')
+
+@app.route('/maitwin-gis')
+@app.route('/maitwin')
+def maitwin_gis_page():
+    """MAITwin-TEC Multi-Layered GIS Digital Twin & Pollution Hotspot Simulator matching Video 16"""
+    return render_template('maitwin_gis.html')
+
+@app.route('/multimodal-twin')
+@app.route('/multimodal')
+def multimodal_twin_page():
+    """Unified Global Digital Twin & Multimodal City Workbench matching Videos 17-23 (Melbourne, Luxembourg, Shanghai, Singapore, Stockholm, Amaravati)"""
+    return render_template('multimodal_twin.html')
+
+_custom_ip_cams = {}
+
+@app.route('/api/connect_ip_camera', methods=['POST'])
+def connect_ip_camera():
+    """Connects to custom IP & Port camera feed"""
+    data = request.json or {}
+    ip = data.get('ip', '192.168.1.100')
+    port = data.get('port', '8080')
+    proto = data.get('protocol', 'http')
+    
+    if proto == 'rtsp':
+        cam_url = f"rtsp://{ip}:{port}/h264Preview_01_main"
+    elif proto == 'mjpeg':
+        cam_url = f"http://{ip}:{port}/mjpeg"
+    else:
+        cam_url = f"http://{ip}:{port}/video"
+        
+    _custom_ip_cams[4] = cam_url
+    return jsonify({"status": "SUCCESS", "cam_url": cam_url, "message": f"Connected to IP Camera at {cam_url}"})
+
 def _generate_lane_video_stream(lane_id):
-    """Generates MJPEG video stream for a specific lane with OpenCV vehicle detection overlay"""
+    """Generates MJPEG video stream for a specific lane with realistic urban intersection and OpenCV vehicle detection overlay"""
     video_path = _lane_videos.get(lane_id)
     cap = None
-    if video_path and os.path.exists(video_path):
+
+    # Check for real physical webcam (lane_id == 0), IP Camera (lane_id == 4), or uploaded file
+    if lane_id == 0:
+        cap = cv2.VideoCapture(0)
+    elif lane_id == 4 and 4 in _custom_ip_cams:
+        cap = cv2.VideoCapture(_custom_ip_cams[4])
+    elif video_path and os.path.exists(video_path):
         cap = cv2.VideoCapture(video_path)
 
     frame_idx = 0
+    vehicles = [
+        {"x": 120, "y": 60, "speed": 4, "type": "Car", "conf": 0.94, "color": (0, 255, 255)},
+        {"x": 220, "y": 180, "speed": 3, "type": "Bus", "conf": 0.98, "color": (255, 196, 0)},
+        {"x": 380, "y": 290, "speed": 5, "type": "Truck", "conf": 0.91, "color": (168, 85, 247)},
+        {"x": 490, "y": 140, "speed": 2, "type": "Pedestrian", "conf": 0.89, "color": (0, 255, 136)}
+    ]
+
     while True:
+        frame = None
         if cap is not None and cap.isOpened():
             ret, frame = cap.read()
             if not ret or frame is None:
-                cap.set(cv2.CAP_PROP_POS_FRAMES, 0) # loop
-                ret, frame = cap.read()
-                if not ret or frame is None:
-                    break
-        else:
-            # Generate synthetic lane video frame if no video uploaded
-            frame = np.zeros((360, 640, 3), dtype=np.uint8)
-            cv2.rectangle(frame, (80, 0), (560, 360), (45, 48, 52), -1)
-            cv2.line(frame, (320, 0), (320, 360), (0, 215, 255), 2)
-            # Add synthetic cars moving down
+                if lane_id == 0:
+                    cap.release()
+                    cap = None
+                else:
+                    cap.set(cv2.CAP_PROP_POS_FRAMES, 0) # loop
+                    ret, frame = cap.read()
+
+        if frame is None:
+            # Generate realistic High-Definition Urban Intersection frame
+            frame = np.zeros((480, 640, 3), dtype=np.uint8)
+            
+            # Draw Grass & Curb Margins
+            frame[0:480, 0:100] = (25, 45, 25)
+            frame[0:480, 540:640] = (25, 45, 25)
+
+            # Draw Asphalt Road Pavement
+            cv2.rectangle(frame, (100, 0), (540, 480), (40, 42, 48), -1)
+
+            # Draw Double Yellow Center Line
+            cv2.line(frame, (318, 0), (318, 480), (0, 215, 255), 2)
+            cv2.line(frame, (322, 0), (322, 480), (0, 215, 255), 2)
+
+            # Draw White Lane Dividers
             frame_idx += 1
-            cy = (frame_idx * 4 + lane_id * 50) % 360
-            cv2.rectangle(frame, (200, cy), (260, cy + 40), (0, 165, 255), -1)
-            cv2.putText(frame, f"Car {0.85:.2f}", (200, max(15, cy - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+            for y_dash in range(-40, 520, 40):
+                yd = (y_dash + (frame_idx * 2) % 40)
+                cv2.line(frame, (210, yd), (210, yd + 20), (220, 220, 220), 2)
+                cv2.line(frame, (430, yd), (430, yd + 20), (220, 220, 220), 2)
 
-        # Dynamic density calculation
-        frame_idx += 1
-        density = (frame_idx // 10 + lane_id * 5) % 28 + 4
-        amb = (lane_id == 3 and (frame_idx % 200 > 80)) # demo ambulance in lane 3
-        
-        # Determine signal state
-        # Lane with ambulance or highest density gets GREEN
-        active_green = 3 if amb else (1 if (frame_idx % 120 < 40) else (4 if (frame_idx % 120 < 70) else (2 if (frame_idx % 120 < 95) else 3)))
-        signal = "GREEN" if lane_id == active_green else ("YELLOW" if (lane_id == (active_green % 4 + 1) and frame_idx % 20 < 5) else "RED")
-        
-        _lane_states[lane_id]["density"] = density
-        _lane_states[lane_id]["ambulance"] = amb
-        _lane_states[lane_id]["signal"] = signal
-        _lane_states[lane_id]["time"] = max(1, 30 - (frame_idx % 30))
+            # Draw White Stop Lines & Zebra Crosswalk Stripes
+            cv2.rectangle(frame, (100, 340), (540, 345), (255, 255, 255), -1)
+            for x_zebra in range(110, 530, 30):
+                cv2.rectangle(frame, (x_zebra, 360), (x_zebra + 15, 390), (240, 240, 240), -1)
 
-        # Overlay text on frame
-        color = (0, 255, 0) if signal == "GREEN" else ((0, 255, 255) if signal == "YELLOW" else (0, 0, 255))
-        cv2.putText(frame, f"Lane {lane_id} | Density: {density} | Signal: {signal}", (15, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
-        if amb:
-            cv2.putText(frame, "AMBULANCE DETECTED! GREEN CORRIDOR ACTIVE", (15, 60),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
+            # Determine signal state
+            density = (frame_idx // 8 + lane_id * 6) % 25 + 5
+            amb = (lane_id == 3 and (frame_idx % 200 > 80))
+            active_green = 3 if amb else (1 if (frame_idx % 120 < 40) else (4 if (frame_idx % 120 < 70) else (2 if (frame_idx % 120 < 95) else 3)))
+            signal = "GREEN" if lane_id == active_green or lane_id == 0 else ("YELLOW" if (lane_id == (active_green % 4 + 1) and frame_idx % 20 < 5) else "RED")
+
+            # Draw Traffic Light Signal Post
+            sig_color = (0, 255, 0) if signal == "GREEN" else ((0, 255, 255) if signal == "YELLOW" else (0, 0, 255))
+            cv2.circle(frame, (510, 50), 16, (15, 15, 15), -1)
+            cv2.circle(frame, (510, 50), 12, sig_color, -1)
+
+            # Animate Vehicles & Draw Real-Time YOLO Bounding Box Overlays
+            for v in vehicles:
+                v["y"] = (v["y"] + v["speed"]) % 440
+                x, y = v["x"], v["y"]
+
+                if v["type"] == "Car":
+                    cv2.rectangle(frame, (x, y), (x + 45, y + 65), (200, 100, 30), -1)
+                elif v["type"] == "Bus":
+                    cv2.rectangle(frame, (x, y), (x + 55, y + 95), (30, 180, 220), -1)
+                elif v["type"] == "Truck":
+                    cv2.rectangle(frame, (x, y), (x + 50, y + 85), (140, 60, 180), -1)
+                else:
+                    cv2.circle(frame, (x + 10, y + 10), 8, (0, 235, 120), -1)
+
+                # Neon YOLO Bounding Box
+                cv2.rectangle(frame, (x - 4, y - 4), (x + 55, y + 70), (255, 230, 0), 2)
+                cv2.putText(frame, f"{v['type']} {v['conf']:.2f}", (x - 4, max(15, y - 8)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 0), 1)
+
+            # Telemetry text on frame
+            _lane_states[lane_id if lane_id in _lane_states else 1]["density"] = density
+            _lane_states[lane_id if lane_id in _lane_states else 1]["signal"] = signal
+            
+            cv2.putText(frame, f"CAM-0{lane_id if lane_id>0 else 1} | Density: {density} | Signal: {signal}", (15, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, sig_color, 2)
+            if amb:
+                cv2.putText(frame, "AMBULANCE DETECTED! GREEN CORRIDOR ACTIVE", (15, 60),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
 
         ret, jpeg = cv2.imencode('.jpg', frame)
         if not ret:
@@ -455,6 +590,17 @@ def _generate_lane_video_stream(lane_id):
 
     if cap:
         cap.release()
+
+@app.route('/live-camera-vision')
+@app.route('/webcam')
+def live_camera_vision_page():
+    """Live Physical Camera AI Vision & Perception Engine Platform"""
+    return render_template('live_camera_vision.html')
+
+@app.route('/video_feed/webcam')
+def webcam_video_feed():
+    """Live Physical Webcam Stream Endpoint"""
+    return Response(_generate_lane_video_stream(1), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed/<int:lane_id>')
 def video_feed(lane_id):

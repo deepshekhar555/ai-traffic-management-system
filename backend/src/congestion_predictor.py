@@ -5,15 +5,24 @@ SIH 2026 - Smart City Traffic Intelligence
 Uses XGBoost (Extreme Gradient Boosting) / Gradient Boosting Regressors
 with rolling window lag-feature engineering to predict multi-horizon (+15m, +30m, +60m)
 traffic density & bottleneck risk.
+
+CHANGE FROM ORIGINAL: _bootstrap_initial_training() now tries to load REAL
+historical density from your traffic_data.db (built from actual camera
+detections via TrafficDatabase) before falling back to the synthetic
+sine-wave curve. Run your detection pipeline for even 1-2 real days first,
+then this will train on genuine data instead of a fabricated baseline.
 """
 
 import numpy as np
 import time
+import sqlite3
+from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 from pathlib import Path
 import sys
 
 _backend_dir = Path(__file__).parent.parent.resolve()
+_root_dir = Path(__file__).parent.parent.parent.resolve()
 if str(_backend_dir) not in sys.path:
     sys.path.insert(0, str(_backend_dir))
 
@@ -40,6 +49,55 @@ except ImportError:
         GradientBoostingRegressor = None
 
 
+def _load_real_density_history(db_path: str = None, max_hours: int = 240) -> List[Tuple[float, float]]:
+    """
+    Pull real vehicle-count-per-time-bucket from traffic_data.db (populated by
+    TrafficDatabase.log_vehicle during normal camera operation) and convert it
+    into a (timestamp, density 0-1) series usable for training.
+
+    Density is approximated as min(1.0, vehicles_in_bucket / NORMALIZATION_CAP).
+    Adjust NORMALIZATION_CAP to roughly the max vehicles/minute your camera
+    realistically sees at your intersection during peak congestion.
+    """
+    NORMALIZATION_CAP = 15.0  # vehicles per 1-minute bucket judged "100% dense"
+
+    if db_path is None:
+        db_path = str(_root_dir / "data" / "traffic_data.db")
+
+    if not Path(db_path).exists():
+        return []
+
+    try:
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        cutoff = (datetime.now() - timedelta(hours=max_hours)).isoformat()
+        c.execute(
+            """
+            SELECT strftime('%Y-%m-%d %H:%M', timestamp) as bucket, COUNT(*) as cnt
+            FROM vehicles
+            WHERE timestamp >= ?
+            GROUP BY bucket
+            ORDER BY bucket ASC
+            """,
+            (cutoff,),
+        )
+        rows = c.fetchall()
+        conn.close()
+
+        if len(rows) < 20:
+            return []  # not enough real history yet - caller will fall back to synthetic
+
+        series = []
+        for bucket_str, cnt in rows:
+            ts = time.mktime(datetime.strptime(bucket_str, "%Y-%m-%d %H:%M").timetuple())
+            density = min(1.0, cnt / NORMALIZATION_CAP)
+            series.append((ts, density))
+        return series
+    except Exception as e:
+        logger.warning(f"[CongestionPredictor] Could not load real density history: {e}")
+        return []
+
+
 class XGBoostCongestionPredictor:
     """
     XGBoost-powered Machine Learning Traffic Density & Congestion Predictor.
@@ -51,17 +109,19 @@ class XGBoostCongestionPredictor:
       - Cyclic Time Features (sin/cos of minute/hour)
     """
 
-    def __init__(self, max_history: int = 200):
+    def __init__(self, max_history: int = 200, db_path: str = None):
         self.max_history = max_history
+        self.db_path = db_path
         self.history: List[float] = []
         self.timestamps: List[float] = []
         self.is_trained = False
+        self.trained_on_real_data = False
 
         # Models for multi-horizon forecasting (+15m, +30m, +60m)
         self.models: Dict[str, object] = {}
         self._init_models()
 
-        # Pre-seed model with realistic synthetic baseline training data
+        # Pre-seed model with real data if available, else synthetic baseline
         self._bootstrap_initial_training()
 
     def _init_models(self):
@@ -93,11 +153,10 @@ class XGBoostCongestionPredictor:
         Requires at least 5 samples.
         """
         if len(history_slice) < 5:
-            # Pad with mean if short
             avg = np.mean(history_slice) if history_slice else 0.2
             history_slice = [avg] * (5 - len(history_slice)) + list(history_slice)
 
-        arr = np.array(history_slice[-10:])  # last up to 10
+        arr = np.array(history_slice[-10:])
         lag1 = arr[-1]
         lag2 = arr[-2] if len(arr) >= 2 else lag1
         lag3 = arr[-3] if len(arr) >= 3 else lag2
@@ -109,7 +168,6 @@ class XGBoostCongestionPredictor:
         delta_1     = lag1 - lag2
         delta_3     = lag1 - lag3
 
-        # Time cyclic features
         ts_val = ts or time.time()
         t_struct = time.localtime(ts_val)
         minute_sin = np.sin(2 * np.pi * t_struct.tm_min / 60.0)
@@ -126,29 +184,85 @@ class XGBoostCongestionPredictor:
 
     def _bootstrap_initial_training(self):
         """
-        Train XGBoost models on realistic synthetic daily traffic curve data.
-        Ensures model works immediately with high accuracy from frame 1.
+        Train XGBoost models on REAL historical density pulled from
+        traffic_data.db if enough exists; otherwise fall back to the
+        synthetic sine-curve baseline so the model still works from frame 1.
         """
         if not HAS_XGBOOST and GradientBoostingRegressor is None:
             return
 
+        real_series = _load_real_density_history(self.db_path)
+
+        if real_series:
+            self._train_on_real_series(real_series)
+            return
+
+        logger.info(
+            "[CongestionPredictor] No sufficient real history in traffic_data.db yet "
+            "(need 20+ one-minute buckets, i.e. ~20+ min of camera logging). "
+            "Bootstrapping on synthetic data as a temporary placeholder - "
+            "run your detection pipeline a while, then call retrain_from_database()."
+        )
+        self._bootstrap_synthetic()
+
+    def _train_on_real_series(self, series: List[Tuple[float, float]]):
+        """Build lag-feature training set from real (timestamp, density) pairs."""
+        try:
+            densities = [d for _, d in series]
+            timestamps = [t for t, _ in series]
+
+            X_list, y_15_list, y_30_list, y_60_list = [], [], [], []
+            for i in range(5, len(densities) - 1):
+                feats = self._extract_features(densities[:i], timestamps[i])[0]
+                X_list.append(feats)
+                # Use next real sample as a proxy target for all horizons
+                # (short real logs won't span a full 60 min yet; this still
+                # trains the model on genuine traffic shape rather than fiction)
+                y_15_list.append(densities[i + 1])
+                y_30_list.append(densities[i + 1])
+                y_60_list.append(densities[i + 1])
+
+            if len(X_list) < 10:
+                logger.warning("[CongestionPredictor] Real series too short after feature extraction, using synthetic bootstrap instead.")
+                self._bootstrap_synthetic()
+                return
+
+            X = np.array(X_list)
+            self.models["15m"].fit(X, np.array(y_15_list))
+            self.models["30m"].fit(X, np.array(y_30_list))
+            self.models["60m"].fit(X, np.array(y_60_list))
+            self.is_trained = True
+            self.trained_on_real_data = True
+
+            # Seed live history buffer with the tail of real data so
+            # predict_future_congestion() has immediate context.
+            self.history = densities[-self.max_history:]
+            self.timestamps = timestamps[-self.max_history:]
+
+            algo = "XGBoost Regressor" if HAS_XGBOOST else "GradientBoosting Regressor"
+            logger.info(
+                f"[CongestionPredictor] Trained on {len(X_list)} REAL samples from traffic_data.db ({algo})!"
+            )
+        except Exception as e:
+            logger.error(f"[CongestionPredictor] Failed to train on real data, falling back to synthetic: {e}")
+            self._bootstrap_synthetic()
+
+    def _bootstrap_synthetic(self):
+        """Original synthetic sine-curve bootstrap, kept as a fallback only."""
         np.random.seed(42)
         samples = 300
         X_list = []
         y_15_list, y_30_list, y_60_list = [], [], []
 
         for i in range(samples):
-            # Synthetic 24h diurnal curve + noise
             t_hour = (i % 24)
             base_density = 0.2 + 0.5 * np.sin(np.pi * (t_hour - 6) / 12) ** 2
             base_density = np.clip(base_density + np.random.normal(0, 0.05), 0.05, 0.95)
 
-            # Generate pseudo history
             hist = [np.clip(base_density + np.random.normal(0, 0.03), 0.05, 0.95) for _ in range(10)]
             feats = self._extract_features(hist, time.time() + i * 3600)
             X_list.append(feats[0])
 
-            # Horizons with drift
             y_15 = np.clip(base_density + np.random.normal(0.02, 0.04), 0.0, 1.0)
             y_30 = np.clip(base_density + np.random.normal(0.04, 0.06), 0.0, 1.0)
             y_60 = np.clip(base_density + np.random.normal(0.06, 0.08), 0.0, 1.0)
@@ -164,10 +278,24 @@ class XGBoostCongestionPredictor:
                 self.models["30m"].fit(X, np.array(y_30_list))
                 self.models["60m"].fit(X, np.array(y_60_list))
                 self.is_trained = True
+                self.trained_on_real_data = False
                 algo = "XGBoost Regressor" if HAS_XGBOOST else "GradientBoosting Regressor"
-                logger.info(f"ML Model bootstrapped & trained successfully with 300 samples ({algo})!")
+                logger.info(f"ML Model bootstrapped on SYNTHETIC data ({algo}) - replace with real data before final demo!")
         except Exception as e:
             logger.error(f"Failed to fit initial ML models: {e}")
+
+    def retrain_from_database(self):
+        """
+        Call this periodically (e.g. once a day, or right before your demo)
+        to re-bootstrap the model on the latest real data accumulated in
+        traffic_data.db. Cheap to call - just re-runs the real-data path.
+        """
+        real_series = _load_real_density_history(self.db_path)
+        if real_series:
+            self._train_on_real_series(real_series)
+            return True
+        logger.info("[CongestionPredictor] retrain_from_database: still not enough real data logged yet.")
+        return False
 
     def add_datapoint(self, density: float):
         """Add live density sample (0.0 to 1.0)"""
@@ -178,7 +306,6 @@ class XGBoostCongestionPredictor:
             self.history.pop(0)
             self.timestamps.pop(0)
 
-        # Trigger incremental retrain every 30 samples
         if len(self.history) % 30 == 0 and len(self.history) >= 20:
             self._online_retrain()
 
@@ -189,7 +316,6 @@ class XGBoostCongestionPredictor:
 
         try:
             X_live, y_live = [], []
-            # Build lag dataset from rolling history
             for i in range(5, len(self.history) - 1):
                 f = self._extract_features(self.history[:i], self.timestamps[i])[0]
                 X_live.append(f)
@@ -202,6 +328,7 @@ class XGBoostCongestionPredictor:
                 self.models["30m"].fit(X_arr, y_arr)
                 self.models["60m"].fit(X_arr, y_arr)
                 self.is_trained = True
+                self.trained_on_real_data = True  # live data is always real
         except Exception as e:
             logger.warning(f"Online retrain skipped: {e}")
 
@@ -218,7 +345,6 @@ class XGBoostCongestionPredictor:
                 p_30 = float(np.clip(self.models["30m"].predict(feats)[0], 0.0, 1.0))
                 p_60 = float(np.clip(self.models["60m"].predict(feats)[0], 0.0, 1.0))
 
-                # Compute trend from predictions
                 diff = p_30 - curr
                 if diff > 0.15:
                     trend = "RAPIDLY INCREASING"
@@ -232,18 +358,19 @@ class XGBoostCongestionPredictor:
                     trend = "STABLE"
 
                 algo_name = "XGBoost ML Engine" if HAS_XGBOOST else "GradientBoosting ML Engine"
+                data_source = "REAL traffic_data.db" if self.trained_on_real_data else "SYNTHETIC bootstrap (replace before demo)"
                 return {
                     "current_density": round(curr * 100, 1),
                     "forecast_15m": {"density": round(p_15 * 100, 1), "level": self._density_to_level(p_15)},
                     "forecast_30m": {"density": round(p_30 * 100, 1), "level": self._density_to_level(p_30)},
                     "forecast_60m": {"density": round(p_60 * 100, 1), "level": self._density_to_level(p_60)},
                     "trend": trend,
-                    "model_used": algo_name
+                    "model_used": algo_name,
+                    "trained_on": data_source,
                 }
             except Exception as e:
                 logger.error(f"XGBoost inference error: {e}")
 
-        # Fallback linear polyfit if ML model fails
         return self._fallback_polyfit(curr)
 
     def _fallback_polyfit(self, curr: float) -> Dict:
@@ -254,7 +381,8 @@ class XGBoostCongestionPredictor:
                 "forecast_30m": {"density": round(curr * 105, 1), "level": self._density_to_level(curr * 1.05)},
                 "forecast_60m": {"density": round(curr * 110, 1), "level": self._density_to_level(curr * 1.1)},
                 "trend": "STABLE",
-                "model_used": "Linear Polyfit Fallback"
+                "model_used": "Linear Polyfit Fallback",
+                "trained_on": "insufficient data",
             }
 
         x = np.arange(len(self.history))
@@ -272,7 +400,8 @@ class XGBoostCongestionPredictor:
             "forecast_30m": {"density": round(p_30 * 100, 1), "level": self._density_to_level(p_30)},
             "forecast_60m": {"density": round(p_60 * 100, 1), "level": self._density_to_level(p_60)},
             "trend": trend,
-            "model_used": "Linear Polyfit Fallback"
+            "model_used": "Linear Polyfit Fallback",
+            "trained_on": "live rolling history",
         }
 
     def _density_to_level(self, density: float) -> str:
@@ -294,7 +423,7 @@ if __name__ == "__main__":
         predictor.add_datapoint(d)
     forecast = predictor.predict_future_congestion()
     print(f"[OK] XGBoostCongestionPredictor tested successfully!")
-    print(f"  Model Used: {forecast.get('model_used')}")
+    print(f"  Model Used: {forecast.get('model_used')} | Trained on: {forecast.get('trained_on')}")
     print(f"  Current Density: {forecast['current_density']}% | Trend: {forecast['trend']}")
     print(f"  +15m Forecast: {forecast['forecast_15m']}")
     print(f"  +30m Forecast: {forecast['forecast_30m']}")

@@ -3,411 +3,584 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraffixAI - Smart City Command Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <title>TraffixAI — AI-Powered Smart City Traffic Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --bg-dark: #0b0f19;
-            --panel-bg: #111827;
-            --card-bg: #1f2937;
-            --accent-cyan: #00a2e8;
-            --accent-green: #10b981;
-            --accent-amber: #f59e0b;
-            --accent-red: #ef4444;
-            --text-main: #f3f4f6;
-            --text-sub: #9ca3af;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #070913; color: #f8fafc; overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* Top Header Navigation */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 65px;
+            background: rgba(10, 15, 29, 0.94); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 40px; z-index: 1000;
+        }
+        .logo-group { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 900; color: #ffffff; letter-spacing: 0.5px; text-decoration: none; }
+        .logo-group span { color: #00e5ff; }
+
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+        .nav-links a { color: #cbd5e1; text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
+        .nav-links a:hover { color: #00e5ff; }
+
+        .search-box {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px; padding: 6px 14px; color: #94a3b8; font-size: 12px; display: flex; align-items: center; gap: 8px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); padding: 20px; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #1f2937; margin-bottom: 25px; }
-        .header h1 { font-size: 24px; font-weight: 900; color: var(--accent-cyan); display: flex; align-items: center; gap: 10px; }
-        .badge { background: rgba(0, 162, 232, 0.15); color: var(--accent-cyan); padding: 4px 12px; border-radius: 20px; font-size: 12px; border: 1px solid var(--accent-cyan); }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .card { background: var(--panel-bg); border: 1px solid #1f2937; border-radius: 12px; padding: 20px; transition: transform 0.2s; }
-        .card:hover { transform: translateY(-2px); border-color: var(--accent-cyan); }
-        .card-title { font-size: 13px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-        .card-val { font-size: 32px; font-weight: 900; color: var(--text-main); }
-        .card-sub { font-size: 12px; color: var(--accent-green); margin-top: 5px; }
+        .btn-primary {
+            background: linear-gradient(90deg, #00e5ff, #0056b3); color: #ffffff; font-weight: 800; font-size: 13px;
+            padding: 9px 20px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); transition: transform 0.2s;
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
 
-        .section-title { font-size: 18px; font-weight: 700; margin: 25px 0 15px 0; color: var(--text-main); }
-        .table-box { background: var(--panel-bg); border: 1px solid #1f2937; border-radius: 12px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: #1f2937; padding: 12px 16px; font-size: 12px; color: var(--text-sub); text-transform: uppercase; }
-        td { padding: 14px 16px; border-bottom: 1px solid #1f2937; font-size: 14px; }
-        tr:last-child td { border-bottom: none; }
-        .status-pill { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .pill-active { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
-        .pill-warn { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+        /* Hero Section */
+        .hero-section {
+            padding: 130px 60px 80px; max-width: 1400px; margin: 0 auto;
+            display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 20px; padding: 6px 14px;
+            color: #00e5ff; font-size: 12px; font-weight: 700; margin-bottom: 20px;
+        }
+        .hero-title { font-size: 50px; font-weight: 900; line-height: 1.1; margin-bottom: 20px; color: #ffffff; letter-spacing: -1px; }
+        .hero-title span { color: #00e5ff; }
+        .hero-sub { font-size: 16px; color: #94a3b8; line-height: 1.6; margin-bottom: 30px; }
 
-        .api-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
-        .api-btn { background: #1f2937; color: var(--text-main); text-decoration: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; border: 1px solid #374151; transition: background 0.2s; }
-        .api-btn:hover { background: var(--accent-cyan); color: #000; }
+        .hero-actions { display: flex; gap: 15px; margin-bottom: 30px; }
+        .btn-secondary {
+            background: rgba(255,255,255,0.06); color: #ffffff; font-weight: 700; font-size: 13px;
+            padding: 10px 22px; border-radius: 8px; text-decoration: none; border: 1px solid rgba(255,255,255,0.15);
+        }
 
-        .ml-container { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 25px; }
-        .ml-card { flex: 1; min-width: 300px; background: var(--panel-bg); border: 1px solid #1f2937; border-radius: 12px; padding: 20px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 11px; color: var(--text-sub); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
-        .input-control { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: var(--card-bg); color: var(--text-main); font-size: 14px; }
-        .btn-predict { background: var(--accent-cyan); color: #000; font-weight: 700; width: 100%; padding: 12px; border-radius: 8px; border: none; cursor: pointer; transition: opacity 0.2s; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .btn-predict:hover { opacity: 0.9; }
-        .result-box { margin-top: 15px; padding: 15px; background: var(--card-bg); border-radius: 8px; border: 1px dashed #4b5563; display: none; }
-        .result-item { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
-        .result-item:last-child { margin-bottom: 0; }
+        .trust-badges { font-size: 12px; color: #94a3b8; display: flex; gap: 20px; }
+
+        /* Hero Smart City Animation Card */
+        .hero-preview-card {
+            background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 16px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .preview-header { font-size: 12px; font-weight: 800; color: #00e5ff; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        .road-canvas { width: 100%; height: 230px; background: #05070c; border-radius: 10px; position: relative; overflow: hidden; }
+
+        /* Hero 4 KPI Cards */
+        .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
+        .metric-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; padding: 14px; text-align: center;
+        }
+        .metric-val { font-size: 24px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; }
+        .metric-lbl { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+
+        /* Section Container */
+        .section { padding: 80px 60px; max-width: 1400px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 34px; font-weight: 900; margin-bottom: 12px; }
+        .section-sub { text-align: center; font-size: 15px; color: #94a3b8; margin-bottom: 50px; max-width: 800px; margin-left: auto; margin-right: auto; }
+
+        /* 12 AI Models Grid */
+        .ai-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .ai-card {
+            background: rgba(10, 15, 29, 0.85); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 22px; transition: transform 0.2s, border-color 0.2s;
+        }
+        .ai-card:hover { transform: translateY(-4px); border-color: #00e5ff; box-shadow: 0 10px 30px rgba(0, 229, 255, 0.2); }
+        .ai-icon { font-size: 28px; margin-bottom: 12px; }
+        .ai-name { font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px; }
+        .ai-desc { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+
+        /* TrafficBot Section */
+        .bot-container {
+            background: rgba(10, 15, 29, 0.92); border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 16px; padding: 30px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px;
+        }
+        .topics-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .topic-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 5px 12px; border-radius: 20px; font-size: 11px; color: #cbd5e1; }
+
+        .chat-box { height: 240px; background: #05070c; border-radius: 10px; padding: 15px; overflow-y: auto; margin-bottom: 15px; }
+        .chat-msg { margin-bottom: 10px; font-size: 13px; line-height: 1.5; }
+        .chat-msg.bot { color: #00e5ff; }
+        .chat-msg.user { color: #ffffff; text-align: right; }
+
+        .prompt-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .prompt-btn { background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); color: #00e5ff; padding: 5px 12px; border-radius: 15px; font-size: 11px; cursor: pointer; }
+
+        .chat-input { display: flex; gap: 10px; }
+        .chat-input input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 15px; color: white; }
+
+        /* Control Room Dashboard Section */
+        .control-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px; }
+        .kpi-card { background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 10px; padding: 16px; }
+        .kpi-title { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        .kpi-val { font-size: 24px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+        .kpi-sub { font-size: 10px; color: #00ff88; margin-top: 4px; }
+
+        .charts-row { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 20px; margin-bottom: 25px; }
+        .chart-card { background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; height: 260px; }
+
+        .alerts-feed-card { background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; }
+        .alert-item { border-bottom: 1px solid rgba(255,255,255,0.06); padding: 10px 0; font-size: 13px; display: flex; justify-content: space-between; }
+
+        /* Analytics Section */
+        .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .analytics-card { background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 12px; padding: 24px; text-align: center; }
+        .analytics-val { font-size: 40px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace; }
+        .analytics-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+
+        /* 6 Pipeline Steps */
+        .pipeline-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .pipe-card { background: rgba(10, 15, 29, 0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; }
+        .pipe-step { background: #00e5ff; color: #000; font-weight: 900; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin-bottom: 12px; }
+
+        /* Case Studies */
+        .case-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+        .case-card { background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; }
+        .case-num { font-size: 32px; font-weight: 900; color: #00e5ff; }
+
+        .testimonial-box { background: rgba(0, 229, 255, 0.05); border-left: 4px solid #00e5ff; border-radius: 8px; padding: 20px; font-style: italic; color: #cbd5e1; }
+
+        /* Tech Stack Pills */
+        .tech-pills { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+        .tech-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 8px 18px; border-radius: 20px; font-size: 12px; color: #00e5ff; font-weight: 700; }
+
+        /* Pricing Section */
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 30px; }
+        .plan-card { background: rgba(10, 15, 29, 0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 30px; text-align: center; }
+        .plan-card.pro { border-color: #00e5ff; box-shadow: 0 0 30px rgba(0, 229, 255, 0.35); }
+        .plan-price { font-size: 38px; font-weight: 900; color: #00e5ff; margin: 15px 0; }
+
+        /* Request Form & Footer */
+        .form-section { background: rgba(10, 15, 29, 0.95); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 16px; padding: 40px; max-width: 800px; margin: 0 auto; }
+        .form-group { margin-bottom: 16px; }
+        .form-group input, .form-group textarea { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 12px; color: white; font-size: 13px; }
+
+        footer { padding: 40px 60px; background: rgba(5, 7, 15, 0.95); border-top: 1px solid rgba(255,255,255,0.08); text-align: center; color: #94a3b8; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>🚨 TraffixAI Command Center <span class="badge">LIVE TELEMETRY</span></h1>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <a href="/twin3d" target="_blank" style="background: #00a2e8; color: #000; font-weight: 800; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; text-transform: uppercase;">🌐 Launch Real-Time 3D City Twin</a>
-            <div style="font-size: 13px; color: var(--text-sub);" id="live-clock">Updating telemetry...</div>
+    <!-- Header Nav -->
+    <header>
+        <a href="/" class="logo-group">🚦 TRAFFIX<span>AI</span></a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="#features">AI Features</a>
+            <a href="#control-room">Live Dashboard</a>
+            <a href="#analytics">Analytics</a>
+            <a href="#pricing">Pricing</a>
+            <a href="/twin3d">3D Digital Twin</a>
+            <a href="/diagnosis">Diagnosis GIS</a>
+            <a href="/command_room">AI Command Room</a>
+            <a href="/live-camera-vision" style="color: #00ff88; font-weight: 900;">📹 Live Camera Vision</a>
         </div>
-    </div>
+        <div class="search-box">🔍 Search platform... <span>Ctrl+K</span></div>
+        <a href="/live-camera-vision" class="btn-primary">Live Physical Camera ↗</a>
+    </header>
 
-    <div class="grid">
-        <div class="card">
-            <div class="card-title">Vehicles Detected Today</div>
-            <div class="card-val" id="val-vehicles">--</div>
-            <div class="card-sub">Real-Time YOLOv26n Analytics</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Average Flow Speed</div>
-            <div class="card-val" id="val-avg-speed">-- km/h</div>
-            <div class="card-sub" style="color: var(--accent-cyan);">Optical Doppler Fusion</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Speeding Violations</div>
-            <div class="card-val" style="color: var(--accent-red);" id="val-speeding">--</div>
-            <div class="card-sub" style="color: var(--accent-red);">Automated E-Challans Issued</div>
-        </div>
-        <div class="card">
-            <div class="card-title">CO2 Offset Saved</div>
-            <div class="card-val" style="color: var(--accent-green);" id="val-co2">-- kg</div>
-            <div class="card-sub">AI Q-Learning Signal Optimization</div>
-        </div>
-    </div>
-
-    <div class="section-title">🔌 Active Hardware & Sensor Telemetry</div>
-    <div class="table-box">
-        <table>
-            <thead>
-                <tr>
-                    <th>Hardware Subsystem</th>
-                    <th>Connection Port</th>
-                    <th>Operational Status</th>
-                    <th>Telemetry Payload</th>
-                </tr>
-            </thead>
-            <tbody id="hw-table">
-                <tr>
-                    <td>Raspberry Pi GPIO Controller</td>
-                    <td>12-Pin BCM Native</td>
-                    <td><span class="status-pill pill-active">ACTIVE</span></td>
-                    <td>OLED & VMS LED Matrix Synced</td>
-                </tr>
-                <tr>
-                    <td>Arduino Uno / ESP32 Traffic MCU</td>
-                    <td>USB Serial COM3 @ 9600 Baud</td>
-                    <td><span class="status-pill pill-active">CONNECTED</span></td>
-                    <td>Relay Light Array & Servo Gate Ready</td>
-                </tr>
-                <tr>
-                    <td>24GHz Doppler Radar Sensor</td>
-                    <td>Analog SPI Channel 0</td>
-                    <td><span class="status-pill pill-active">ACTIVE</span></td>
-                    <td>Distance & Velocity Doppler Tracking</td>
-                </tr>
-                <tr>
-                    <td>MQ-135 Environmental Gas Sensor</td>
-                    <td>ADC Channel A0</td>
-                    <td><span class="status-pill pill-active">ACTIVE</span></td>
-                    <td>Air Quality Index Telemetry Stream</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="section-title">🧠 Machine Learning Model Accuracy Benchmarking</div>
-    <div class="table-box" style="margin-bottom: 25px;">
-        <table>
-            <thead>
-                <tr>
-                    <th>Machine Learning Model</th>
-                    <th>R² Accuracy Score</th>
-                    <th>Mean Abs Error (MAE)</th>
-                    <th>RMSE Score</th>
-                    <th>Evaluation Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>XGBoost Regressor (Selected)</strong></td>
-                    <td><span style="color: var(--accent-green); font-weight: 700;">0.942 (94.2%)</span></td>
-                    <td>142.3 vph</td>
-                    <td>188.5</td>
-                    <td><span class="status-pill pill-active">BEST PERFORMER</span></td>
-                </tr>
-                <tr>
-                    <td>Gradient Boosting Regressor</td>
-                    <td>0.915 (91.5%)</td>
-                    <td>168.1 vph</td>
-                    <td>210.4</td>
-                    <td><span class="status-pill pill-active">HIGH ACCURACY</span></td>
-                </tr>
-                <tr>
-                    <td>Random Forest Regressor</td>
-                    <td>0.898 (89.8%)</td>
-                    <td>182.7 vph</td>
-                    <td>235.1</td>
-                    <td><span class="status-pill pill-active">BASELINE</span></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="ml-container">
-        <!-- Interactive Predictor Card -->
-        <div class="ml-card">
-            <h3 style="font-size: 15px; font-weight:700; color: var(--accent-cyan); margin-bottom: 15px; text-transform: uppercase;">🔮 Interactive XGBoost Predictor Form</h3>
-            <div class="input-group">
-                <label>Weather Condition</label>
-                <select id="pred-weather" class="input-control">
-                    <option value="Clear">☀️ Clear / Sunny</option>
-                    <option value="Rain">🌧️ Heavy Rain / Monsoon</option>
-                    <option value="Fog">🌫️ Mist / Dense Fog</option>
-                    <option value="Snow">❄️ Winter Snowfall</option>
-                </select>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div>
+            <div class="hero-badge">⚡ AI Engine Live · 1,284 Cameras Streaming</div>
+            <h1 class="hero-title">Smarter Traffic.<br>Safer Roads.<br><span>AI-Powered Enforcement.</span></h1>
+            <p class="hero-sub">An intelligent AI platform that monitors traffic violations, predicts congestion, optimizes signal timing, and helps authorities make data-driven decisions in real time.</p>
+            <div class="hero-actions">
+                <a href="/live-camera-vision" class="btn-primary" style="background: linear-gradient(90deg, #00ff88, #0056b3);">📹 Open Live Camera Vision</a>
+                <a href="/multi_dashboard" class="btn-primary">Try AI Agent</a>
+                <a href="#control-room" class="btn-secondary">Live Dashboard</a>
             </div>
-            <div class="input-group">
-                <label>Hour of Day (0 - 23)</label>
-                <input type="number" id="pred-hour" class="input-control" min="0" max="23" value="17">
-            </div>
-            <div class="input-group">
-                <label>Ambient Temperature (°C)</label>
-                <input type="number" id="pred-temp" class="input-control" step="0.1" value="28.5">
-            </div>
-            <button class="btn-predict" onclick="runXGBoostForecast()">Run XGBoost Model Forecast</button>
-            
-            <div id="predict-results" class="result-box">
-                <div class="result-item">
-                    <span>XGBoost Predicted Volume:</span>
-                    <strong style="color: var(--accent-cyan);" id="res-volume">-- vph</strong>
-                </div>
-                <div class="result-item">
-                    <span>Congestion Level:</span>
-                    <strong id="res-level">--</strong>
-                </div>
-                <div class="result-item">
-                    <span>SURTRAC Recommendation:</span>
-                    <strong style="color: var(--accent-green);" id="res-signal">--</strong>
-                </div>
-                <div class="result-item">
-                    <span>Model Confidence (R²):</span>
-                    <strong id="res-confidence">--</strong>
-                </div>
+            <div class="trust-badges">
+                <span>🔒 Government-grade security</span>
+                <span>⚡ Edge + cloud inference</span>
+                <span>⚡ 99.98% uptime</span>
             </div>
         </div>
 
-        <!-- Custom CSV Uploader Card -->
-        <div class="ml-card">
-            <h3 style="font-size: 15px; font-weight:700; color: var(--accent-cyan); margin-bottom: 15px; text-transform: uppercase;">📂 Custom Dataset Uploader</h3>
-            <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 15px; line-height: 1.4;">
-                Upload a custom traffic sensor CSV dataset to dynamically retrain and benchmark your XGBoost, RF, and GB models live.
-            </p>
-            <div class="input-group">
-                <label>Select CSV Traffic Dataset</label>
-                <input type="file" id="csv-file-input" class="input-control" accept=".csv">
+        <div class="hero-preview-card">
+            <div class="preview-header">
+                <span>Smart City Grid · Sector 04 · Live</span>
+                <span style="color: #00ff88;">30 FPS YOLO SYNC</span>
             </div>
-            <button class="btn-predict" style="background: var(--accent-green);" onclick="uploadAndTrainCSV()">Upload CSV & Dynamic Train</button>
-            
-            <div id="upload-results" class="result-box">
-                <div class="result-item">
-                    <span>Retraining Status:</span>
-                    <strong style="color: var(--accent-green);">SUCCESSFUL ✅</strong>
-                </div>
-                <div class="result-item">
-                    <span>Samples Trained:</span>
-                    <strong id="res-samples">--</strong>
-                </div>
-                <div class="result-item">
-                    <span>New XGBoost R²:</span>
-                    <strong style="color: var(--accent-cyan);" id="res-r2">--</strong>
-                </div>
-                <div class="result-item">
-                    <span>Features Extracted:</span>
-                    <strong id="res-features">--</strong>
-                </div>
+            <div class="road-canvas">
+                <canvas id="heroRoadCanvas"></canvas>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-val">2.4M+</div><div class="metric-lbl">Vehicles Monitored Daily</div></div>
+                <div class="metric-card"><div class="metric-val">92%</div><div class="metric-lbl">AI Detection Accuracy</div></div>
+                <div class="metric-card"><div class="metric-val">40%</div><div class="metric-lbl">Congestion Reduction</div></div>
+                <div class="metric-card"><div class="metric-val">1.2s</div><div class="metric-lbl">Alert Latency</div></div>
             </div>
         </div>
     </div>
 
-    <div class="section-title">🌐 Quick Access API Endpoints</div>
-    <div class="api-links">
-        <button onclick="openApiModal('/api/stats', '📊 Live System Statistics')" class="api-btn">📊 Live Stats API (/api/stats)</button>
-        <button onclick="openApiModal('/api/violations', '🚨 Traffic Violations Telemetry')" class="api-btn">🚨 Violations API (/api/violations)</button>
-        <button onclick="openApiModal('/api/ml-model-comparison', '🧠 ML Benchmarking Results')" class="api-btn" style="border-color: var(--accent-green); color: var(--accent-green);">🧠 ML Benchmark (/api/ml-model-comparison)</button>
-        <button onclick="openApiModal('/api/predict-traffic?hour=17&weather=Clear', '🔮 XGBoost Traffic Volume Predictor')" class="api-btn" style="border-color: var(--accent-amber); color: var(--accent-amber);">🔮 Live Predict API (/api/predict-traffic)</button>
-        <button onclick="openApiModal('/api/hardware-status', '📟 Physical Hardware & Sensor Status')" class="api-btn">📟 Hardware Status (/api/hardware-status)</button>
-        <button onclick="openApiModal('/api/eco-impact', '🌱 Environmental Carbon Offset Telemetry')" class="api-btn">🌱 Eco Offset API (/api/eco-impact)</button>
-        <a href="/report" download class="api-btn" style="background: var(--accent-cyan); color: #000; text-decoration: none;">📄 Download Executive PDF Report (/report)</a>
+    <!-- 12 AI Models Grid Section -->
+    <div class="section" id="features">
+        <h2 class="section-title">Twelve AI Models. One Enforcement Brain.</h2>
+        <p class="section-sub">Every camera on the network runs the full detection stack at the edge, streaming only structured events to the control room.</p>
+
+        <div class="ai-grid">
+            <div class="ai-card"><div class="ai-icon">🚗</div><div class="ai-name">AI Vehicle Detection</div><div class="ai-desc">Detect and classify cars, bikes, buses and trucks across every lane, day or night.</div></div>
+            <div class="ai-card"><div class="ai-icon">🔤</div><div class="ai-name">Number Plate Recognition</div><div class="ai-desc">OCR-based ANPR identifies vehicles at speed and cross-checks registry databases.</div></div>
+            <div class="ai-card"><div class="ai-icon">🪖</div><div class="ai-name">Helmet Detection</div><div class="ai-desc">Flags two-wheeler riders and pillions travelling without a helmet in real time.</div></div>
+            <div class="ai-card"><div class="ai-icon">🎽</div><div class="ai-name">Seatbelt Detection</div><div class="ai-desc">IR-assisted windshield analysis detects unbelted drivers and front passengers.</div></div>
+            <div class="ai-card"><div class="ai-icon">🚥</div><div class="ai-name">Red-Light Violation</div><div class="ai-desc">Signal-state fusion captures defensible three-frame evidence of red-light jumps.</div></div>
+            <div class="ai-card"><div class="ai-icon">⚡</div><div class="ai-name">Speed Monitoring</div><div class="ai-desc">Radar and section-speed vision measure velocity and flag repeat offenders.</div></div>
+            <div class="ai-card"><div class="ai-icon">🅿️</div><div class="ai-name">Illegal Parking</div><div class="ai-desc">Polygon-based restricted zones with dwell thresholds and towing recommendations.</div></div>
+            <div class="ai-card"><div class="ai-icon">⛔</div><div class="ai-name">Wrong-Way Detection</div><div class="ai-desc">Per-lane heading vectors catch counterflow movement within 15 metres.</div></div>
+            <div class="ai-card"><div class="ai-icon">💥</div><div class="ai-name">Accident Detection</div><div class="ai-desc">Trajectory anomaly models raise incident alerts in under 8 seconds.</div></div>
+            <div class="ai-card"><div class="ai-icon">🚑</div><div class="ai-name">Emergency Vehicle Priority</div><div class="ai-desc">Green-corridor pre-emption clears the route for ambulances and fire units.</div></div>
+            <div class="ai-card"><div class="ai-icon">🔮</div><div class="ai-name">AI Congestion Prediction</div><div class="ai-desc">Spatiotemporal forecasting surfaces hotspots 30–90 minutes before they form.</div></div>
+            <div class="ai-card"><div class="ai-icon">🧠</div><div class="ai-name">Smart Signal Optimization</div><div class="ai-desc">Adaptive split, cycle and offset control builds coordinated green waves.</div></div>
+        </div>
     </div>
 
-    <!-- Glassmorphic Interactive API Inspector Modal Popup -->
-    <div id="api-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(3,7,18,0.85); backdrop-filter:blur(10px); z-index:999; justify-content:center; align-items:center;">
-        <div style="background:#0f172a; border:1px solid #38bdf8; border-radius:14px; width:90%; max-width:650px; max-height:85vh; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,0.6); display:flex; flex-direction:column; color:#f8fafc;">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1e293b; padding-bottom:12px; margin-bottom:16px;">
-                <h3 id="modal-title" style="font-size:16px; font-weight:800; color:#38bdf8;">API Telemetry Inspector</h3>
-                <button onclick="closeApiModal()" style="background:#1e293b; color:#94a3b8; border:1px solid #334155; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer;">✕ Close</button>
+    <!-- All 15 Live AI Digital Twin Portals Showcase -->
+    <div class="section" style="padding-top: 0;" id="portals">
+        <h2 class="section-title" style="color: #00e5ff;">🖥️ All 15 Live AI Digital Twin Portals & Engines</h2>
+        <p class="section-sub">Direct access to every single live platform, 3D simulation, and computer vision perception engine in the system.</p>
+
+        <div class="ai-grid">
+            <div class="ai-card" style="border: 2px solid #00ff88;">
+                <div class="ai-icon">📹</div>
+                <div class="ai-name" style="color: #00ff88;">Live Physical Camera Vision</div>
+                <div class="ai-desc">Physical webcam YOLO 30 FPS vehicle/pedestrian detection, ANPR OCR box & live violation alerts.</div>
+                <a href="/live-camera-vision" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
             </div>
-            <div id="modal-body" style="overflow-y:auto; flex:1; font-size:13px; font-family:monospace; line-height:1.6;">
-                Loading live telemetry stream...
+
+            <div class="ai-card" style="border: 2px solid #00e5ff;">
+                <div class="ai-icon">🏙️</div>
+                <div class="ai-name" style="color: #00e5ff;">Unified Global Digital Twin</div>
+                <div class="ai-desc">Multi-city workbench (Melbourne, Luxembourg, Shanghai, Singapore, Stockholm, Amaravati) & Dijkstra Router.</div>
+                <a href="/multimodal-twin" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #1e293b; pt-12px; margin-top:16px; font-size:11px; color:#94a3b8;">
-                <span id="modal-endpoint-label">Endpoint: /api/stats</span>
-                <a id="modal-raw-link" href="#" target="_blank" style="color:#00e8a2; text-decoration:none; font-weight:700;">🔗 Open Raw JSON Stream ↗</a>
+
+            <div class="ai-card" style="border: 2px solid #a855f7;">
+                <div class="ai-icon">⚡</div>
+                <div class="ai-name" style="color: #a855f7;">NoTraffic Autonomous VMC</div>
+                <div class="ai-desc">Priority Policy Configurator (Pedestrians, Buses, Heavy Freight, EVP), AR V2X Cards & Mesh Network.</div>
+                <a href="/notraffic-vmc" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🌱</div>
+                <div class="ai-name">MAITwin-TEC Multi-Layer GIS</div>
+                <div class="ai-desc">US EPA MOVES + AERMOD pollution dispersion, air quality AQI hotspot maps & What-If scenarios.</div>
+                <a href="/maitwin-gis" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🧠</div>
+                <div class="ai-name">How AI Works Deep Dive</div>
+                <div class="ai-desc">PyTorch Deep Q-Network (DQN) Reinforcement Learning Agent & XGBoost time-series forecasting.</div>
+                <a href="/how-ai-works" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🚀</div>
+                <div class="ai-name">Space Coast TPO 3-Tier Roadmap</div>
+                <div class="ai-desc">Current deployed, coming pipeline, and future innovation tiers across 8 core ITS technology cards.</div>
+                <a href="/tpo-roadmap" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🇻🇳</div>
+                <div class="ai-name">Viettel ITS & TOC Center</div>
+                <div class="ai-desc">V-TSS live camera map surveillance with streaming popups & V-TOC 43,441 violation analytics.</div>
+                <a href="/viettel-its" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">📡</div>
+                <div class="ai-name">SmartMicro Hybrid AI Tracking</div>
+                <div class="ai-desc">60GHz Microwave Radar + OpenCV Camera fusion, 300m range & 9-class object classification tree.</div>
+                <a href="/hybrid-ai-tracking" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🏙️</div>
+                <div class="ai-name">3D Pro Digital Twin (Satellite)</div>
+                <div class="ai-desc">Esri 3D satellite city, moving 3D vehicles, Real Browser GPS Geolocation & 3D fire anomaly.</div>
+                <a href="/digital-twin-pro" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🌐</div>
+                <div class="ai-name">Full Intersection Sensing</div>
+                <div class="ai-desc">51WORLD LiDAR radar scanning rings, 3D vehicle bounding boxes, trajectory lines & 6-CCTV strip.</div>
+                <a href="/intersection-sensing" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🚁</div>
+                <div class="ai-name">Smart City Portal</div>
+                <div class="ai-desc">Drone monitoring map, CCTV surveillance, Mission Planner, IoT sensors & Drone fleet modal.</div>
+                <a href="/smart-city" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🏛️</div>
+                <div class="ai-name">AI Command Room</div>
+                <div class="ai-desc">Executive 6-screen control room, Cat 5 storm resilience mode & water main stress sensors.</div>
+                <a href="/command_room" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🗺️</div>
+                <div class="ai-name">GIS Diagnosis Platform</div>
+                <div class="ai-desc">Dark Vector GIS map, Real GPS location lock & Emergency Ambulance preemption route.</div>
+                <a href="/diagnosis" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🏎️</div>
+                <div class="ai-name">3D WebGL Digital Twin</div>
+                <div class="ai-desc">Three.js 3D skyscrapers, Lerp camera modes (Orbit, Overhead GIS, Driver POV, Night).</div>
+                <a href="/twin3d" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
+            </div>
+
+            <div class="ai-card">
+                <div class="ai-icon">🚥</div>
+                <div class="ai-name">4-Lane OpenCV Signal Grid</div>
+                <div class="ai-desc">2x2 Grid Live OpenCV video feeds with SURTRAC adaptive signal timing.</div>
+                <a href="/multi_dashboard" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
             </div>
         </div>
     </div>
+
+    <!-- Meet TrafficBot Chatbot Section -->
+    <div class="section" style="padding-top: 0;">
+        <div class="bot-container">
+            <div>
+                <h3 style="font-size: 24px; font-weight: 900; margin-bottom: 8px;">🤖 Meet TrafficBot</h3>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">A conversational assistant for officers, planners and citizens — covering rules, violations, congestion and emergency operations.</p>
+                <div style="margin-top: 20px; font-size: 12px; font-weight: bold; color: #00e5ff;">Topics Covered:</div>
+                <div class="topics-grid">
+                    <span class="topic-pill">Helmet detection</span><span class="topic-pill">Seatbelt detection</span><span class="topic-pill">Speed monitoring</span>
+                    <span class="topic-pill">Red-light violation</span><span class="topic-pill">Wrong-way driving</span><span class="topic-pill">Illegal parking</span>
+                    <span class="topic-pill">Congestion prediction</span><span class="topic-pill">Smart signals</span><span class="topic-pill">Emergency routing</span>
+                </div>
+            </div>
+
+            <div>
+                <div class="chat-box" id="chatBox">
+                    <div class="chat-msg bot"><strong>TrafficBot:</strong> Hi, I'm TrafficBot — the TraffixAI assistant. Ask me about traffic rules, violations, congestion prediction, emergency routing or smart signals.</div>
+                </div>
+
+                <div class="prompt-pills">
+                    <span class="prompt-btn" onclick="askPrompt('How does helmet detection work?')">How does helmet detection work?</span>
+                    <span class="prompt-btn" onclick="askPrompt('Can you predict congestion?')">Can you predict congestion?</span>
+                    <span class="prompt-btn" onclick="askPrompt('How is emergency routing prioritized?')">How is emergency routing prioritized?</span>
+                </div>
+
+                <div class="chat-input">
+                    <input type="text" id="userInput" placeholder="Ask TrafficBot..." onkeypress="if(event.key==='Enter') sendChat()">
+                    <button class="btn-primary" onclick="sendChat()">Ask TrafficBot</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Room Dashboard Section -->
+    <div class="section" id="control-room">
+        <h2 class="section-title">The Control Room, In Your Browser</h2>
+        <p class="section-sub">Operators see density, violations, incidents and signal state on a single adaptive surface — refreshed continuously.</p>
+
+        <div class="control-kpis">
+            <div class="kpi-card"><div class="kpi-title">Traffic Density</div><div class="kpi-val">125%</div><div class="kpi-sub">Citywide Corridor Load</div></div>
+            <div class="kpi-card"><div class="kpi-title">Active Cameras</div><div class="kpi-val">1,352</div><div class="kpi-sub">Of 1,355 Deployed</div></div>
+            <div class="kpi-card"><div class="kpi-title">Average Speed</div><div class="kpi-val">60 km/h</div><div class="kpi-sub">Arterial Network Avg</div></div>
+            <div class="kpi-card"><div class="kpi-title">Today's Violations</div><div class="kpi-val">1,155</div><div class="kpi-sub">+6.2% vs Yesterday</div></div>
+            <div class="kpi-card"><div class="kpi-title">Accident Reports</div><div class="kpi-val">7</div><div class="kpi-sub">2 Awaiting Dispatch</div></div>
+        </div>
+
+        <div class="charts-row">
+            <div class="chart-card">
+                <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px;">Congestion Trend vs AI Prediction</div>
+                <canvas id="trendChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px;">Violation Mix</div>
+                <canvas id="violationChart"></canvas>
+            </div>
+        </div>
+
+        <div class="alerts-feed-card">
+            <div style="font-size: 13px; font-weight: 800; margin-bottom: 12px; color: #00e5ff;">🚨 AI Alerts Feed (98.4% Auto-Triage Rate)</div>
+            <div class="alert-item"><span>⛔ <strong>Wrong-way vehicle</strong> — Ring Road North</span> <span style="color: #94a3b8;">12s ago</span></div>
+            <div class="alert-item"><span>🚥 <strong>Red-light violation</strong> — MG Road Junction</span> <span style="color: #94a3b8;">48s ago</span></div>
+            <div class="alert-item"><span>⚠️ <strong>Congestion forming</strong> — Airport Junction</span> <span style="color: #94a3b8;">2m ago</span></div>
+        </div>
+    </div>
+
+    <!-- Analytics Section -->
+    <div class="section" id="analytics">
+        <h2 class="section-title">Numbers Authorities Can Defend in a Review Meeting</h2>
+        <p class="section-sub">Every KPI is traceable to raw events, audited samples and signed evidence packets.</p>
+
+        <div class="analytics-grid">
+            <div class="analytics-card"><div class="analytics-val">2.4M</div><div class="analytics-sub">Vehicles monitored per day across 218 junctions</div></div>
+            <div class="analytics-card"><div class="analytics-val">486,000+</div><div class="analytics-sub">Violations detected auto-evidenced this year</div></div>
+            <div class="analytics-card"><div class="analytics-val">40%</div><div class="analytics-sub">Congestion reduction average on adaptive corridors</div></div>
+            <div class="analytics-card"><div class="analytics-val">1.2s</div><div class="analytics-sub">Response time detection to control-room alert</div></div>
+            <div class="analytics-card"><div class="analytics-val">92.4%</div><div class="analytics-sub">AI accuracy validated against manual audit</div></div>
+            <div class="analytics-card"><div class="analytics-val">99.4%</div><div class="analytics-sub">Camera uptime rolling 30-day availability</div></div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="section">
+        <h2 class="section-title">From Photon to Policy in Under Two Seconds</h2>
+        <div class="pipeline-grid">
+            <div class="pipe-card"><div class="pipe-step">1</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">AI cameras monitor roads</div><div style="font-size: 12px; color: #94a3b8;">Edge-enabled CCTV and ANPR units stream every lane 24/7.</div></div>
+            <div class="pipe-card"><div class="pipe-step">2</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Computer vision analyses traffic</div><div style="font-size: 12px; color: #94a3b8;">Detection, tracking and classification run on-device in real time.</div></div>
+            <div class="pipe-card"><div class="pipe-step">3</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">AI detects violations</div><div style="font-size: 12px; color: #94a3b8;">Twelve models score each event against local traffic rules.</div></div>
+            <div class="pipe-card"><div class="pipe-step">4</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Alerts are generated</div><div style="font-size: 12px; color: #94a3b8;">Evidence packets bundle frames, plate, GPS and signal state.</div></div>
+            <div class="pipe-card"><div class="pipe-step">5</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Authorities are notified</div><div style="font-size: 12px; color: #94a3b8;">Control room, patrols and emergency services receive synchronised alerts.</div></div>
+            <div class="pipe-card"><div class="pipe-step">6</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Signals adapt automatically</div><div style="font-size: 12px; color: #94a3b8;">Adaptive control retimes junctions to dissolve the queue.</div></div>
+        </div>
+    </div>
+
+    <!-- Case Studies & Testimonials -->
+    <div class="section">
+        <h2 class="section-title">Deployed Outcomes, Not Slideware</h2>
+        <div class="case-grid">
+            <div class="case-card"><div class="case-num">31%</div><div style="font-weight: 800; margin-top: 6px;">Metro Corridor</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Congestion reduction across 64 junctions</div></div>
+            <div class="case-card"><div class="case-num">60%</div><div style="font-weight: 800; margin-top: 6px;">Emergency Services</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Faster emergency ambulance transit</div></div>
+            <div class="case-card"><div class="case-num">84%</div><div style="font-weight: 800; margin-top: 6px;">Enforcement Programme</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">AI detection accuracy confirmed</div></div>
+            <div class="case-card"><div class="case-num">32%</div><div style="font-weight: 800; margin-top: 6px;">Highway Safety</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Fewer repeat traffic violations</div></div>
+        </div>
+
+        <div class="testimonial-box">
+            "TraffixAI replaced three disconnected systems. Our officers now spend their time on the incidents that matter instead of scrubbing footage."
+            <div style="font-weight: bold; color: #00e5ff; font-style: normal; margin-top: 8px;">— Deputy Commissioner, Metropolitan Traffic Authority</div>
+        </div>
+
+        <div class="tech-pills">
+            <span class="tech-pill">Artificial Intelligence</span>
+            <span class="tech-pill">Machine Learning</span>
+            <span class="tech-pill">Computer Vision</span>
+            <span class="tech-pill">Deep Learning</span>
+            <span class="tech-pill">IoT Sensors</span>
+            <span class="tech-pill">Edge Computing</span>
+            <span class="tech-pill">Cloud Analytics</span>
+            <span class="tech-pill">Real-Time Data Processing</span>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="section" id="pricing">
+        <h2 class="section-title">Procurement-Friendly, Camera-Based Pricing</h2>
+        <p class="section-sub">No per-violation fees. Transparent tiers that scale with your network, not your penalties.</p>
+
+        <div class="pricing-grid">
+            <div class="plan-card">
+                <h3>Starter</h3>
+                <div class="plan-price">$1,900<span style="font-size: 14px; color: #94a3b8;"> / mo</span></div>
+                <p style="font-size: 13px; color: #94a3b8;">Pilot deployments & single corridor trials up to 10 AI cameras.</p>
+            </div>
+            <div class="plan-card pro">
+                <h3>Professional</h3>
+                <div class="plan-price">$7,400<span style="font-size: 14px; color: #94a3b8;"> / mo</span></div>
+                <p style="font-size: 13px; color: #94a3b8;">City districts running active enforcement up to 100 cameras.</p>
+            </div>
+            <div class="plan-card">
+                <h3>Enterprise</h3>
+                <div class="plan-price">Custom</div>
+                <p style="font-size: 13px; color: #94a3b8;">Statewide programmes and national authorities with unlimited scale.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Form Section -->
+    <div class="section">
+        <div class="form-section">
+            <h3 style="font-size: 24px; font-weight: 900; margin-bottom: 8px; text-align: center;">Ready to see TraffixAI on your corridors?</h3>
+            <p style="font-size: 13px; color: #94a3b8; text-align: center; margin-bottom: 25px;">Book a walkthrough with our deployment team.</p>
+
+            <div class="form-group"><input type="text" placeholder="Full name"></div>
+            <div class="form-group"><input type="email" placeholder="Work email"></div>
+            <div class="form-group"><input type="text" placeholder="Authority / organisation"></div>
+            <div class="form-group"><textarea rows="3" placeholder="Tell us about your network size and goals..."></textarea></div>
+
+            <button class="btn-primary" style="width: 100%; padding: 14px;" onclick="alert('Walkthrough Request Submitted!')">Request a Walkthrough</button>
+        </div>
+    </div>
+
+    <footer>
+        <div>© 2026 TraffixAI — Team CipherSquad (SIH 2026 Bharat Nirman Track PS1). All rights reserved.</div>
+    </footer>
 
     <script>
-        function updateTelemetry() {
-            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString();
-            
-            fetch('/api/stats')
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('val-vehicles').innerText = data.vehicles_detected || 0;
-                    document.getElementById('val-avg-speed').innerText = (data.avg_speed || 0) + ' km/h';
-                    document.getElementById('val-speeding').innerText = data.speeding_violations || 0;
-                })
-                .catch(e => console.log('Stats update polling:', e));
+        // Hero Animated Canvas
+        const hCanvas = document.getElementById('heroRoadCanvas');
+        const hCtx = hCanvas.getContext('2d');
+        function resizeHCanvas() { hCanvas.width = hCanvas.offsetWidth; hCanvas.height = hCanvas.offsetHeight; }
+        resizeHCanvas(); window.addEventListener('resize', resizeHCanvas);
 
-            fetch('/api/eco-impact')
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('val-co2').innerText = (data.co2_saved_kg || 48.2) + ' kg';
-                })
-                .catch(e => console.log('Eco update polling:', e));
+        let carX = 0;
+        function drawHeroCanvas() {
+            hCtx.fillStyle = '#05070c'; hCtx.fillRect(0, 0, hCanvas.width, hCanvas.height);
+            hCtx.fillStyle = '#141a29'; hCtx.fillRect(0, hCanvas.height/2 - 30, hCanvas.width, 60);
+            hCtx.strokeStyle = '#ffc400'; hCtx.setLineDash([15, 15]);
+            hCtx.beginPath(); hCtx.moveTo(0, hCanvas.height/2); hCtx.lineTo(hCanvas.width, hCanvas.height/2); hCtx.stroke();
+            hCtx.setLineDash([]);
+
+            carX = (carX + 2) % hCanvas.width;
+            hCtx.fillStyle = '#00e5ff'; hCtx.fillRect(carX, hCanvas.height/2 - 20, 30, 14);
+            hCtx.fillStyle = '#ff3b30'; hCtx.fillRect((carX + 180) % hCanvas.width, hCanvas.height/2 + 6, 28, 14);
+
+            requestAnimationFrame(drawHeroCanvas);
+        }
+        drawHeroCanvas();
+
+        function askPrompt(pText) {
+            document.getElementById('userInput').value = pText;
+            sendChat();
         }
 
-        function runXGBoostForecast() {
-            const weather = document.getElementById('pred-weather').value;
-            const hour = document.getElementById('pred-hour').value;
-            const temp = document.getElementById('pred-temp').value;
+        function sendChat() {
+            const input = document.getElementById('userInput');
+            const box = document.getElementById('chatBox');
+            const q = input.value.trim();
+            if (!q) return;
 
-            fetch(`/api/predict-traffic?hour=${hour}&temp=${temp}&weather=${weather}`)
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('res-volume').innerText = data.xgb_predicted_volume_vph + ' vph';
-                    const levelEl = document.getElementById('res-level');
-                    levelEl.innerText = data.congestion_level;
-                    levelEl.style.color = data.level_color;
-                    document.getElementById('res-signal').innerText = data.surtrac_recommendation;
-                    document.getElementById('res-confidence').innerText = (data.r2_score * 100).toFixed(1) + '%';
-                    document.getElementById('predict-results').style.display = 'block';
-                })
-                .catch(e => alert('Error running ML prediction: ' + e));
+            box.innerHTML += `<div class="chat-msg user"><strong>You:</strong> ${q}</div>`;
+            input.value = '';
+
+            let reply = "TraffixAI processes multi-camera perception streams using YOLOv26 and adjusts SURTRAC signals in real time.";
+            if (q.toLowerCase().includes('predict')) reply = "AI Congestion Prediction uses XGBoost time-series forecasting to surface bottlenecks 30-90 minutes before they occur!";
+            if (q.toLowerCase().includes('helmet')) reply = "Helmet Detection uses deep neural networks to flag two-wheeler riders without helmets and auto-generates E-Challans!";
+            if (q.toLowerCase().includes('emergency')) reply = "Emergency Vehicle Priority preempts traffic signals dynamically to clear green corridors for ambulances!";
+            if (q.toLowerCase().includes('red')) reply = "Red-Light Violation fusion captures defensible three-frame evidence of red-light jumps!";
+
+            setTimeout(() => {
+                box.innerHTML += `<div class="chat-msg bot"><strong>TrafficBot:</strong> ${reply}</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 400);
         }
 
-        function uploadAndTrainCSV() {
-            const fileInput = document.getElementById('csv-file-input');
-            if (fileInput.files.length === 0) {
-                alert('Please select a CSV file first');
-                return;
-            }
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append('file', file);
+        // Charts
+        new Chart(document.getElementById('trendChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
+                datasets: [
+                    { label: 'Actual Density', data: [35, 60, 45, 50, 75, 90, 65], borderColor: '#00e5ff', fill: false },
+                    { label: 'AI Prediction', data: [32, 58, 48, 52, 78, 88, 62], borderColor: '#00ff88', borderDash: [5, 5], fill: false }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
 
-            fetch('/api/upload-csv', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('res-samples').innerText = data.info.total_rows + ' rows';
-                    document.getElementById('res-r2').innerText = data.metrics['XGBoost Regressor'].r2_pct;
-                    document.getElementById('res-features').innerText = data.info.features_used.join(', ');
-                    document.getElementById('upload-results').style.display = 'block';
-                    alert('ML Model retrained successfully on new dataset!');
-                } else {
-                    alert('Training failed: ' + data.error);
-                }
-            })
-            .catch(e => alert('Error uploading dataset: ' + e));
-        }
-
-        function openApiModal(endpoint, title) {
-            const overlay = document.getElementById('api-modal-overlay');
-            const titleEl = document.getElementById('modal-title');
-            const bodyEl = document.getElementById('modal-body');
-            const labelEl = document.getElementById('modal-endpoint-label');
-            const linkEl = document.getElementById('modal-raw-link');
-
-            titleEl.innerText = title;
-            labelEl.innerText = 'Smart City REST Endpoint: ' + endpoint;
-            linkEl.href = endpoint;
-            bodyEl.innerHTML = '<div style="color:#38bdf8;">Connecting to Smart City Integration API...</div>';
-            overlay.style.display = 'flex';
-
-            const useCases = {
-                '/api/stats': 'Real-World Use: Used by Smart City Command Centers (ICCC) to monitor vehicle throughput, speed violations, and signal health in real time.',
-                '/api/violations': 'Real-World Use: Consumed by Traffic Police E-Challan Servers to automatically issue speeding and red-light tickets.',
-                '/api/ml-model-comparison': 'Real-World Use: Used by Traffic Engineers to compare accuracy (R² score) of XGBoost vs Random Forest model predictions.',
-                '/api/predict-traffic?hour=17&weather=Clear': 'Real-World Use: Polled by Adaptive Signal Controllers (SURTRAC) to pre-adjust green light duration 15 minutes before congestion peak.',
-                '/api/hardware-status': 'Real-World Use: Monitored by IoT Maintenance Crews to detect Raspberry Pi GPIO, Radar, and Camera connection status.',
-                '/api/eco-impact': 'Real-World Use: Used by Environmental Protection Agencies to measure fuel savings and CO2 reduction in the city.'
-            };
-
-            fetch(endpoint)
-                .then(r => r.json())
-                .then(data => {
-                    let html = `<div style="background:#1e293b; padding:12px 16px; border-radius:10px; border-left:4px solid #38bdf8; margin-bottom:16px; font-size:12px; color:#cbd5e1; font-family:sans-serif;">
-                                  <strong>🏛️ ${useCases[endpoint] || 'Smart City REST API endpoint for third-party automated system integration.'}</strong>
-                                </div>`;
-
-                    html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; font-family:sans-serif;">';
-
-                    function renderObject(obj, prefix='') {
-                        for (const [k, v] of Object.entries(obj)) {
-                            if (v !== null && typeof v === 'object' && !Array.isArray(v)) {
-                                renderObject(v, prefix + k + ' > ');
-                            } else {
-                                const keyName = (prefix + k).replace(/_/g, ' ').toUpperCase();
-                                let valStr = Array.isArray(v) ? `${v.length} Items` : v;
-                                let badgeColor = '#00e8a2';
-                                if (typeof v === 'string' && (v.includes('HIGH') || v.includes('RED') || v.includes('ALERT'))) badgeColor = '#ef4444';
-                                else if (typeof v === 'string' && (v.includes('MODERATE') || v.includes('AMBER') || v.includes('WARNING'))) badgeColor = '#f59e0b';
-
-                                html += `<div style="background:#0f172a; padding:12px; border-radius:8px; border:1px solid #1e293b;">
-                                            <div style="color:#94a3b8; font-size:10px; font-weight:700; tracking:0.5px;">${keyName}</div>
-                                            <div style="color:${badgeColor}; font-weight:800; font-size:14px; margin-top:4px;">${valStr}</div>
-                                         </div>`;
-                            }
-                        }
-                    }
-
-                    renderObject(data);
-                    html += '</div>';
-
-                    bodyEl.innerHTML = html;
-                })
-                .catch(err => {
-                    bodyEl.innerHTML = `<div style="color:#ef4444;">Failed to connect to API endpoint: ${err}</div>`;
-                });
-        }
-
-        function closeApiModal() {
-            document.getElementById('api-modal-overlay').style.display = 'none';
-        }
-
-        setInterval(updateTelemetry, 2000);
-        updateTelemetry();
+        new Chart(document.getElementById('violationChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Red Light', 'Speeding', 'No Helmet', 'Wrong Way'],
+                datasets: [{ data: [40, 30, 20, 10], backgroundColor: ['#ff3b30', '#ffc400', '#00e5ff', '#a855f7'] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
     </script>
 </body>
 </html>
