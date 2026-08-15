@@ -166,6 +166,11 @@
         <div id="night-overlay"></div>
     </div>
 
+    <!-- Live SUMO Digital Twin Status Panel - always visible, polls the real backend every 3s -->
+    <div id="sumo-live-panel" style="position:fixed; bottom:70px; left:20px; z-index:500; background:rgba(10,15,29,0.92); border:1px solid #00e5ff; border-radius:10px; padding:12px 16px; font-size:12px; color:#e0f7ff; font-family:monospace; min-width:220px; box-shadow:0 10px 30px rgba(0,229,255,0.25);">
+        Connecting to SUMO...
+    </div>
+
     <!-- Left Operations Navigation Menu (Matching Video 10) -->
     <div class="left-menu">
         <div class="menu-cat">City Overview</div>
@@ -226,12 +231,13 @@
     </div>
 
     <div class="side-drawer" id="drawer-whatif">
-        <div class="drawer-header"><span>🔮 What-If Congestion Forecast</span><span class="drawer-close" onclick="closeDrawers()">✕</span></div>
-        <p style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin-bottom: 10px;">Simulates closing arterial corridors or lane reductions on citywide travel times.</p>
+        <div class="drawer-header"><span>🔮 What-If Congestion Forecast (Live SUMO)</span><span class="drawer-close" onclick="closeDrawers()">✕</span></div>
+        <p style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin-bottom: 10px;">Runs a real SUMO microsimulation for the Baguiati intersection with an adjusted signal timing and reports the genuine simulated delay change.</p>
+        <label style="font-size:11px; color:#94a3b8;">Proposed green duration (sec):</label>
+        <input type="number" id="whatif-green-sec" value="45" min="10" max="120" style="width:100%; margin:6px 0 10px; padding:6px; background:#0a0f1d; border:1px solid #00e5ff; border-radius:4px; color:#00e5ff; font-size:12px;">
         <button class="btn-event" style="background: linear-gradient(90deg, #00e5ff, #0056b3);" onclick="runWhatIf()">Run What-If Prediction</button>
-        <div id="whatif-result" style="display:none; margin-top:12px; padding:10px; background:rgba(0,229,255,0.1); border-left:3px solid #00e5ff; font-size:11px; line-height:1.5;">
-            <strong>Result:</strong> Closing Main Arterial increases secondary road density by +14%, SURTRAC extends green wave by 22s automatically!
-        </div>
+        <div id="whatif-loading" style="display:none; margin-top:12px; font-size:11px; color:#00e5ff;">⏳ Running live SUMO simulation...</div>
+        <div id="whatif-result" style="display:none; margin-top:12px; padding:10px; background:rgba(0,229,255,0.1); border-left:3px solid #00e5ff; font-size:11px; line-height:1.7;"></div>
     </div>
 
     <!-- Live Physical Camera & Perception Window Overlay (Matching Video 10 & Hardware Stream) -->
@@ -593,10 +599,59 @@
         }
 
         function runWhatIf() {
-            document.getElementById('whatif-result').style.display = 'block';
+            const greenSec = document.getElementById('whatif-green-sec').value || 45;
+            const loadingEl = document.getElementById('whatif-loading');
+            const resultEl = document.getElementById('whatif-result');
+            loadingEl.style.display = 'block';
+            resultEl.style.display = 'none';
+
+            fetch(`/api/simulate-what-if?green_sec=${greenSec}`)
+                .then(res => res.json())
+                .then(data => {
+                    loadingEl.style.display = 'none';
+                    resultEl.style.display = 'block';
+                    const isLive = (data.scenario || '').includes('live SUMO');
+                    const statusBadge = isLive
+                        ? '<span style="color:#00ff88;">● LIVE SUMO SIMULATION</span>'
+                        : '<span style="color:#ff6b6b;">● NOT CONNECTED (emulated fallback)</span>';
+                    resultEl.innerHTML = `
+                        ${statusBadge}<br>
+                        <strong>Baseline delay:</strong> ${data.baseline_delay_sec}s<br>
+                        <strong>Simulated delay (${greenSec}s green):</strong> ${data.simulated_delay_sec}s<br>
+                        <strong>Change:</strong> ${data.predicted_delay_reduction_pct}%<br>
+                        <strong>Recommendation:</strong> ${data.recommendation}
+                    `;
+                })
+                .catch(err => {
+                    loadingEl.style.display = 'none';
+                    resultEl.style.display = 'block';
+                    resultEl.innerHTML = `<span style="color:#ff6b6b;">Request failed: ${err}</span>`;
+                });
         }
 
-        window.onload = initMap;
+        function pollSumoTelemetry() {
+            fetch('/api/sumo-traci-telemetry')
+                .then(res => res.json())
+                .then(data => {
+                    const el = document.getElementById('sumo-live-panel');
+                    if (!el) return;
+                    const g = data.sumo_graph || {};
+                    const isLive = g.traci_status === 'ACTIVE_SYNC';
+                    el.innerHTML = `
+                        <div style="font-weight:800; margin-bottom:6px;">
+                            ${isLive ? '<span style="color:#00ff88;">● LIVE SUMO</span>' : '<span style="color:#ff6b6b;">● EMULATED</span>'}
+                        </div>
+                        <div>Edge: ${g.active_edge || '-'}</div>
+                        <div>Sim step: ${g.sim_step ?? '-'}</div>
+                        <div>Speed: ${g.simulated_avg_speed_kmh ?? '-'} km/h</div>
+                        <div>Queue: ${g.virtual_queue_length_m ?? '-'} m</div>
+                    `;
+                })
+                .catch(() => {});
+        }
+        setInterval(pollSumoTelemetry, 3000);
+
+        window.onload = function() { initMap(); pollSumoTelemetry(); };
     </script>
 </body>
 </html>
