@@ -56,10 +56,17 @@ class SUMOTraCIBridge:
 
     # Known site configs - pass site="baguiati" or site="silk_board" instead of
     # a raw path to switch intersections without remembering folder layout.
+    # Project root = two levels up from backend/src/sumo_traci_bridge.py.
+    # Resolving to an ABSOLUTE path here means these configs work correctly
+    # no matter what directory Python was launched from (a very common bug:
+    # Flask apps launched from backend/ silently can't find a relative
+    # "sumo/..." path and fall back to emulated mode without erroring).
+    _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
     SITE_CONFIGS = {
-        "generic":    "sumo/intersection.sumocfg",
-        "baguiati":   "sumo/baguiati/baguiati.sumocfg",       # VIP Road x Baguiati Main Road, Kolkata (primary)
-        "silk_board": "sumo/silk_board/silk_board.sumocfg",   # Hosur Rd x Outer Ring Rd, Bengaluru (secondary)
+        "generic":    str(_PROJECT_ROOT / "sumo" / "intersection.sumocfg"),
+        "baguiati":   str(_PROJECT_ROOT / "sumo" / "baguiati" / "baguiati.sumocfg"),       # VIP Road x Baguiati Main Road, Kolkata (primary)
+        "silk_board": str(_PROJECT_ROOT / "sumo" / "silk_board" / "silk_board.sumocfg"),   # Hosur Rd x Outer Ring Rd, Bengaluru (secondary)
     }
 
     # Per-site: approach-code -> (route_id for injected vehicles, in-edge id to monitor).
@@ -286,11 +293,9 @@ if __name__ == "__main__":
         print(f"Unknown site '{site_arg}'. Choose from: {list(SUMOTraCIBridge.SITE_CONFIGS.keys())}")
         _sys.exit(1)
 
-    # SITE_CONFIGS paths are relative to the project root; when running this
-    # file directly from backend/src for a local test, prefix with ../../
-    cfg_path = f"../../{SUMOTraCIBridge.SITE_CONFIGS[site_arg]}"
-
-    bridge = SUMOTraCIBridge(sumo_cfg_path=cfg_path, site=site_arg)
+    # SITE_CONFIGS now holds absolute paths, so just pass site= directly -
+    # no more manual relative-path prefixing needed.
+    bridge = SUMOTraCIBridge(site=site_arg)
     _test_lane_id = "HOSURN_lane0" if site_arg == "silk_board" else "N_in_0"
     sync_res = bridge.sync_virtual_graph_state({"lane_id": _test_lane_id, "vehicle_count": 6, "avg_speed_kmh": 38.0, "signal_phase": "GREEN"})
     sim_res = bridge.simulate_what_if_signal_override(proposed_green_sec=45)

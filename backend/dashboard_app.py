@@ -98,7 +98,7 @@ def get_sumo_traci_telemetry():
         from backend.src.sumo_traci_bridge import SUMOTraCIBridge
         from backend.src.graph_gnn_predictor import SpatioTemporalGraphPredictor
 
-    bridge = SUMOTraCIBridge()
+    bridge = SUMOTraCIBridge(site="baguiati")  # real intersection, not the generic placeholder
     stgcn = SpatioTemporalGraphPredictor()
 
     telem_file = _root_dir / "data" / "live_camera_telemetry.json"
@@ -129,7 +129,7 @@ def simulate_what_if_endpoint():
         from backend.src.sumo_traci_bridge import SUMOTraCIBridge
 
     green_sec = int(request.args.get('green_sec', 45))
-    bridge = SUMOTraCIBridge()
+    bridge = SUMOTraCIBridge(site="baguiati")
     result = bridge.simulate_what_if_signal_override(proposed_green_sec=green_sec)
     return jsonify(result)
 
