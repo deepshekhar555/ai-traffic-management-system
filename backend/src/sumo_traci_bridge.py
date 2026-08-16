@@ -136,7 +136,11 @@ class SUMOTraCIBridge:
 
         try:
             binary = "sumo-gui" if self.gui else "sumo"
-            self.traci.start([binary, "-c", self.sumo_cfg_path, "--no-step-log", "--quit-on-end"])
+            self.traci.start(
+                [binary, "-c", self.sumo_cfg_path, "--no-step-log", "--quit-on-end"],
+                label=self.site,
+            )
+            self.traci.switch(self.site)
             self.traci_active = True
             logger.info(f"[SUMO/TraCI] Connected to real SUMO simulation ({binary}).")
         except Exception as e:
@@ -169,7 +173,18 @@ class SUMOTraCIBridge:
 
         # Inject vehicles proportional to observed count above what's already
         # running on that edge, so SUMO's density roughly mirrors the camera.
+        # Multiple SUMOTraCIBridge instances (one per site) share the same
+        # global `traci` module connection registry. Re-assert THIS bridge's
+        # own labeled connection is active before touching it - otherwise
+        # whichever site was switched-to most recently elsewhere silently
+        # steals every other bridge's calls.
+        # Multiple SUMOTraCIBridge instances (one per site) share the same
+        # global `traci` module connection registry. Re-assert THIS bridge's
+        # own labeled connection is active before touching it - otherwise
+        # whichever site was switched-to most recently elsewhere silently
+        # steals every other bridge's calls.
         try:
+            self.traci.switch(self.site)
             already_on_edge = self.traci.edge.getLastStepVehicleNumber(in_edge)
             to_inject = max(0, v_count - already_on_edge)
             for _ in range(min(to_inject, 5)):  # cap per-call injection to avoid runaway spawns
@@ -212,6 +227,7 @@ class SUMOTraCIBridge:
             return self._emulated_what_if_fallback(proposed_green_sec)
 
         try:
+            self.traci.switch(self.site)  # same cross-site connection fix as above
             monitored_edges = [in_edge for _, in_edge in self._route_map.values()]
 
             def avg_wait():
