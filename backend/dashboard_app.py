@@ -107,13 +107,16 @@ def get_live_camera_telemetry():
 
 @app.route('/api/sumo-traci-telemetry')
 def get_sumo_traci_telemetry():
-    """Get live SUMO TraCI Graph Sync & Spatio-Temporal Graph Neural Network (STGCN) Predictions"""
+    """Get live SUMO TraCI Graph Sync & Spatio-Temporal Graph Neural Network (STGCN) Predictions.
+    Accepts ?site=baguiati or ?site=silk_board to pick which real intersection to simulate."""
+    from flask import request
     try:
         from src.graph_gnn_predictor import SpatioTemporalGraphPredictor
     except ImportError:
         from backend.src.graph_gnn_predictor import SpatioTemporalGraphPredictor
 
-    bridge = _get_sumo_bridge("baguiati")  # reuses the one persistent live simulation
+    site = request.args.get('site', 'baguiati')
+    bridge = _get_sumo_bridge(site)  # reuses one persistent live simulation PER site
     stgcn = SpatioTemporalGraphPredictor()
 
     telem_file = _root_dir / "data" / "live_camera_telemetry.json"
@@ -130,18 +133,22 @@ def get_sumo_traci_telemetry():
 
     return jsonify({
         "status": "ONLINE",
+        "site": site,
         "sumo_graph": graph_state,
         "stgcn_prediction": gnn_forecast
     })
 
 @app.route('/api/simulate-what-if', methods=['GET', 'POST'])
 def simulate_what_if_endpoint():
-    """Execute What-If TraCI Signal Timing Scenario Simulation"""
+    """Execute What-If TraCI Signal Timing Scenario Simulation.
+    Accepts ?site=baguiati or ?site=silk_board to pick which real intersection to simulate."""
     from flask import request
 
     green_sec = int(request.args.get('green_sec', 45))
-    bridge = _get_sumo_bridge("baguiati")  # SAME persistent bridge as telemetry endpoint
+    site = request.args.get('site', 'baguiati')
+    bridge = _get_sumo_bridge(site)  # SAME persistent bridge as telemetry endpoint for this site
     result = bridge.simulate_what_if_signal_override(proposed_green_sec=green_sec)
+    result["site"] = site
     return jsonify(result)
 
 @app.route('/api/stats')

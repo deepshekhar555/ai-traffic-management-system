@@ -166,6 +166,15 @@
         <div id="night-overlay"></div>
     </div>
 
+    <!-- Real Site Selector - the only two locations this twin has actual SUMO simulations for -->
+    <div id="site-selector" style="position:fixed; bottom:200px; left:20px; z-index:500; background:rgba(10,15,29,0.92); border:1px solid #00e5ff; border-radius:10px; padding:10px 14px; font-size:12px; color:#e0f7ff; box-shadow:0 10px 30px rgba(0,229,255,0.25);">
+        <div style="font-size:10px; color:#94a3b8; margin-bottom:6px;">DIGITAL TWIN SITE (map + simulation + camera all switch together)</div>
+        <select id="siteSelect" onchange="switchSite(this.value)" style="background:#000; color:#00e5ff; border:1px solid #00e5ff; border-radius:4px; font-size:11px; padding:4px 8px; width:100%;">
+            <option value="baguiati">📍 Baguiati, Kolkata (Primary)</option>
+            <option value="silk_board">📍 Silk Board Jn, Bengaluru (Secondary)</option>
+        </select>
+    </div>
+
     <!-- Live SUMO Digital Twin Status Panel - always visible, polls the real backend every 3s -->
     <div id="sumo-live-panel" style="position:fixed; bottom:70px; left:20px; z-index:500; background:rgba(10,15,29,0.92); border:1px solid #00e5ff; border-radius:10px; padding:12px 16px; font-size:12px; color:#e0f7ff; font-family:monospace; min-width:220px; box-shadow:0 10px 30px rgba(0,229,255,0.25);">
         Connecting to SUMO...
@@ -243,7 +252,7 @@
     <!-- Live Physical Camera & Perception Window Overlay (Matching Video 10 & Hardware Stream) -->
     <div class="street-view-window" id="streetWindow" style="width: 480px; height: 380px; background: rgba(10,15,29,0.96); border: 2px solid #00e5ff; border-radius: 14px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,229,255,0.6);">
         <div class="street-header" style="background: rgba(0,229,255,0.15); border-bottom: 1px solid rgba(0,229,255,0.3); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: #00e5ff;">
-            <span>📹 LIVE PHYSICAL CAMERA AI PERCEPTION ENGINE</span>
+            <span>📹 LIVE PHYSICAL CAMERA AI PERCEPTION ENGINE<br><span style="font-size:8px; font-weight:400; color:#94a3b8;">(local device feed - independent of selected digital twin site)</span></span>
             <select id="camSourceSelect" style="background: #000; color: #00e5ff; border: 1px solid #00e5ff; border-radius: 4px; font-size: 10px; padding: 2px 6px;" onchange="switchTwinCam(this.value)">
                 <option value="webcam">🎥 Physical Webcam (Device 0)</option>
                 <option value="1">🚗 CAM-01 North Approach</option>
@@ -362,7 +371,14 @@
 
     <script>
         let map;
-        let coords = [77.2090, 28.6139]; // Default coordinates
+        // Real sites this digital twin actually has SUMO simulations for.
+        // Selecting one switches map location, SUMO queries, and camera panel together.
+        const TWIN_SITES = {
+            baguiati:   { label: "Baguiati, Kolkata (VIP Road x Baguiati Main Rd)", coords: [88.4258, 22.6115] },
+            silk_board: { label: "Silk Board Jn, Bengaluru (Hosur Rd x Outer Ring Rd)", coords: [77.6234, 12.9166] },
+        };
+        let currentSite = "baguiati";
+        let coords = TWIN_SITES[currentSite].coords;
         let vehicleMarkers = [];
         let utilMarkers = [];
         let utilLayerActive = false;
@@ -605,7 +621,7 @@
             loadingEl.style.display = 'block';
             resultEl.style.display = 'none';
 
-            fetch(`/api/simulate-what-if?green_sec=${greenSec}`)
+            fetch(`/api/simulate-what-if?green_sec=${greenSec}&site=${currentSite}`)
                 .then(res => res.json())
                 .then(data => {
                     loadingEl.style.display = 'none';
@@ -615,7 +631,7 @@
                         ? '<span style="color:#00ff88;">● LIVE SUMO SIMULATION</span>'
                         : '<span style="color:#ff6b6b;">● NOT CONNECTED (emulated fallback)</span>';
                     resultEl.innerHTML = `
-                        ${statusBadge}<br>
+                        ${statusBadge} &middot; <span style="color:#94a3b8;">${TWIN_SITES[currentSite].label}</span><br>
                         <strong>Baseline delay:</strong> ${data.baseline_delay_sec}s<br>
                         <strong>Simulated delay (${greenSec}s green):</strong> ${data.simulated_delay_sec}s<br>
                         <strong>Change:</strong> ${data.predicted_delay_reduction_pct}%<br>
@@ -630,7 +646,7 @@
         }
 
         function pollSumoTelemetry() {
-            fetch('/api/sumo-traci-telemetry')
+            fetch(`/api/sumo-traci-telemetry?site=${currentSite}`)
                 .then(res => res.json())
                 .then(data => {
                     const el = document.getElementById('sumo-live-panel');
@@ -641,6 +657,7 @@
                         <div style="font-weight:800; margin-bottom:6px;">
                             ${isLive ? '<span style="color:#00ff88;">● LIVE SUMO</span>' : '<span style="color:#ff6b6b;">● EMULATED</span>'}
                         </div>
+                        <div style="color:#94a3b8; font-size:10px; margin-bottom:4px;">${TWIN_SITES[currentSite].label}</div>
                         <div>Edge: ${g.active_edge || '-'}</div>
                         <div>Sim step: ${g.sim_step ?? '-'}</div>
                         <div>Speed: ${g.simulated_avg_speed_kmh ?? '-'} km/h</div>
@@ -691,6 +708,20 @@
                 .catch(() => {});
         }
         setInterval(pollCameraStats, 4000);
+
+        function switchSite(site) {
+            currentSite = site;
+            coords = TWIN_SITES[site].coords;
+            if (map) {
+                map.flyTo({ center: coords, zoom: 16.5, pitch: 60, bearing: -30 });
+            }
+            const banner = document.getElementById('gpsBanner');
+            if (banner) {
+                banner.innerHTML = `📍 DIGITAL TWIN SITE: <strong>${TWIN_SITES[site].label}</strong> (Simulated - not your live GPS)`;
+            }
+            // Immediately refresh SUMO data for the newly selected site instead of waiting for the next poll tick
+            pollSumoTelemetry();
+        }
 
         window.onload = function() {
             try { initMap(); } catch (e) { console.error('initMap failed:', e); }
