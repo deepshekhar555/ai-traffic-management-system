@@ -261,22 +261,22 @@
             </div>
         </div>
 
-        <!-- Real-Time Camera Telemetry & ANPR Box -->
+        <!-- Real-Time Camera Telemetry & ANPR Box - now pulls from real backend endpoints -->
         <div style="padding: 10px; font-size: 11px; color: white; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(5,7,15,0.95);">
             <div style="background: rgba(0,229,255,0.08); border-left: 3px solid #00e5ff; padding: 6px 10px; border-radius: 4px;">
                 <div style="font-size: 9px; color: #94a3b8;">LIVE VEHICLE COUNTS</div>
-                <div style="font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace;" id="twin-veh-count">🚗 14 Cars · 🚌 3 Buses</div>
+                <div style="font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace;" id="twin-veh-count">Loading...</div>
             </div>
             <div style="background: rgba(0,255,136,0.08); border-left: 3px solid #00ff88; padding: 6px 10px; border-radius: 4px;">
                 <div style="font-size: 9px; color: #94a3b8;">LAST DETECTED ANPR PLATE</div>
-                <div style="font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;">KA-01-MJ-4820</div>
+                <div style="font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;" id="twin-anpr-plate">No detections yet</div>
             </div>
         </div>
 
-        <!-- Real-Time Violation Alert Stream -->
-        <div style="padding: 4px 10px 10px; background: rgba(5,7,15,0.95); font-size: 10px;">
-            <div style="background: rgba(255,59,48,0.15); border-left: 3px solid #ff3b30; padding: 4px 8px; border-radius: 4px; color: #ff3b30; font-weight: bold;">
-                🚨 Red-Light Jump #CH-9402 · Plate KA-01-MJ-4820 · E-Challan Issued
+        <!-- Real-Time Violation Alert Stream - now pulls from real /api/echallan -->
+        <div style="padding: 4px 10px 10px; background: rgba(5,7,15,0.95); font-size: 10px;" id="twin-violation-box">
+            <div style="background: rgba(100,100,100,0.15); border-left: 3px solid #666; padding: 4px 8px; border-radius: 4px; color: #94a3b8;">
+                No violations recorded yet
             </div>
         </div>
     </div>
@@ -654,9 +654,48 @@
         }
         setInterval(pollSumoTelemetry, 3000);
 
+        function pollCameraStats() {
+            fetch('/api/live-camera-telemetry')
+                .then(res => res.json())
+                .then(data => {
+                    const el = document.getElementById('twin-veh-count');
+                    if (el) {
+                        const vCount = data.vehicle_count ?? 0;
+                        const mCount = data.motorcycle_count ?? 0;
+                        el.textContent = `🚗 ${vCount} Vehicles · 🏍️ ${mCount} Motorcycles`;
+                    }
+                })
+                .catch(() => {});
+
+            fetch('/api/anpr')
+                .then(res => res.json())
+                .then(data => {
+                    const plateEl = document.getElementById('twin-anpr-plate');
+                    if (plateEl && Array.isArray(data) && data.length > 0) {
+                        plateEl.textContent = data[data.length - 1].plate_number || 'No detections yet';
+                    }
+                })
+                .catch(() => {});
+
+            fetch('/api/echallan')
+                .then(res => res.json())
+                .then(data => {
+                    const box = document.getElementById('twin-violation-box');
+                    if (box && Array.isArray(data) && data.length > 0) {
+                        const latest = data[data.length - 1];
+                        box.innerHTML = `<div style="background: rgba(255,59,48,0.15); border-left: 3px solid #ff3b30; padding: 4px 8px; border-radius: 4px; color: #ff3b30; font-weight: bold;">
+                            🚨 ${latest.challan_id} · Plate ${latest.plate_number} · ₹${latest.fine_amount_inr} Fine · ${latest.status}
+                        </div>`;
+                    }
+                })
+                .catch(() => {});
+        }
+        setInterval(pollCameraStats, 4000);
+
         window.onload = function() {
             try { initMap(); } catch (e) { console.error('initMap failed:', e); }
             pollSumoTelemetry();
+            pollCameraStats();
         };
     </script>
 </body>

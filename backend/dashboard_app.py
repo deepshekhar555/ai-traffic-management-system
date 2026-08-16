@@ -610,8 +610,8 @@ def live_camera_vision_page():
 
 @app.route('/video_feed/webcam')
 def webcam_video_feed():
-    """Live Physical Webcam Stream Endpoint"""
-    return Response(_generate_lane_video_stream(1), mimetype='multipart/x-mixed-replace; boundary=frame')
+    """Live Physical Webcam Stream Endpoint - lane_id 0 triggers real cv2.VideoCapture(0)"""
+    return Response(_generate_lane_video_stream(0), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed/<int:lane_id>')
 def video_feed(lane_id):
