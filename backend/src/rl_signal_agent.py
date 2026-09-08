@@ -27,11 +27,12 @@ except ImportError:
         import logging
         logger = logging.getLogger("traffic_ai")
 
-# ─── PyTorch Import for Deep Q-Network (DQN) ──────────────────────────────────
+# ─── PyTorch Import for Deep Q-Network (DQN / D3QN) ───────────────────────────
 HAS_TORCH = False
 try:
     import torch
     import torch.nn as nn
+    import torch.nn.functional as F
     import torch.optim as optim
     HAS_TORCH = True
     logger.info("PyTorch successfully loaded for Deep Q-Network (DQN) Reinforcement Learning!")
@@ -54,10 +55,39 @@ if HAS_TORCH:
             x = self.relu(self.fc2(x))
             return self.fc3(x)
 
+    class DuelingDQN(nn.Module):
+        """Advanced Dueling Double Deep Q-Network (D3QN) imported from Cross Road Engine"""
+        def __init__(self, state_dim=29, num_actions=5, hidden_dim=128):
+            super(DuelingDQN, self).__init__()
+            self.feature_layer = nn.Sequential(
+                nn.Linear(state_dim, hidden_dim),
+                nn.LayerNorm(hidden_dim),
+                nn.ReLU(),
+                nn.Linear(hidden_dim, hidden_dim),
+                nn.LayerNorm(hidden_dim),
+                nn.ReLU()
+            )
+            self.value_stream = nn.Sequential(
+                nn.Linear(hidden_dim, 64),
+                nn.ReLU(),
+                nn.Linear(64, 1)
+            )
+            self.advantage_stream = nn.Sequential(
+                nn.Linear(hidden_dim, 64),
+                nn.ReLU(),
+                nn.Linear(64, num_actions)
+            )
+
+        def forward(self, state):
+            features = self.feature_layer(state)
+            values = self.value_stream(features)
+            advantages = self.advantage_stream(features)
+            return values + (advantages - advantages.mean(dim=-1, keepdim=True))
+
 
 class ReinforcementLearningSignalAgent:
     """
-    Reinforcement Learning Signal Controller (DQN + Tabular Q-Learning).
+    Reinforcement Learning Signal Controller (DQN + Dueling D3QN + Tabular Q-Learning).
 
     State Vector: (Lane 0 Density, Lane 1 Density, Avg Speed, Queued Vehicles)
     Actions:
@@ -91,8 +121,9 @@ class ReinforcementLearningSignalAgent:
         self.last_state = (0, 0, 0, 0)
         self.last_wait_time: float = 0.0
 
-        # PyTorch DQN initialization
+        # PyTorch DQN & D3QN Master Weights initialization
         self.use_dqn = HAS_TORCH
+        self.has_pretrained_master = False
         if self.use_dqn:
             self.q_net = QNetwork(state_dim=4, action_dim=4)
             self.target_net = QNetwork(state_dim=4, action_dim=4)
@@ -101,7 +132,21 @@ class ReinforcementLearningSignalAgent:
             self.loss_fn = nn.MSELoss()
             self.replay_buffer = []
 
-        logger.info(f"Reinforcement Learning Agent initialized (DQN Active: {self.use_dqn})!")
+            # Check for pretrained_master.pt from rl_cross_road engine
+            weights_path = Path(__file__).parent.parent.parent / "rl_cross_road" / "src" / "ai" / "weights" / "pretrained_master.pt"
+            if weights_path.exists():
+                try:
+                    self.master_d3qn = DuelingDQN(state_dim=29, num_actions=5)
+                    checkpoint = torch.load(str(weights_path), map_location=torch.device('cpu'))
+                    state_dict = checkpoint.get('q_network_state', checkpoint) if isinstance(checkpoint, dict) else checkpoint
+                    self.master_d3qn.load_state_dict(state_dict)
+                    self.master_d3qn.eval()
+                    self.has_pretrained_master = True
+                    logger.info(f"Successfully integrated Pre-trained Cross Road D3QN Master Weights from: {weights_path.name}")
+                except Exception as e:
+                    logger.warning(f"Could not load Cross Road master weights: {e}")
+
+        logger.info(f"Reinforcement Learning Agent initialized (DQN: {self.use_dqn}, Pretrained D3QN Master: {self.has_pretrained_master})!")
 
     def discretize_state(self, lane_data: Dict, avg_speed: float = 30.0) -> Tuple:
         """Convert continuous sensor inputs into discrete state tuple."""

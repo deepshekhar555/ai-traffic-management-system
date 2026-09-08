@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraffixAI — Interactive AI Agent Workflow Canvas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #0a0f1d; color: #f8fafc; }
+
+        /* Top Header */
+        header {
+            height: 55px; background: rgba(10, 15, 29, 0.96); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; z-index: 1000;
+        }
+        .header-title { font-size: 15px; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px; }
+        .header-title span { color: #00e5ff; }
+
+        .btn-exec {
+            background: linear-gradient(90deg, #ff9500, #ff3b30); color: white; border: none;
+            padding: 8px 20px; border-radius: 6px; font-size: 12px; font-weight: 900; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 149, 0, 0.4); transition: transform 0.2s;
+        }
+        .btn-exec:hover { transform: scale(1.04); }
+
+        /* Canvas Layout */
+        .workflow-container {
+            width: 100vw; height: calc(100vh - 55px); display: grid; grid-template-columns: 1fr 340px; background: #050711;
+        }
+
+        .canvas-area {
+            position: relative; width: 100%; height: 100%; overflow: hidden;
+            background-image: radial-gradient(rgba(0, 229, 255, 0.12) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* n8n Style SVG Connections */
+        svg.connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        path.link { fill: none; stroke: rgba(0, 229, 255, 0.4); stroke-width: 3; stroke-dasharray: 6, 6; animation: dash 20s linear infinite; }
+        path.link.active { stroke: #00ff88; stroke-width: 4; stroke-dasharray: none; filter: drop-shadow(0 0 8px #00ff88); }
+
+        @keyframes dash { to { stroke-dashoffset: -1000; } }
+
+        /* Workflow Nodes */
+        .node {
+            position: absolute; width: 210px; background: rgba(15, 23, 42, 0.95); border: 2px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px; padding: 12px; z-index: 10; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            transition: all 0.3s; cursor: pointer;
+        }
+        .node:hover { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.5); transform: translateY(-2px); }
+        .node.active-node { border-color: #00ff88; box-shadow: 0 0 25px rgba(0, 255, 136, 0.8); }
+
+        .node-header { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .node-title { font-size: 13px; font-weight: 800; color: #ffffff; }
+        .node-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+        /* Right Execution Logs Panel */
+        .log-panel {
+            background: rgba(10, 15, 29, 0.96); border-left: 1px solid rgba(0, 229, 255, 0.3);
+            padding: 18px; overflow-y: auto; color: white; display: flex; flex-direction: column; gap: 14px;
+        }
+        .log-title { font-size: 13px; font-weight: 900; color: #00e5ff; text-transform: uppercase; border-bottom: 1px dashed rgba(0,229,255,0.3); padding-bottom: 6px; }
+        .log-terminal { background: #000; border: 1px solid rgba(0,229,255,0.2); border-radius: 8px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; height: 100%; overflow-y: auto; color: #00ff88; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            ⚡ TRAFFIXAI <span>AUTOMATED WORKFLOW ORCHESTRATION ENGINE (n8n NODE GRAPH)</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn-exec" onclick="executeWorkflow()">▶ Execute Workflow Trigger</button>
+            <a href="/digital-twin-pro" style="color: #00e5ff; font-weight: bold; text-decoration: none; font-size: 12px;">← 3D Digital Twin</a>
+        </div>
+    </header>
+
+    <div class="workflow-container">
+        <!-- SVG Connections Layer -->
+        <div class="canvas-area">
+            <svg class="connections" id="svgCanvas">
+                <path class="link" id="link1" d="M 230 180 C 310 180, 310 180, 370 180" />
+                <path class="link" id="link2" d="M 580 180 C 640 180, 640 180, 700 180" />
+                
+                <path class="link" id="link3" d="M 910 180 C 960 180, 960 90, 1010 90" />
+                <path class="link" id="link4" d="M 910 180 C 960 180, 960 250, 1010 250" />
+                <path class="link" id="link5" d="M 910 180 C 960 180, 960 410, 1010 410" />
+
+                <path class="link" id="link6" d="M 1220 90 C 1270 90, 1270 180, 1320 180" />
+                <path class="link" id="link7" d="M 1220 250 C 1270 250, 1270 180, 1320 180" />
+                <path class="link" id="link8" d="M 1220 410 C 1270 410, 1270 180, 1320 180" />
+            </svg>
+
+            <!-- Node 1: Trigger -->
+            <div class="node" id="node1" style="top: 135px; left: 20px;" onclick="inspectNode('node1')">
+                <div class="node-header" style="color: #ff9500;">⚡ Event Trigger</div>
+                <div class="node-title">Camera / Radar Trigger</div>
+                <div class="node-sub">RTSP WAN / USB 30 FPS Stream</div>
+            </div>
+
+            <!-- Node 2: AI Perception Agent -->
+            <div class="node" id="node2" style="top: 135px; left: 370px;" onclick="inspectNode('node2')">
+                <div class="node-header" style="color: #00e5ff;">🤖 AI Perception Agent</div>
+                <div class="node-title">YOLOv26 Edge Agent</div>
+                <div class="node-sub">Classify Vehicles & ANPR OCR</div>
+            </div>
+
+            <!-- Node 3: Intent Router -->
+            <div class="node" id="node3" style="top: 135px; left: 700px;" onclick="inspectNode('node3')">
+                <div class="node-header" style="color: #a855f7;">🔀 Intent Router</div>
+                <div class="node-title">Condition Switch</div>
+                <div class="node-sub">Evaluate Density / Ambulance / Violation</div>
+            </div>
+
+            <!-- Node 4A: DQN RL Signal Solver -->
+            <div class="node" id="node4a" style="top: 45px; left: 1010px;" onclick="inspectNode('node4a')">
+                <div class="node-header" style="color: #00ff88;">🧠 Optimization Solver</div>
+                <div class="node-title">PyTorch DQN RL Agent</div>
+                <div class="node-sub">Compute Optimal Green Wave</div>
+            </div>
+
+            <!-- Node 4B: Emergency Router -->
+            <div class="node" id="node4b" style="top: 205px; left: 1010px;" onclick="inspectNode('node4b')">
+                <div class="node-header" style="color: #ff3b30;">🚑 Emergency Preemption</div>
+                <div class="node-title">Green Corridor Router</div>
+                <div class="node-sub">Override Route Signals to GREEN</div>
+            </div>
+
+            <!-- Node 4C: ANPR Fine Engine -->
+            <div class="node" id="node4c" style="top: 365px; left: 1010px;" onclick="inspectNode('node4c')">
+                <div class="node-header" style="color: #ffc400;">🔤 ANPR Fine Engine</div>
+                <div class="node-title">E-Challan Generator</div>
+                <div class="node-sub">Extract Plate & Log Violation</div>
+            </div>
+
+            <!-- Node 5: Output Action -->
+            <div class="node" id="node5" style="top: 135px; left: 1320px;" onclick="inspectNode('node5')">
+                <div class="node-header" style="color: #00e5ff;">🚀 Action Dispatcher</div>
+                <div class="node-title">Raspberry Pi Relay / SMS</div>
+                <div class="node-sub">Actuate Signals & Dispatch Fines</div>
+            </div>
+        </div>
+
+        <!-- Right Terminal & Inspection Panel -->
+        <div class="log-panel">
+            <div class="log-title">⚙️ Node Parameter Inspector</div>
+            <div id="nodeDetail" style="font-size: 11px; background: rgba(0,229,255,0.08); border-left: 3px solid #00e5ff; padding: 10px; border-radius: 6px;">
+                <strong>Selected Node:</strong> Click any workflow node on the canvas to inspect parameters and execution state.
+            </div>
+
+            <div class="log-title" style="margin-top: 10px;">📋 Live Execution Terminal</div>
+            <div class="log-terminal" id="terminalLog">
+                [SYSTEM INITIATED] TraffixAI Orchestration Workflow Studio Ready.<br>
+                [STANDBY] Waiting for camera feed or manual execution trigger...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminalLog');
+
+        function appendLog(msg) {
+            const time = new Date().toLocaleTimeString();
+            terminal.innerHTML += `<div>[${time}] ${msg}</div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function inspectNode(id) {
+            document.querySelectorAll('.node').forEach(n => n.classList.remove('active-node'));
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active-node');
+
+            const details = {
+                "node1": "⚡ Event Trigger: Ingests 30 FPS video frames from camera or 60GHz Doppler radar telemetry.",
+                "node2": "🤖 YOLOv26 Agent: Evaluates bounding boxes, vehicle counts (Cars: 14, Buses: 3), and speed vectors.",
+                "node3": "🔀 Intent Router: Evaluates payload conditions -> Routes to DQN RL, Emergency Corridor, or ANPR Fine Engine.",
+                "node4a": "🧠 PyTorch DQN RL Solver: Computes state reward (queue length + wait time) -> Selects 45s Green Wave Action.",
+                "node4b": "🚑 Emergency Preemption: Siren detected -> Clears downstream 3 junctions to GREEN corridor wave.",
+                "node4c": "🔤 ANPR Fine Engine: Matches plate KA-01-MJ-4820 against RTO database -> Generates ₹1,000 Speeding Challan.",
+                "node5": "🚀 Action Dispatcher: Triggers Raspberry Pi GPIO relays and dispatches SMS/Email challan notification."
+            };
+            document.getElementById('nodeDetail').innerHTML = `<strong>Selected:</strong> ${details[id] || id}`;
+        }
+
+        function executeWorkflow() {
+            appendLog("<span style='color:#ffc400;'>[TRIGGER] Manual Execution Triggered...</span>");
+
+            const nodes = ['node1', 'node2', 'node3', 'node4a', 'node4b', 'node4c', 'node5'];
+            let idx = 0;
+
+            const interval = setInterval(() => {
+                if (idx < nodes.length) {
+                    inspectNode(nodes[idx]);
+                    appendLog(`[EXEC] Executing node: <strong>${nodes[idx].toUpperCase()}</strong>... STATUS 200 OK`);
+                    idx++;
+                } else {
+                    clearInterval(interval);
+                    appendLog("<span style='color:#00ff88;'>[SUCCESS] Workflow Execution Completed. 100% Signal & E-Challan Sync Active.</span>");
+                }
+            }, 600);
+        }
+    </script>
+</body>
+</html>

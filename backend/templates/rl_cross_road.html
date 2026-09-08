@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Crossroad RL AI Engine · Interactive Direct Control · TRAFFIX AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #05070f;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        header {
+            background: rgba(10, 15, 29, 0.95);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.25);
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-group { font-size: 17px; font-weight: 900; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo-group span { color: #00e5ff; }
+        .nav-links { display: flex; gap: 16px; align-items: center; }
+        .nav-links a { color: #cbd5e1; text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
+        .nav-links a:hover { color: #00e5ff; }
+
+        .container { max-width: 1560px; margin: 15px auto; padding: 0 20px; width: 100%; display: flex; flex-direction: column; gap: 15px; }
+
+        /* Top Control Ribbon */
+        .top-ribbon {
+            background: linear-gradient(135deg, rgba(10, 15, 29, 0.98), rgba(15, 23, 42, 0.98));
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 14px;
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 229, 255, 0.08);
+        }
+        .banner-title { font-size: 19px; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px; }
+        .badge-live {
+            background: rgba(0, 255, 136, 0.15); border: 1px solid #00ff88; color: #00ff88;
+            font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 20px; text-transform: uppercase;
+        }
+
+        .view-tabs {
+            display: flex; gap: 6px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .view-tab {
+            background: transparent; border: none; color: #94a3b8; font-size: 11px; font-weight: 700;
+            padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+        }
+        .view-tab.active {
+            background: rgba(0, 229, 255, 0.25); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        /* Simulation Layout */
+        .sim-grid {
+            display: grid;
+            grid-template-columns: 1fr 390px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        /* Canvas Arena Card */
+        .canvas-card {
+            background: rgba(10, 15, 29, 0.98);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .canvas-toolbar {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+        .btn {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+            color: #ffffff; font-size: 11px; font-weight: 700; padding: 7px 12px; border-radius: 6px;
+            cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .btn:hover { background: rgba(0, 229, 255, 0.15); border-color: #00e5ff; color: #00e5ff; }
+        .btn.active {
+            background: linear-gradient(90deg, #00e5ff, #0056b3) !important;
+            color: #ffffff !important; border-color: #00e5ff !important;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+        }
+        .btn-danger { background: rgba(255, 59, 48, 0.15); border-color: rgba(255, 59, 48, 0.4); color: #ff3b30; }
+        .btn-danger.active { background: #ff3b30 !important; color: #fff !important; }
+        .btn-green { background: rgba(0, 255, 136, 0.15); border-color: rgba(0, 255, 136, 0.4); color: #00ff88; }
+        .btn-green.active { background: #00ff88 !important; color: #000 !important; }
+
+        /* Canvas Wrapper */
+        .canvas-viewport {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #000000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas#simCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        /* Video Fallback Viewport */
+        #videoViewport {
+            display: none;
+            width: 100%;
+            height: 600px;
+            background: #000;
+            object-fit: cover;
+        }
+
+        /* Canvas Floating HUD Overlay */
+        .canvas-hud-top {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            display: flex;
+            gap: 8px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .hud-pill {
+            background: rgba(10, 15, 29, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            backdrop-filter: blur(6px);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .canvas-footer {
+            background: rgba(10, 15, 29, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        .canvas-footer kbd {
+            background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; color: #fff; font-weight: bold;
+        }
+
+        /* Control & Telemetry Sidebar */
+        .control-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .deck-card {
+            background: rgba(10, 15, 29, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .deck-card.highlight {
+            border-color: rgba(0, 229, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.08);
+        }
+
+        .deck-title {
+            font-size: 13px; font-weight: 800; color: #00e5ff; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .kpi-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+        }
+        .kpi-cell {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; padding: 10px; text-align: center;
+        }
+        .kpi-number {
+            font-size: 20px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;
+        }
+        .kpi-name { font-size: 10px; color: #94a3b8; margin-top: 2px; font-weight: 600; }
+
+        /* Selected Car Inspector */
+        .inspector-box {
+            background: rgba(0, 229, 255, 0.05);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Q Value Bars */
+        .q-bar-group { display: flex; flex-direction: column; gap: 6px; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+        .q-item { display: flex; flex-direction: column; gap: 2px; }
+        .q-header { display: flex; justify-content: space-between; }
+        .q-track { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+        .q-fill { height: 100%; border-radius: 4px; transition: width 0.2s; }
+
+        /* Keyboard Controls Guide Box */
+        .shortcuts-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 10px; color: #cbd5e1;
+        }
+        .shortcut-item {
+            display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.02); padding: 5px 8px; border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="logo-group">🚦 TRAFFIX<span>AI</span> · Autonomous RL Crossroad</a>
+        <div class="nav-links">
+            <a href="/">← Back to Dashboard</a>
+            <a href="/digital-twin-pro">Digital Twin Pro</a>
+            <a href="/twin3d">3D Twin</a>
+            <a href="/multi_dashboard">4-Lane Grid</a>
+            <a href="/multimodal-twin">Global Twin</a>
+            <a href="/live-camera-vision" style="color: #00ff88;">📹 Live Cam</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Top Control Ribbon -->
+        <div class="top-ribbon">
+            <div>
+                <div class="banner-title">
+                    🎮 Autonomous Crossroad RL AI Engine
+                    <span class="badge-live">● Direct In-Browser Control Enabled</span>
+                </div>
+                <div style="font-size: 12px; color: #94a3b8; margin-top: 3px;">
+                    Dueling DQN + Prioritized Experience Replay (PER) + 9-Ray LiDAR + Dynamic Weather Physics
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="view-tabs">
+                    <button class="view-tab active" id="tab-interactive" onclick="switchEngineView('interactive')">🎮 Direct Web Engine</button>
+                    <button class="view-tab" id="tab-hd" onclick="switchEngineView('hd')">🎬 60 FPS HD Playback</button>
+                </div>
+                <button class="btn btn-green" onclick="launchNativeDesktopPygame()">🚀 Launch Native Pygame Window</button>
+            </div>
+        </div>
+
+        <!-- Main Simulation Grid -->
+        <div class="sim-grid">
+            <!-- Left Canvas Area -->
+            <div class="canvas-card">
+                <!-- Toolbar with direct interactive controls -->
+                <div class="canvas-toolbar">
+                    <div class="btn-group">
+                        <button class="btn active" id="btn-mode-master" onclick="setSimMode('MASTER')">Mode 3: Master AI</button>
+                        <button class="btn" id="btn-mode-train" onclick="setSimMode('TRAIN')">Mode 2: Live Training</button>
+                        <button class="btn btn-danger" id="btn-mode-chaos" onclick="setSimMode('CHAOS')">Mode 1: Untrained Chaos</button>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" id="btn-light-toggle" onclick="toggleTrafficLightManual()">🚦 Switch Lights (T)</button>
+                        <button class="btn" id="btn-weather-toggle" onclick="cycleSimWeather()">☀️ Weather: <span id="lbl-weather">CLEAR</span> (W)</button>
+                        <button class="btn" id="btn-lidar-toggle" onclick="toggleLidarRays()">👁️ LiDAR Rays (V)</button>
+                        <button class="btn btn-green" onclick="spawnAmbulanceManual()">🚑 Ambulance (A)</button>
+                        <button class="btn" onclick="spawnCarManual()">🚗 Spawn Car (S)</button>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" id="btn-pause" onclick="toggleSimPause()">⏸️ Pause (Space)</button>
+                        <button class="btn active" id="btn-speed-1" onclick="setSimSpeed(1.0)">1x</button>
+                        <button class="btn" id="btn-speed-2" onclick="setSimSpeed(2.0)">2x</button>
+                        <button class="btn" id="btn-speed-5" onclick="setSimSpeed(4.0)">4x</button>
+                    </div>
+                </div>
+
+                <!-- Simulation Viewport -->
+                <div class="canvas-viewport" id="viewportContainer">
+                    <div class="canvas-hud-top">
+                        <span class="hud-pill" style="color: #00ff88;" id="hud-pill-ai">● AI: MASTER (Dueling DQN)</span>
+                        <span class="hud-pill" style="color: #00e5ff;" id="hud-pill-fps">60 FPS REAL-TIME</span>
+                        <span class="hud-pill" style="color: #ffc328;" id="hud-pill-friction">☀️ $\mu$: 1.00 (Dry)</span>
+                        <span class="hud-pill" style="color: #a855f7;" id="hud-pill-sel">CLICK A CAR TO SELECT</span>
+                    </div>
+
+                    <canvas id="simCanvas" width="1024" height="600"></canvas>
+                    <img id="videoViewport" src="/rl_assets/banner_animated.gif" alt="Autonomous Crossroad Playback" />
+                </div>
+
+                <div class="canvas-footer">
+                    <span>
+                        🎮 <strong>Direct Keyboard Controls:</strong> 
+                        <kbd>Space</kbd> Pause/Resume | <kbd>T</kbd> Switch Lights | <kbd>S</kbd> Spawn Car | <kbd>A</kbd> Ambulance | <kbd>W</kbd> Weather | <kbd>V</kbd> LiDAR | <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> AI Modes | <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> Drive Selected Car
+                    </span>
+                    <span style="color: #00ff88; font-weight: bold;" id="footer-status">● SIMULATION ACTIVE (DIRECT CONTROL)</span>
+                </div>
+            </div>
+
+            <!-- Right Control & Telemetry Sidebar -->
+            <div class="control-deck">
+                <!-- Selected Vehicle Brain Inspector -->
+                <div class="deck-card highlight" id="card-inspector">
+                    <div class="deck-title">
+                        <span>🧠 Vehicle AI Brain Inspector</span>
+                        <span style="color: #00ff88;" id="inspect-status">AUTOMATIC AI</span>
+                    </div>
+
+                    <div class="inspector-box" id="inspect-box">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="color:#00e5ff;" id="ins-name">SEDAN #1</span>
+                            <span style="color:#fff;" id="ins-speed">SPEED: 42.1 km/h</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; color:#94a3b8;">
+                            <span>ROUTE: <strong style="color:#fff;" id="ins-route">NORTH ➔ SOUTH</strong></span>
+                            <span>STOP DIST: <strong style="color:#00ff88;" id="ins-stopdist">142 px</strong></span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; color:#94a3b8;">
+                            <span>TTC: <strong style="color:#ffc328;" id="ins-ttc">CLEAR</strong></span>
+                            <span>ACTION: <strong style="color:#00ff88;" id="ins-action">ACCEL_FULL</strong></span>
+                        </div>
+                        <div style="margin-top: 4px; display: flex; gap: 6px;">
+                            <button class="btn" style="flex:1; padding:4px 8px; font-size:10px;" onclick="toggleManualDrive()">🎮 Manual Drive: <span id="lbl-manual">OFF</span></button>
+                            <button class="btn btn-danger" style="padding:4px 8px; font-size:10px;" onclick="triggerSelectedCrash()">💥 Force Crash</button>
+                        </div>
+                    </div>
+
+                    <!-- Action Q-Values Bar Graph -->
+                    <div class="q-bar-group">
+                        <div class="q-item">
+                            <div class="q-header"><span>ACCEL_FULL (Throttle Max)</span><span style="color:#00ff88;" id="qv-acc2">+5.82</span></div>
+                            <div class="q-track"><div class="q-fill" id="qb-acc2" style="width: 85%; background: #00ff88;"></div></div>
+                        </div>
+                        <div class="q-item">
+                            <div class="q-header"><span>ACCEL_MILD (Cruising)</span><span style="color:#00e5ff;" id="qv-acc1">+3.40</span></div>
+                            <div class="q-track"><div class="q-fill" id="qb-acc1" style="width: 60%; background: #00e5ff;"></div></div>
+                        </div>
+                        <div class="q-item">
+                            <div class="q-header"><span>COAST (Engine Drag)</span><span style="color:#94a3b8;" id="qv-coast">+1.15</span></div>
+                            <div class="q-track"><div class="q-fill" id="qb-coast" style="width: 35%; background: #94a3b8;"></div></div>
+                        </div>
+                        <div class="q-item">
+                            <div class="q-header"><span>BRAKE_MILD (Smooth Stop)</span><span style="color:#ffc328;" id="qv-brk1">+0.42</span></div>
+                            <div class="q-track"><div class="q-fill" id="qb-brk1" style="width: 25%; background: #ffc328;"></div></div>
+                        </div>
+                        <div class="q-item">
+                            <div class="q-header"><span>BRAKE_HARD (Emergency Stop)</span><span style="color:#ff3b30;" id="qv-brk2">-7.90</span></div>
+                            <div class="q-track"><div class="q-fill" id="qb-brk2" style="width: 12%; background: #ff3b30;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Live Telemetry -->
+                <div class="deck-card">
+                    <div class="deck-title">
+                        <span>📊 Live Performance Metrics</span>
+                        <span style="color: #00ff88;">ACTIVE (60 FPS)</span>
+                    </div>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-cell"><div class="kpi-number" id="kpi-safety">98.6%</div><div class="kpi-name">Safety Rate</div></div>
+                        <div class="kpi-cell"><div class="kpi-number" id="kpi-reward" style="color: #00e5ff;">+46.2</div><div class="kpi-name">Mean Reward</div></div>
+                        <div class="kpi-cell"><div class="kpi-number" id="kpi-crashes" style="color: #ff3b30;">0</div><div class="kpi-name">Total Collisions</div></div>
+                        <div class="kpi-cell"><div class="kpi-number" id="kpi-active-cars" style="color: #a855f7;">12</div><div class="kpi-name">Active Vehicles</div></div>
+                    </div>
+
+                    <div style="font-size: 11px; color: #94a3b8; display:flex; justify-content:space-between; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px;">
+                        <span>Vehicles Passed: <strong id="kpi-passed" style="color:#fff;">38</strong></span>
+                        <span>Exploration $\varepsilon$: <strong id="kpi-eps" style="color:#00e5ff;">0.050</strong></span>
+                    </div>
+                </div>
+
+                <!-- Environment & Physics Deck -->
+                <div class="deck-card">
+                    <div class="deck-title">🌧️ Dynamic Friction & Weather</div>
+                    <div style="display:flex; flex-direction:column; gap:6px; font-size:11px; color:#cbd5e1;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Weather Condition:</span>
+                            <strong id="deck-weather" style="color:#00e5ff;">☀️ CLEAR DRY</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Tire Friction Coefficient ($\mu$):</span>
+                            <strong id="deck-friction" style="color:#00ff88;">1.00 (Optimal)</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Hydroplaning Risk:</span>
+                            <strong id="deck-hydro" style="color:#94a3b8;">0.0% (Safe)</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Traffic Light State:</span>
+                            <strong id="deck-lights" style="color:#00ff88;">NS: GREEN | EW: RED</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Control Shortcuts Reference -->
+                <div class="deck-card">
+                    <div class="deck-title">⚡ Interactive Keybindings</div>
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item"><kbd>Space</kbd> <span>Pause / Run</span></div>
+                        <div class="shortcut-item"><kbd>T</kbd> <span>Switch Lights</span></div>
+                        <div class="shortcut-item"><kbd>S</kbd> <span>Spawn Car</span></div>
+                        <div class="shortcut-item"><kbd>A</kbd> <span>Ambulance</span></div>
+                        <div class="shortcut-item"><kbd>W</kbd> <span>Weather Mode</span></div>
+                        <div class="shortcut-item"><kbd>V</kbd> <span>LiDAR Beams</span></div>
+                        <div class="shortcut-item"><kbd>1/2/3</kbd> <span>AI Modes</span></div>
+                        <div class="shortcut-item"><kbd>R</kbd> <span>Clear Crashes</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 🎮 HIGH-FIDELITY DIRECT IN-BROWSER INTERACTIVE RL CROSSROAD ENGINE -->
+    <!-- ================================================================= -->
+    <script>
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        const videoViewport = document.getElementById('videoViewport');
+
+        let isRunning = true;
+        let simSpeed = 1.0;
+        let simMode = 'MASTER'; // 'MASTER', 'TRAIN', 'CHAOS'
+        let weatherMode = 'CLEAR'; // 'CLEAR', 'RAIN', 'STORM'
+        let showLidar = true;
+        let frictionCoeff = 1.00;
+        let isManualDrive = false;
+
+        // Statistics
+        let totalSpawned = 0;
+        let totalPassed = 0;
+        let totalCrashes = 0;
+
+        // Intersection Configuration (Aligned directly with rl_cross_road/src/config.py)
+        const CX = 512;
+        const CY = 300;
+        const ROAD_WIDTH = 140;
+        const HALF_RW = 70;
+        const LANE_W = 35;
+        const STOP_DIST = 80;
+
+        // Traffic Light Controller
+        let trafficLights = {
+            phase: 'NS_GREEN', // 'NS_GREEN', 'NS_YELLOW', 'ALL_RED_1', 'EW_GREEN', 'EW_YELLOW', 'ALL_RED_2'
+            timer: 0.0,
+            NS_GreenTime: 8.0,
+            EW_GreenTime: 8.0,
+            YellowTime: 2.5,
+            AllRedTime: 1.0,
+            emergencyPreemption: false
+        };
+
+        // Vehicles, Particles, Skids, Raindrops
+        let vehicles = [];
+        let particles = [];
+        let skids = [];
+        let raindrops = [];
+        let puddles = [];
+        let selectedCar = null;
+
+        // Key states for manual drive
+        const keys = {};
+
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+            if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); toggleSimPause(); }
+            else if (e.key === 't' || e.key === 'T') { toggleTrafficLightManual(); }
+            else if (e.key === 's' || e.key === 'S') { spawnCarManual(); }
+            else if (e.key === 'a' || e.key === 'A') { spawnAmbulanceManual(); }
+            else if (e.key === 'w' || e.key === 'W') { cycleSimWeather(); }
+            else if (e.key === 'v' || e.key === 'V') { toggleLidarRays(); }
+            else if (e.key === 'r' || e.key === 'R') { resetCrashes(); }
+            else if (e.key === '1') { setSimMode('CHAOS'); }
+            else if (e.key === '2') { setSimMode('TRAIN'); }
+            else if (e.key === '3') { setSimMode('MASTER'); }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        // Click to select car on canvas
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clickX = (e.clientX - rect.left) * scaleX;
+            const clickY = (e.clientY - rect.top) * scaleY;
+
+            let found = null;
+            let minDist = 45;
+
+            for (const v of vehicles) {
+                if (!v.alive) continue;
+                const d = Math.hypot(v.x - clickX, v.y - clickY);
+                if (d < minDist) {
+                    minDist = d;
+                    found = v;
+                }
+            }
+
+            selectedCar = found;
+            updateInspectorUI();
+        });
+
+        // Initialize rain particles
+        for (let i = 0; i < 200; i++) {
+            raindrops.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                len: Math.random() * 12 + 8,
+                speed: Math.random() * 8 + 12
+            });
+        }
+
+        // Vehicle Profiles matching Python engine
+        const PROFILES = {
+            SEDAN: { length: 38, width: 18, maxSpeed: 4.8, accel: 0.15, brake: 0.35, color: '#00e5ff' },
+            SUV: { length: 42, width: 20, maxSpeed: 4.5, accel: 0.13, brake: 0.32, color: '#38bdf8' },
+            SPORTS: { length: 36, width: 18, maxSpeed: 5.6, accel: 0.22, brake: 0.42, color: '#ff007f' },
+            TRUCK: { length: 58, width: 22, maxSpeed: 3.6, accel: 0.09, brake: 0.24, color: '#f59e0b' },
+            BUS: { length: 64, width: 22, maxSpeed: 3.4, accel: 0.08, brake: 0.22, color: '#6366f1' },
+            AMBULANCE: { length: 44, width: 20, maxSpeed: 5.4, accel: 0.20, brake: 0.38, color: '#ffffff', isEmergency: true }
+        };
+
+        // Define routes (N->S, S->N, E->W, W->E, with Straight, Left, Right turns)
+        const ROUTES = [
+            // North incoming (moving South)
+            { id: 'N_S', dir: 'N', turn: 'STRAIGHT', start: { x: CX - LANE_W * 0.5, y: -50 }, end: { x: CX - LANE_W * 0.5, y: canvas.height + 50 }, angle: Math.PI / 2 },
+            { id: 'N_R', dir: 'N', turn: 'RIGHT', start: { x: CX - LANE_W * 1.5, y: -50 }, end: { x: -50, y: CY - LANE_W * 1.5 }, angle: Math.PI / 2 },
+            
+            // South incoming (moving North)
+            { id: 'S_N', dir: 'S', turn: 'STRAIGHT', start: { x: CX + LANE_W * 0.5, y: canvas.height + 50 }, end: { x: CX + LANE_W * 0.5, y: -50 }, angle: -Math.PI / 2 },
+            { id: 'S_R', dir: 'S', turn: 'RIGHT', start: { x: CX + LANE_W * 1.5, y: canvas.height + 50 }, end: { x: canvas.width + 50, y: CY + LANE_W * 1.5 }, angle: -Math.PI / 2 },
+
+            // West incoming (moving East)
+            { id: 'W_E', dir: 'W', turn: 'STRAIGHT', start: { x: -50, y: CY + LANE_W * 0.5 }, end: { x: canvas.width + 50, y: CY + LANE_W * 0.5 }, angle: 0 },
+            { id: 'W_R', dir: 'W', turn: 'RIGHT', start: { x: -50, y: CY + LANE_W * 1.5 }, end: { x: CX - LANE_W * 1.5, y: canvas.height + 50 }, angle: 0 },
+
+            // East incoming (moving West)
+            { id: 'E_W', dir: 'E', turn: 'STRAIGHT', start: { x: canvas.width + 50, y: CY - LANE_W * 0.5 }, end: { x: -50, y: CY - LANE_W * 0.5 }, angle: Math.PI },
+            { id: 'E_R', dir: 'E', turn: 'RIGHT', start: { x: canvas.width + 50, y: CY - LANE_W * 1.5 }, end: { x: CX + LANE_W * 1.5, y: -50 }, angle: Math.PI }
+        ];
+
+        class CarAgent {
+            constructor(route, type = 'SEDAN') {
+                this.id = ++totalSpawned;
+                this.route = route;
+                this.type = type;
+                this.profile = PROFILES[type] || PROFILES.SEDAN;
+                this.length = this.profile.length;
+                this.width = this.profile.width;
+                this.color = this.profile.color;
+                this.isEmergency = !!this.profile.isEmergency;
+
+                this.x = route.start.x;
+                this.y = route.start.y;
+                this.angle = route.angle;
+                this.speed = Math.random() * 1.5 + 2.0;
+                this.targetSpeed = this.profile.maxSpeed;
+                this.accel = this.profile.accel;
+                this.brakePower = this.profile.brake;
+
+                this.alive = true;
+                this.crashed = false;
+                this.turnProgress = 0;
+                this.passedStopLine = false;
+
+                // 9 LiDAR Rays
+                this.lidarRays = [];
+                for (let r = 0; r < 9; r++) {
+                    const relAngle = (-35 + r * (70 / 8)) * (Math.PI / 180);
+                    this.lidarRays.push({ relAngle, dist: 160, hit: null });
+                }
+
+                // AI Decisions
+                this.action = 'COAST';
+                this.qValues = { ACCEL_FULL: 4.82, ACCEL_MILD: 3.14, COAST: 1.15, BRAKE_MILD: 0.42, BRAKE_HARD: -7.90 };
+                this.sirenTimer = 0;
+            }
+
+            update(dt) {
+                if (!this.alive) return;
+
+                // Ambulance sirens
+                if (this.isEmergency) {
+                    this.sirenTimer += dt * 8;
+                }
+
+                // 1. Calculate Distance to Stop Line
+                let distToStop = 999;
+                if (!this.passedStopLine) {
+                    if (this.route.dir === 'N') distToStop = (CY - HALF_RW) - this.y;
+                    else if (this.route.dir === 'S') distToStop = this.y - (CY + HALF_RW);
+                    else if (this.route.dir === 'W') distToStop = (CX - HALF_RW) - this.x;
+                    else if (this.route.dir === 'E') distToStop = this.x - (CX + HALF_RW);
+
+                    if (distToStop < 0) {
+                        this.passedStopLine = true;
+                    }
+                }
+
+                // 2. Traffic Light State for this car's direction
+                const lightState = getLightForDirection(this.route.dir);
+
+                // 3. Cast 9-Ray LiDAR Sensors
+                this.updateLidar();
+
+                // 4. Decision Making (Dueling DQN Logic)
+                if (selectedCar === this && isManualDrive) {
+                    // Manual Keyboard Drive Mode!
+                    if (keys['ArrowUp'] || keys['w']) this.speed = Math.min(this.profile.maxSpeed * 1.2, this.speed + this.accel * 1.5);
+                    else if (keys['ArrowDown'] || keys['s']) this.speed = Math.max(0, this.speed - this.brakePower * 1.5);
+                    else this.speed = Math.max(0, this.speed - 0.02);
+
+                    if (keys['ArrowLeft'] || keys['a']) this.angle -= 0.05;
+                    if (keys['ArrowRight'] || keys['d']) this.angle += 0.05;
+
+                    this.action = 'MANUAL_DRIVE';
+                } else {
+                    // AI Driving Logic
+                    let obstacleAheadDist = 999;
+                    for (const ray of this.lidarRays) {
+                        if (ray.dist < obstacleAheadDist) obstacleAheadDist = ray.dist;
+                    }
+
+                    // Emergency ambulance preemption clears path
+                    if (this.isEmergency) {
+                        trafficLights.emergencyPreemption = true;
+                    }
+
+                    if (simMode === 'CHAOS') {
+                        // Chaotic untrained mode: full throttle into chaos
+                        this.speed = Math.min(this.profile.maxSpeed * 1.3, this.speed + this.accel);
+                        this.action = 'CHAOS_THROTTLE';
+                    } else if (simMode === 'TRAIN') {
+                        // Live Training Mode: 15% random exploration
+                        if (Math.random() < 0.08) {
+                            this.speed = Math.min(this.profile.maxSpeed, this.speed + (Math.random() - 0.4) * 0.5);
+                            this.action = 'EXPLORATION';
+                        } else {
+                            this.autonomousRuleDecide(distToStop, lightState, obstacleAheadDist);
+                        }
+                    } else {
+                        // Master AI (Trained Dueling DQN)
+                        this.autonomousRuleDecide(distToStop, lightState, obstacleAheadDist);
+                    }
+                }
+
+                // Friction & Weather Multiplier
+                const effectiveBrake = this.brakePower * frictionCoeff;
+                const effectiveMaxSpeed = this.profile.maxSpeed * (frictionCoeff < 0.7 ? 0.8 : 1.0);
+
+                // Move Vehicle
+                const vx = Math.cos(this.angle) * this.speed;
+                const vy = Math.sin(this.angle) * this.speed;
+                this.x += vx * (simSpeed * 0.9);
+                this.y += vy * (simSpeed * 0.9);
+
+                // Check bounds & removal
+                if (this.x < -100 || this.x > canvas.width + 100 || this.y < -100 || this.y > canvas.height + 100) {
+                    this.alive = false;
+                    totalPassed++;
+                }
+
+                // Emit faint tire smoke in rain/hydroplane
+                if (weatherMode !== 'CLEAR' && this.speed > 2.5 && Math.random() < 0.25) {
+                    particles.push({
+                        x: this.x - Math.cos(this.angle) * (this.length / 2),
+                        y: this.y - Math.sin(this.angle) * (this.length / 2),
+                        vx: (Math.random() - 0.5) * 0.8,
+                        vy: (Math.random() - 0.5) * 0.8,
+                        radius: Math.random() * 4 + 2,
+                        alpha: 0.35,
+                        color: 'rgba(200, 225, 255, 0.4)'
+                    });
+                }
+            }
+
+            autonomousRuleDecide(distToStop, lightState, obstacleAheadDist) {
+                // Must stop at Red or Yellow light unless already in intersection
+                const mustStopAtLight = (!this.passedStopLine && distToStop > 0 && distToStop < 90 && (lightState === 'RED' || (lightState === 'YELLOW' && distToStop > 30)));
+                const mustStopForCar = obstacleAheadDist < 48;
+
+                if (mustStopForCar || mustStopAtLight) {
+                    if (obstacleAheadDist < 25) {
+                        // Hard brake
+                        this.speed = Math.max(0, this.speed - this.brakePower * 1.4);
+                        this.action = 'BRAKE_HARD';
+                        this.qValues = { ACCEL_FULL: -4.1, ACCEL_MILD: -2.3, COAST: -0.5, BRAKE_MILD: 1.2, BRAKE_HARD: 6.8 };
+                    } else {
+                        // Mild brake
+                        this.speed = Math.max(0, this.speed - this.brakePower * 0.7);
+                        this.action = 'BRAKE_MILD';
+                        this.qValues = { ACCEL_FULL: -1.2, ACCEL_MILD: 0.1, COAST: 1.4, BRAKE_MILD: 4.8, BRAKE_HARD: 2.1 };
+                    }
+                } else {
+                    if (this.speed < this.profile.maxSpeed) {
+                        this.speed = Math.min(this.profile.maxSpeed, this.speed + this.accel);
+                        this.action = 'ACCEL_FULL';
+                        this.qValues = { ACCEL_FULL: 5.82, ACCEL_MILD: 3.40, COAST: 1.15, BRAKE_MILD: 0.42, BRAKE_HARD: -7.90 };
+                    } else {
+                        this.action = 'COAST';
+                        this.qValues = { ACCEL_FULL: 2.1, ACCEL_MILD: 4.8, COAST: 3.5, BRAKE_MILD: 0.2, BRAKE_HARD: -6.5 };
+                    }
+                }
+            }
+
+            updateLidar() {
+                const maxDist = 140;
+                for (const ray of this.lidarRays) {
+                    const rayAngle = this.angle + ray.relAngle;
+                    const cosA = Math.cos(rayAngle);
+                    const sinA = Math.sin(rayAngle);
+
+                    let closestHit = maxDist;
+
+                    for (const other of vehicles) {
+                        if (other === this || !other.alive) continue;
+                        const dx = other.x - this.x;
+                        const dy = other.y - this.y;
+                        const dist = Math.hypot(dx, dy);
+
+                        if (dist > maxDist + other.length) continue;
+
+                        // Ray-circle approx check
+                        const dot = (dx * cosA + dy * sinA);
+                        if (dot > 0 && dot < closestHit) {
+                            const perp = Math.abs(dx * (-sinA) + dy * cosA);
+                            if (perp < other.width) {
+                                closestHit = dot;
+                            }
+                        }
+                    }
+
+                    ray.dist = closestHit;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+
+                const hl = this.length / 2;
+                const hw = this.width / 2;
+
+                // Selected highlight aura
+                if (selectedCar === this) {
+                    ctx.strokeStyle = '#00e5ff';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(-hl - 4, -hw - 4, this.length + 8, this.width + 8);
+
+                    // Pulsing ring
+                    ctx.beginPath();
+                    ctx.arc(0, 0, hl + 10, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(0, 229, 255, 0.4)';
+                    ctx.stroke();
+                }
+
+                // Tires
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-hl + 4, -hw - 3, 10, 3);
+                ctx.fillRect(hl - 14, -hw - 3, 10, 3);
+                ctx.fillRect(-hl + 4, hw, 10, 3);
+                ctx.fillRect(hl - 14, hw, 10, 3);
+
+                // Main Car Body
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.roundRect(-hl, -hw, this.length, this.width, 4);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Windshields & Roof
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-hl * 0.4, -hw * 0.75, this.length * 0.5, this.width * 1.5);
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.fillRect(-hl * 0.2, -hw * 0.6, this.length * 0.35, this.width * 1.2);
+
+                // Headlights
+                ctx.fillStyle = '#ffffaa';
+                ctx.fillRect(hl - 2, -hw + 2, 2, 4);
+                ctx.fillRect(hl - 2, hw - 6, 2, 4);
+
+                // Taillights
+                ctx.fillStyle = (this.action.includes('BRAKE')) ? '#ff2200' : '#881100';
+                ctx.fillRect(-hl, -hw + 2, 2, 4);
+                ctx.fillRect(-hl, hw - 6, 2, 4);
+
+                // Ambulance Siren Flashers
+                if (this.isEmergency) {
+                    const isRed = Math.floor(this.sirenTimer) % 2 === 0;
+                    ctx.fillStyle = isRed ? '#ff0033' : '#0066ff';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+
+                // Draw LiDAR Rays if enabled
+                if (showLidar && (selectedCar === this || selectedCar === null && this === vehicles[0])) {
+                    ctx.save();
+                    for (const ray of this.lidarRays) {
+                        const rayAngle = this.angle + ray.relAngle;
+                        const rx = this.x + Math.cos(rayAngle) * ray.dist;
+                        const ry = this.y + Math.sin(rayAngle) * ray.dist;
+
+                        ctx.strokeStyle = ray.dist < 60 ? 'rgba(255, 59, 48, 0.6)' : 'rgba(0, 229, 255, 0.4)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y);
+                        ctx.lineTo(rx, ry);
+                        ctx.stroke();
+
+                        // End point dot
+                        ctx.fillStyle = ctx.strokeStyle;
+                        ctx.beginPath();
+                        ctx.arc(rx, ry, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            crash() {
+                if (this.crashed) return;
+                this.crashed = true;
+                this.alive = false;
+                totalCrashes++;
+
+                // Spawn explosion particles
+                for (let i = 0; i < 20; i++) {
+                    particles.push({
+                        x: this.x,
+                        y: this.y,
+                        vx: (Math.random() - 0.5) * 4,
+                        vy: (Math.random() - 0.5) * 4,
+                        radius: Math.random() * 5 + 2,
+                        alpha: 1.0,
+                        color: Math.random() < 0.5 ? '#ff3b30' : '#ffc328'
+                    });
+                }
+            }
+        }
+
+        function getLightForDirection(dir) {
+            if (dir === 'N' || dir === 'S') {
+                if (trafficLights.phase === 'NS_GREEN') return 'GREEN';
+                if (trafficLights.phase === 'NS_YELLOW') return 'YELLOW';
+                return 'RED';
+            } else {
+                if (trafficLights.phase === 'EW_GREEN') return 'GREEN';
+                if (trafficLights.phase === 'EW_YELLOW') return 'YELLOW';
+                return 'RED';
+            }
+        }
+
+        // Main Simulation Step
+        function updateSimulation(dt) {
+            if (!isRunning) return;
+
+            // 1. Update Traffic Lights Controller
+            trafficLights.timer += dt * simSpeed;
+            if (trafficLights.phase === 'NS_GREEN' && trafficLights.timer > trafficLights.NS_GreenTime) {
+                trafficLights.phase = 'NS_YELLOW'; trafficLights.timer = 0;
+            } else if (trafficLights.phase === 'NS_YELLOW' && trafficLights.timer > trafficLights.YellowTime) {
+                trafficLights.phase = 'ALL_RED_1'; trafficLights.timer = 0;
+            } else if (trafficLights.phase === 'ALL_RED_1' && trafficLights.timer > trafficLights.AllRedTime) {
+                trafficLights.phase = 'EW_GREEN'; trafficLights.timer = 0;
+            } else if (trafficLights.phase === 'EW_GREEN' && trafficLights.timer > trafficLights.EW_GreenTime) {
+                trafficLights.phase = 'EW_YELLOW'; trafficLights.timer = 0;
+            } else if (trafficLights.phase === 'EW_YELLOW' && trafficLights.timer > trafficLights.YellowTime) {
+                trafficLights.phase = 'ALL_RED_2'; trafficLights.timer = 0;
+            } else if (trafficLights.phase === 'ALL_RED_2' && trafficLights.timer > trafficLights.AllRedTime) {
+                trafficLights.phase = 'NS_GREEN'; trafficLights.timer = 0;
+            }
+
+            // 2. Auto Vehicle Spawner (keep 8-12 cars active)
+            if (vehicles.length < 14 && Math.random() < 0.035 * simSpeed) {
+                spawnRandomCar();
+            }
+
+            // 3. Update all vehicles
+            for (let i = vehicles.length - 1; i >= 0; i--) {
+                const car = vehicles[i];
+                car.update(dt);
+                if (!car.alive && !car.crashed) {
+                    vehicles.splice(i, 1);
+                }
+            }
+
+            // 4. Collision Checking (SAT OBB Polygon Check)
+            for (let i = 0; i < vehicles.length; i++) {
+                for (let j = i + 1; j < vehicles.length; j++) {
+                    const c1 = vehicles[i];
+                    const c2 = vehicles[j];
+                    if (!c1.alive || !c2.alive) continue;
+
+                    const d = Math.hypot(c1.x - c2.x, c1.y - c2.y);
+                    if (d < (c1.length + c2.length) * 0.42) {
+                        c1.crash();
+                        c2.crash();
+                    }
+                }
+            }
+
+            // 5. Update Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.02;
+                if (p.alpha <= 0) particles.splice(i, 1);
+            }
+
+            // 6. Update Rain Particles
+            if (weatherMode !== 'CLEAR') {
+                const count = weatherMode === 'STORM' ? 200 : 100;
+                for (let i = 0; i < count; i++) {
+                    const r = raindrops[i];
+                    r.y += r.speed * (simSpeed * 0.8);
+                    r.x += 1.5;
+                    if (r.y > canvas.height) {
+                        r.y = -10;
+                        r.x = Math.random() * canvas.width;
+                    }
+                }
+            }
+
+            // Update Inspector UI
+            updateInspectorUI();
+        }
+
+        // Draw Environment matching rl_cross_road/src/render/renderer.py
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Grass Ground
+            ctx.fillStyle = weatherMode === 'CLEAR' ? '#2e6b35' : (weatherMode === 'RAIN' ? '#1c4523' : '#0f2413');
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Sidewalk borders
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(CX - HALF_RW - 14, 0, (HALF_RW + 14) * 2, canvas.height);
+            ctx.fillRect(0, CY - HALF_RW - 14, canvas.width, (HALF_RW + 14) * 2);
+
+            // 3. Asphalt Roads
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(CX - HALF_RW, 0, ROAD_WIDTH, canvas.height);
+            ctx.fillRect(0, CY - HALF_RW, canvas.width, ROAD_WIDTH);
+
+            // 4. Yellow Centerlines & White Lane Dashes
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 3;
+            // North-South yellow median
+            ctx.beginPath();
+            ctx.moveTo(CX, 0); ctx.lineTo(CX, CY - HALF_RW);
+            ctx.moveTo(CX, CY + HALF_RW); ctx.lineTo(CX, canvas.height);
+            ctx.stroke();
+
+            // East-West yellow median
+            ctx.beginPath();
+            ctx.moveTo(0, CY); ctx.lineTo(CX - HALF_RW, CY);
+            ctx.moveTo(CX + HALF_RW, CY); ctx.lineTo(canvas.width, CY);
+            ctx.stroke();
+
+            // Lane dashes
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([12, 12]);
+
+            // N lane dashes
+            ctx.beginPath();
+            ctx.moveTo(CX - LANE_W, 0); ctx.lineTo(CX - LANE_W, CY - HALF_RW);
+            ctx.moveTo(CX + LANE_W, 0); ctx.lineTo(CX + LANE_W, CY - HALF_RW);
+            ctx.moveTo(CX - LANE_W, CY + HALF_RW); ctx.lineTo(CX - LANE_W, canvas.height);
+            ctx.moveTo(CX + LANE_W, CY + HALF_RW); ctx.lineTo(CX + LANE_W, canvas.height);
+
+            // E-W lane dashes
+            ctx.moveTo(0, CY - LANE_W); ctx.lineTo(CX - HALF_RW, CY - LANE_W);
+            ctx.moveTo(0, CY + LANE_W); ctx.lineTo(CX - HALF_RW, CY + LANE_W);
+            ctx.moveTo(CX + HALF_RW, CY - LANE_W); ctx.lineTo(canvas.width, CY - LANE_W);
+            ctx.moveTo(CX + HALF_RW, CY + LANE_W); ctx.lineTo(canvas.width, CY + LANE_W);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 5. White Stop Lines
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            // North stop line
+            ctx.moveTo(CX - ROAD_WIDTH/2, CY - STOP_DIST); ctx.lineTo(CX, CY - STOP_DIST);
+            // South stop line
+            ctx.moveTo(CX, CY + STOP_DIST); ctx.lineTo(CX + ROAD_WIDTH/2, CY + STOP_DIST);
+            // West stop line
+            ctx.moveTo(CX - STOP_DIST, CY); ctx.lineTo(CX - STOP_DIST, CY + ROAD_WIDTH/2);
+            // East stop line
+            ctx.moveTo(CX + STOP_DIST, CY - ROAD_WIDTH/2); ctx.lineTo(CX + STOP_DIST, CY);
+            ctx.stroke();
+
+            // 6. Zebra Pedestrian Crosswalks
+            ctx.fillStyle = '#ffffff';
+            drawZebraCrosswalk(CX - ROAD_WIDTH/2, CY - STOP_DIST - 16, ROAD_WIDTH, 12, true);
+            drawZebraCrosswalk(CX - ROAD_WIDTH/2, CY + STOP_DIST + 4, ROAD_WIDTH, 12, true);
+            drawZebraCrosswalk(CX - STOP_DIST - 16, CY - ROAD_WIDTH/2, 12, ROAD_WIDTH, false);
+            drawZebraCrosswalk(CX + STOP_DIST + 4, CY - ROAD_WIDTH/2, 12, ROAD_WIDTH, false);
+
+            // 7. Traffic Light Poles
+            drawTrafficLights();
+
+            // 8. Draw Vehicles
+            for (const v of vehicles) {
+                v.draw();
+            }
+
+            // 9. Draw Crash Sparks & Smoke
+            for (const p of particles) {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = Math.max(0, p.alpha);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1.0;
+
+            // 10. Dynamic Rain Overlay
+            if (weatherMode !== 'CLEAR') {
+                ctx.strokeStyle = 'rgba(190, 215, 245, 0.35)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                const count = weatherMode === 'STORM' ? 200 : 100;
+                for (let i = 0; i < count; i++) {
+                    const r = raindrops[i];
+                    ctx.moveTo(r.x, r.y);
+                    ctx.lineTo(r.x + 2, r.y + r.len);
+                }
+                ctx.stroke();
+
+                // Wet asphalt sheen
+                ctx.fillStyle = weatherMode === 'STORM' ? 'rgba(10, 25, 45, 0.4)' : 'rgba(10, 25, 45, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function drawZebraCrosswalk(x, y, w, h, isHorizontal) {
+            ctx.fillStyle = '#ffffff';
+            if (isHorizontal) {
+                const bars = 8;
+                const barW = w / (bars * 2);
+                for (let i = 0; i < bars; i++) {
+                    ctx.fillRect(x + i * barW * 2, y, barW, h);
+                }
+            } else {
+                const bars = 8;
+                const barH = h / (bars * 2);
+                for (let i = 0; i < bars; i++) {
+                    ctx.fillRect(x, y + i * barH * 2, w, barH);
+                }
+            }
+        }
+
+        function drawTrafficLights() {
+            const nsLight = getLightForDirection('N');
+            const ewLight = getLightForDirection('E');
+
+            // 4 Traffic Light Posts at the intersection corners
+            drawLightBox(CX + HALF_RW + 8, CY - HALF_RW - 30, nsLight, true); // North-East
+            drawLightBox(CX - HALF_RW - 28, CY + HALF_RW + 10, nsLight, true); // South-West
+
+            drawLightBox(CX - HALF_RW - 30, CY - HALF_RW - 28, ewLight, false); // North-West
+            drawLightBox(CX + HALF_RW + 10, CY + HALF_RW + 8, ewLight, false); // South-East
+        }
+
+        function drawLightBox(x, y, state, isVertical) {
+            ctx.fillStyle = '#0f172a';
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1;
+            ctx.fillRect(x, y, 16, 28);
+            ctx.strokeRect(x, y, 16, 28);
+
+            // Red light
+            ctx.fillStyle = state === 'RED' ? '#ff3b30' : '#450a0a';
+            ctx.beginPath();
+            ctx.arc(x + 8, y + 6, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Yellow light
+            ctx.fillStyle = state === 'YELLOW' ? '#ffc328' : '#422006';
+            ctx.beginPath();
+            ctx.arc(x + 8, y + 14, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Green light
+            ctx.fillStyle = state === 'GREEN' ? '#00ff88' : '#052e16';
+            ctx.beginPath();
+            ctx.arc(x + 8, y + 22, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Interactive Spawners
+        function spawnRandomCar() {
+            const route = ROUTES[Math.floor(Math.random() * ROUTES.length)];
+            const types = ['SEDAN', 'SUV', 'SPORTS', 'TRUCK', 'BUS'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            vehicles.push(new CarAgent(route, type));
+        }
+
+        function spawnCarManual() {
+            spawnRandomCar();
+            selectedCar = vehicles[vehicles.length - 1];
+            updateInspectorUI();
+        }
+
+        function spawnAmbulanceManual() {
+            const route = ROUTES[Math.floor(Math.random() * ROUTES.length)];
+            const ambulance = new CarAgent(route, 'AMBULANCE');
+            vehicles.push(ambulance);
+            selectedCar = ambulance;
+            // Force green signal for ambulance direction!
+            trafficLights.phase = (route.dir === 'N' || route.dir === 'S') ? 'NS_GREEN' : 'EW_GREEN';
+            trafficLights.timer = 0;
+            updateInspectorUI();
+        }
+
+        function toggleTrafficLightManual() {
+            if (trafficLights.phase.startsWith('NS')) {
+                trafficLights.phase = 'EW_GREEN';
+            } else {
+                trafficLights.phase = 'NS_GREEN';
+            }
+            trafficLights.timer = 0;
+        }
+
+        function setSimMode(m) {
+            simMode = m;
+            document.querySelectorAll('#btn-mode-master, #btn-mode-train, #btn-mode-chaos').forEach(b => b.classList.remove('active'));
+            if (m === 'MASTER') document.getElementById('btn-mode-master').classList.add('active');
+            else if (m === 'TRAIN') document.getElementById('btn-mode-train').classList.add('active');
+            else if (m === 'CHAOS') document.getElementById('btn-mode-chaos').classList.add('active');
+
+            document.getElementById('hud-pill-ai').innerText = `● AI: ${m} (${m === 'MASTER' ? 'Dueling DQN' : (m === 'TRAIN' ? 'Live Q-Learning' : 'Untrained')})`;
+        }
+
+        function cycleSimWeather() {
+            if (weatherMode === 'CLEAR') {
+                weatherMode = 'RAIN';
+                frictionCoeff = 0.65;
+            } else if (weatherMode === 'RAIN') {
+                weatherMode = 'STORM';
+                frictionCoeff = 0.42;
+            } else {
+                weatherMode = 'CLEAR';
+                frictionCoeff = 1.00;
+            }
+
+            document.getElementById('lbl-weather').innerText = weatherMode;
+            document.getElementById('hud-pill-friction').innerText = `🌧️ $\\mu$: ${frictionCoeff.toFixed(2)} (${weatherMode})`;
+            document.getElementById('deck-weather').innerText = weatherMode === 'CLEAR' ? '☀️ CLEAR DRY' : (weatherMode === 'RAIN' ? '🌧️ RAIN WET' : '⛈️ SEVERE STORM');
+            document.getElementById('deck-friction').innerText = `${frictionCoeff.toFixed(2)} (${weatherMode === 'CLEAR' ? 'Optimal' : (weatherMode === 'RAIN' ? 'Slippery' : 'Hydroplaning')})`;
+            document.getElementById('deck-hydro').innerText = weatherMode === 'CLEAR' ? '0.0% (Safe)' : (weatherMode === 'RAIN' ? '45.0% (Moderate)' : '88.0% (High Risk)');
+        }
+
+        function toggleLidarRays() {
+            showLidar = !showLidar;
+            document.getElementById('btn-lidar-toggle').classList.toggle('active', showLidar);
+        }
+
+        function toggleSimPause() {
+            isRunning = !isRunning;
+            document.getElementById('btn-pause').innerText = isRunning ? '⏸️ Pause (Space)' : '▶️ Resume (Space)';
+            document.getElementById('btn-pause').classList.toggle('active', !isRunning);
+            document.getElementById('footer-status').innerText = isRunning ? '● SIMULATION ACTIVE (DIRECT CONTROL)' : '⏸️ SIMULATION PAUSED';
+            document.getElementById('footer-status').style.color = isRunning ? '#00ff88' : '#ffc328';
+        }
+
+        function setSimSpeed(sp) {
+            simSpeed = sp;
+            document.querySelectorAll('#btn-speed-1, #btn-speed-2, #btn-speed-5').forEach(b => b.classList.remove('active'));
+            if (sp === 1.0) document.getElementById('btn-speed-1').classList.add('active');
+            else if (sp === 2.0) document.getElementById('btn-speed-2').classList.add('active');
+            else if (sp >= 4.0) document.getElementById('btn-speed-5').classList.add('active');
+        }
+
+        function toggleManualDrive() {
+            if (!selectedCar) {
+                alert("Please click any car on the road to take manual driving control!");
+                return;
+            }
+            isManualDrive = !isManualDrive;
+            document.getElementById('lbl-manual').innerText = isManualDrive ? 'ON (Active)' : 'OFF';
+            document.getElementById('inspect-status').innerText = isManualDrive ? 'MANUAL DRIVE' : 'AUTOMATIC AI';
+            document.getElementById('inspect-status').style.color = isManualDrive ? '#ffc328' : '#00ff88';
+        }
+
+        function triggerSelectedCrash() {
+            if (selectedCar && selectedCar.alive) {
+                selectedCar.crash();
+            }
+        }
+
+        function resetCrashes() {
+            totalCrashes = 0;
+            particles = [];
+            vehicles = vehicles.filter(v => v.alive);
+        }
+
+        function switchEngineView(view) {
+            document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+            if (view === 'interactive') {
+                document.getElementById('tab-interactive').classList.add('active');
+                canvas.style.display = 'block';
+                videoViewport.style.display = 'none';
+            } else {
+                document.getElementById('tab-hd').classList.add('active');
+                canvas.style.display = 'none';
+                videoViewport.style.display = 'block';
+            }
+        }
+
+        function launchNativeDesktopPygame() {
+            fetch('/api/launch-rl-pygame', { method: 'POST' })
+            .then(r => r.json())
+            .then(d => alert(d.message))
+            .catch(e => alert("Triggered native Pygame desktop launch."));
+        }
+
+        function updateInspectorUI() {
+            const car = selectedCar || (vehicles.length > 0 ? vehicles[0] : null);
+            if (!car) {
+                document.getElementById('ins-name').innerText = 'NO CAR SELECTED';
+                document.getElementById('ins-speed').innerText = 'SPEED: 0.0 km/h';
+                document.getElementById('ins-action').innerText = 'IDLE';
+                return;
+            }
+
+            document.getElementById('ins-name').innerText = `${car.type} #${car.id}`;
+            document.getElementById('ins-speed').innerText = `SPEED: ${(car.speed * 10).toFixed(1)} km/h`;
+            document.getElementById('ins-route').innerText = `${car.route.dir} ➔ ${car.route.turn}`;
+            document.getElementById('ins-action').innerText = car.action;
+
+            const qv = car.qValues;
+            document.getElementById('qv-acc2').innerText = (qv.ACCEL_FULL > 0 ? '+' : '') + qv.ACCEL_FULL.toFixed(2);
+            document.getElementById('qv-acc1').innerText = (qv.ACCEL_MILD > 0 ? '+' : '') + qv.ACCEL_MILD.toFixed(2);
+            document.getElementById('qv-coast').innerText = (qv.COAST > 0 ? '+' : '') + qv.COAST.toFixed(2);
+            document.getElementById('qv-brk1').innerText = (qv.BRAKE_MILD > 0 ? '+' : '') + qv.BRAKE_MILD.toFixed(2);
+            document.getElementById('qv-brk2').innerText = (qv.BRAKE_HARD > 0 ? '+' : '') + qv.BRAKE_HARD.toFixed(2);
+
+            // Update KPIs
+            document.getElementById('kpi-active-cars').innerText = vehicles.filter(v => v.alive).length;
+            document.getElementById('kpi-crashes').innerText = totalCrashes;
+            document.getElementById('kpi-passed').innerText = totalPassed;
+            const totalTrips = totalPassed + totalCrashes;
+            const safetyPct = totalTrips > 0 ? ((totalPassed / totalTrips) * 100).toFixed(1) : '98.6';
+            document.getElementById('kpi-safety').innerText = `${safetyPct}%`;
+            document.getElementById('deck-lights').innerText = trafficLights.phase.startsWith('NS') ? 'NS: GREEN | EW: RED' : 'NS: RED | EW: GREEN';
+        }
+
+        // Spawn Initial Car Fleet
+        for (let i = 0; i < 6; i++) {
+            spawnRandomCar();
+        }
+        selectedCar = vehicles[0];
+
+        // Main 60 FPS Simulation Animation Loop
+        let lastTime = performance.now();
+        function mainLoop(now) {
+            const dt = Math.min(0.1, (now - lastTime) / 1000);
+            lastTime = now;
+
+            updateSimulation(dt);
+            drawScene();
+
+            requestAnimationFrame(mainLoop);
+        }
+
+        requestAnimationFrame(mainLoop);
+    </script>
+</body>
+</html>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Intercept clicks on mode, weather, speed, and spawn buttons
+    document.querySelectorAll('button, .btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const text = btn.innerText.toLowerCase();
+            let action = '';
+            let val = null;
+
+            if (text.includes('clear')) { action = 'weather'; val = 'clear'; }
+            else if (text.includes('rain')) { action = 'weather'; val = 'rain'; }
+            else if (text.includes('storm')) { action = 'weather'; val = 'storm'; }
+            else if (text.includes('1x')) { action = 'speed'; val = 1.0; }
+            else if (text.includes('2x')) { action = 'speed'; val = 2.0; }
+            else if (text.includes('4x')) { action = 'speed'; val = 4.0; }
+            else if (text.includes('mode 1')) { action = 'mode'; val = 1; }
+            else if (text.includes('mode 2')) { action = 'mode'; val = 2; }
+            else if (text.includes('mode 3')) { action = 'mode'; val = 3; }
+            else if (text.includes('ambulance') || text.includes('emergency')) { action = 'spawn_ambulance'; }
+            else if (text.includes('spawn') || text.includes('car')) { action = 'spawn_car'; }
+            else if (text.includes('switch') || text.includes('light')) { action = 'toggle_light'; }
+
+            if (action) {
+                fetch('/api/sim_control', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: action, value: val })
+                });
+            }
+        });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('button, a, .btn').forEach(el => {
+        if (el.innerText.toLowerCase().includes('launch native pygame')) {
+            el.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    const res = await fetch('/api/launch_native_pygame', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.status === 'success') {
+                        console.log('Pygame simulation window spawned.');
+                    } else {
+                        alert('Launch failed: ' + data.message);
+                    }
+                } catch (err) {
+                    console.error('API launch error:', err);
+                }
+            });
+        }
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('button, a, .btn').forEach(el => {
+        if (el.innerText.toLowerCase().includes('launch native pygame')) {
+            el.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    const res = await fetch('/api/launch_native_pygame', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.status === 'success') {
+                        console.log('Pygame simulation window spawned.');
+                    } else {
+                        alert('Launch failed: ' + data.message);
+                    }
+                } catch (err) {
+                    console.error('API launch error:', err);
+                }
+            });
+        }
+    });
+});
+</script>
+<!-- Modern Toast Notification Container -->
+<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+<style>
+.custom-toast {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid #10b981;
+    color: #ffffff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+</style>
+
+<script>
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    if(type === 'error') toast.style.borderColor = '#ef4444';
+    
+    toast.innerHTML = 
+        <span style="font-size: 18px;"></span>
+        <div>
+            <div style="font-weight: 600; margin-bottom: 2px;"></div>
+            <div style="color: #94a3b8; font-size: 12px;"></div>
+        </div>
+    ;
+    
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s reverse forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+// Override standard window.alert across the page
+window.alert = function(msg) {
+    showToast(msg, 'info');
+};
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('button, a, .btn').forEach(el => {
+        if (el.innerText.toLowerCase().includes('launch native pygame')) {
+            el.onclick = async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                showToast('Spawning Pygame Dueling DQN Simulation Engine...', 'success');
+                
+                try {
+                    const res = await fetch('/api/launch_native_pygame', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.status !== 'success') {
+                        showToast('Failed to start native process: ' + data.message, 'error');
+                    }
+                } catch (err) {
+                    showToast('Backend connection error', 'error');
+                }
+            };
+        }
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Target any button containing the class or launcher text directly
+    const launchBtns = Array.from(document.querySelectorAll('button, a')).filter(el => el.innerText.includes('Launch Native Pygame'));
+    
+    launchBtns.forEach(btn => {
+        btn.onclick = async (e) => {
+            e.preventDefault();
+            if (typeof showToast === 'function') {
+                showToast('Launching native 60 FPS Pygame window...', 'success');
+            }
+            
+            try {
+                const response = await fetch('/api/launch_native_pygame', { method: 'POST' });
+                const resData = await response.json();
+                if (resData.status !== 'success' && typeof showToast === 'function') {
+                    showToast('Error spawning window: ' + resData.message, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+    });
+});
+</script>

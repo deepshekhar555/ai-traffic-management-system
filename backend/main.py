@@ -986,7 +986,8 @@ class TrafficManagementApp:
         self.running = True
 
         # Configure OpenCV windows to be freely resizable and fit user screen
-        win_camera = "TraffixAI — YOLOv26n Smart Detection"
+        cam_label  = getattr(self.camera, 'source_name', 'Camera')
+        win_camera = f"TraffixAI — YOLOv26n | {cam_label}"
         win_twin   = "AI Traffic Digital Twin (2D Spatial Map)"
         win_sim    = "AI Traffic Micro-Simulation Engine (SUMO/51WORLD Physics)"
         
@@ -1013,8 +1014,7 @@ class TrafficManagementApp:
                 self.update_fps()
                 
                 # Display — window title shows active camera source
-                cam_label = getattr(self.camera, 'source_name', 'Camera')
-                cv2.imshow(f"TraffixAI — YOLOv26n | {cam_label}", processed_frame)
+                cv2.imshow(win_camera, processed_frame)
                 
                 # Handle keyboard
                 key = cv2.waitKey(1) & 0xFF

@@ -121,7 +121,7 @@
 
     <script>
         // ── Three.js Standalone Engine Setup ────────────────────────────────────────
-        let scene, camera, renderer;
+        let scene, camera, renderer, dirLight;
         let vehicleMeshes = [];
         let syntheticCars = [];
         let isNight = true;
@@ -136,7 +136,7 @@
 
             // 2. Camera setup
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-            camera.position.set(0, 110, 160);
+            camera.position.set(120, 70, 120);
             camera.lookAt(0, 0, 0);
 
             // 3. Renderer setup
@@ -146,10 +146,10 @@
             CONTAINER.appendChild(renderer.domElement);
 
             // 4. Lighting setup
-            const ambientLight = new THREE.AmbientLight(0x1e293b, 1.5);
+            const ambientLight = new THREE.AmbientLight(0x3b4a6b, 2.8);
             scene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0x00e5ff, 1.8);
+            dirLight = new THREE.DirectionalLight(0x00e5ff, 1.8);
             dirLight.position.set(80, 140, 80);
             scene.add(dirLight);
 
@@ -181,7 +181,7 @@
             scene.add(ground);
 
             // Cross Roads (4-Lane Road Intersections)
-            const roadMat = new THREE.MeshStandardMaterial({ color: 0x141a29, roughness: 0.5 });
+            const roadMat = new THREE.MeshStandardMaterial({ color: 0x2a2f3d, roughness: 0.5 });
             const nsRoad = new THREE.Mesh(new THREE.PlaneGeometry(40, 600), roadMat);
             nsRoad.rotation.x = -Math.PI / 2; nsRoad.position.y = 0.05;
             scene.add(nsRoad);

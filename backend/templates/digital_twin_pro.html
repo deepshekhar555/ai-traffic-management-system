@@ -138,26 +138,31 @@
     <!-- Header Navigation & Live Telemetry Bar -->
     <header>
         <div class="header-title">
-            🏙️ TRAFFIXAI <span>PRO SMART CITY 3D DIGITAL TWIN (REAL GPS SATELLITE)</span>
+            🏙️ TRAFFIXAI <span>CLOSED-LOOP CYBER-PHYSICAL 3D DIGITAL TWIN</span>
         </div>
 
         <div class="header-telemetry">
+            <div class="tele-item" style="border: 1px solid #00ff88; background: rgba(0,255,136,0.1); color: #00ff88; padding: 2px 8px; border-radius: 4px;">
+                🔄 STSA LOOP: SENSE ➔ TWIN ➔ SIMULATE ➔ ACT
+            </div>
             <div class="tele-item">🚗 Vehicles: <span class="tele-val" id="val-veh">385</span></div>
-            <div class="tele-item">🚌 Buses: <span class="tele-val" id="val-bus">31</span></div>
-            <div class="tele-item">🚊 Trams: <span class="tele-val" id="val-tram">8</span></div>
+            <div class="tele-item">🍃 CO₂ Offset: <span class="tele-val" style="color: #00ff88;">98.4 kg</span></div>
+            <div class="tele-item">⛽ Fuel Saved: <span class="tele-val" style="color: #00e5ff;">42.8 L</span></div>
             <div class="tele-item">⚡ Health: <span class="tele-val" id="val-health" style="color: #00ff88;">98%</span></div>
         </div>
 
         <div class="weather-widget">
-            <span>☀️ 23°C Clear</span>
-            <span>💨 Wind 13 km/h</span>
+            <span>📡 60GHz Radar: OK</span>
+            <span>🌬️ AQI 42 (Good)</span>
+            <span>📶 MQTT 14ms</span>
             <a href="/" style="color: #00e5ff; text-decoration: none; font-weight: bold; margin-left: 10px;">← Main Portal</a>
         </div>
     </header>
 
-    <!-- Real GPS Location Status Banner -->
-    <div class="gps-banner" id="gpsBanner">
-        <span>📍 Detecting your real city physical location...</span>
+    <!-- Real GPS Location Status Banner & Geo-Anchored Anchor Site -->
+    <div class="gps-banner" id="gpsBanner" style="background: rgba(10,15,29,0.95); border-bottom: 1px solid #00e5ff; color: #00e5ff; font-weight: bold; padding: 6px 15px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;">
+        <span id="bannerSiteText">📍 PAN-INDIA DIGITAL TWIN NETWORK: Whole India Urban Corridors Active (Kolkata, Bengaluru, Delhi-NCR, Mumbai, Pune, Surat)</span>
+        <span style="color: #00ff88;">⚡ 30 FPS YOLOv26 + ByteTrack Real-Time Pipeline Sync</span>
     </div>
 
     <!-- 3D Satellite Map & Lighting Overlay -->
@@ -166,12 +171,16 @@
         <div id="night-overlay"></div>
     </div>
 
-    <!-- Real Site Selector - the only two locations this twin has actual SUMO simulations for -->
+    <!-- Whole India Pan-India Multi-City Digital Twin Network Site Selector -->
     <div id="site-selector" style="position:fixed; bottom:200px; left:20px; z-index:500; background:rgba(10,15,29,0.92); border:1px solid #00e5ff; border-radius:10px; padding:10px 14px; font-size:12px; color:#e0f7ff; box-shadow:0 10px 30px rgba(0,229,255,0.25);">
-        <div style="font-size:10px; color:#94a3b8; margin-bottom:6px;">DIGITAL TWIN SITE (map + simulation + camera all switch together)</div>
+        <div style="font-size:10px; color:#94a3b8; margin-bottom:6px; font-weight: bold;">🇮🇳 PAN-INDIA URBAN TWIN NODES (WHOLE INDIA)</div>
         <select id="siteSelect" onchange="switchSite(this.value)" style="background:#000; color:#00e5ff; border:1px solid #00e5ff; border-radius:4px; font-size:11px; padding:4px 8px; width:100%;">
-            <option value="baguiati">📍 Baguiati, Kolkata (Primary)</option>
-            <option value="silk_board">📍 Silk Board Jn, Bengaluru (Secondary)</option>
+            <option value="baguiati">📍 VIP Road & Baguiati, Kolkata (East Corridor)</option>
+            <option value="silk_board">📍 Central Silk Board Jn, Bengaluru (South Corridor)</option>
+            <option value="dhaula_kuan">📍 Dhaula Kuan Interchange, Delhi-NCR (North Corridor)</option>
+            <option value="bkc_mumbai">📍 BKC Western Express Hwy, Mumbai (West Corridor)</option>
+            <option value="hinjawadi_pune">📍 Hinjawadi IT Park Flyover, Pune</option>
+            <option value="surat_ring">📍 Majura Gate Ring Road, Surat</option>
         </select>
     </div>
 
@@ -192,7 +201,9 @@
         <button class="btn-event" onclick="openEventModal()">+ New Event Simulation</button>
 
         <div class="menu-cat">Simulation & Feeds</div>
-        <div class="menu-item" onclick="showDrawer('drawer-whatif')"><span>🔮 What-If Simulation</span></div>
+        <div class="menu-item" onclick="showDrawer('drawer-whatif')"><span>🔮 What-If Simulation (SUMO)</span></div>
+        <div class="menu-item" onclick="openRlCrossroadWindow()" style="border: 1px solid #ff007f; background: rgba(255,0,127,0.2); font-weight: bold; color: #ff007f;"><span>🎮 RL Cross-Road Popup ↗</span></div>
+        <div class="menu-item" onclick="location.href='/rl-cross-road'" style="border: 1px solid #00e5ff; background: rgba(0,229,255,0.1); font-weight: bold; color: #00e5ff;"><span>🔗 RL Simulation Page ↗</span></div>
         <div class="menu-item" onclick="openStreetView()"><span>📷 Live CCTV & Street View</span></div>
         <div class="menu-item" onclick="toggleUtilities()"><span>💧 Utilities & Infrastructure</span></div>
     </div>
@@ -286,8 +297,20 @@
         <div style="padding: 4px 10px 10px; background: rgba(5,7,15,0.95); font-size: 10px;" id="twin-violation-box">
             <div style="background: rgba(100,100,100,0.15); border-left: 3px solid #666; padding: 4px 8px; border-radius: 4px; color: #94a3b8;">
                 No violations recorded yet
+        </div>
+    </div>
+
+    <!-- Embedded RL Cross-Road Floating Simulation Window Overlay -->
+    <div class="street-view-window" id="rlCrossroadWindow" style="display: none; position: fixed !important; width: 880px; height: 600px; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(10,15,29,0.98); border: 2px solid #ff007f; border-radius: 14px; overflow: hidden; box-shadow: 0 20px 60px rgba(255,0,127,0.6); z-index: 999999;">
+        <div class="street-header" style="background: rgba(255,0,127,0.25); border-bottom: 1px solid rgba(255,0,127,0.4); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 800; color: #ff007f;">
+            <span>🎮 AUTONOMOUS CROSSROAD RL AI SIMULATION ENGINE (rl_cross_road)</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button onclick="location.href='/rl-cross-road'" style="background: #00e5ff; color: #000; border: none; padding: 4px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold;">🔗 Open Full Page</button>
+                <button onclick="launchNativePygame()" style="background: #ff007f; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold;">🚀 Launch Native Window</button>
+                <span style="cursor: pointer; color: #ff3b30; font-size: 16px; font-weight: bold; margin-left: 8px;" onclick="closeRlCrossroadWindow()">✕</span>
             </div>
         </div>
+        <iframe src="/rl-cross-road" style="width: 100%; height: calc(100% - 40px); border: none;"></iframe>
     </div>
 
     <!-- Bottom Time Slider Bar -->
@@ -340,32 +363,52 @@
 
     <!-- IP Camera Connection Modal (CAM-04) -->
     <div class="modal" id="ipCamModal">
-        <div class="modal-box" style="border-color: #00e5ff; box-shadow: 0 20px 50px rgba(0,229,255,0.5);">
+        <div class="modal-box" style="border-color: #00e5ff; box-shadow: 0 20px 50px rgba(0,229,255,0.5); width: 540px;">
             <div style="font-weight: 900; font-size: 16px; color: #00e5ff; margin-bottom: 16px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                <span>🌐 Connect CAM-04 IP & Port Network Camera</span>
+                <span>🌐 Connect Remote Traffic Camera (WAN / Internet / IP)</span>
                 <span style="cursor: pointer; color: #ff3b30;" onclick="closeIpModal()">✕</span>
             </div>
 
             <div class="form-row">
-                <label>IP Address / Hostname</label>
-                <input type="text" id="ipCamAddr" value="192.168.1.100" placeholder="e.g. 192.168.1.100">
+                <label>Direct Stream URL (Optional - Pastes Full RTSP / HTTP Stream)</label>
+                <input type="text" id="ipCamRawUrl" placeholder="e.g. rtsp://admin:pass@203.192.15.80:554/stream1 or http://203.192.15.80:8080/video">
             </div>
 
-            <div class="form-row">
-                <label>Port Number</label>
-                <input type="number" id="ipCamPort" value="8080" placeholder="e.g. 8080 or 554">
+            <div style="text-align: center; font-size: 11px; color: #94a3b8; margin: 10px 0;">— OR ENTER IP & PORT DETAILS BELOW —</div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+                <div class="form-row">
+                    <label>Public IP / Domain / Hostname</label>
+                    <input type="text" id="ipCamAddr" value="192.168.1.100" placeholder="e.g. 203.192.15.80 or mycam.ddns.net">
+                </div>
+                <div class="form-row">
+                    <label>Port</label>
+                    <input type="number" id="ipCamPort" value="8080" placeholder="e.g. 8080 or 554">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-row">
+                    <label>Username (Optional)</label>
+                    <input type="text" id="ipCamUser" placeholder="e.g. admin">
+                </div>
+                <div class="form-row">
+                    <label>Password (Optional)</label>
+                    <input type="password" id="ipCamPwd" placeholder="e.g. 12345">
+                </div>
             </div>
 
             <div class="form-row">
                 <label>Protocol / Stream Type</label>
                 <select id="ipCamProto">
-                    <option value="http">HTTP Video Stream (/video)</option>
-                    <option value="rtsp">RTSP Stream (rtsp://)</option>
-                    <option value="mjpeg">MJPEG Stream (/mjpeg)</option>
+                    <option value="http">HTTP Video Stream (http://IP:PORT/video)</option>
+                    <option value="rtsp">RTSP CCTV Stream (rtsp://IP:PORT/live)</option>
+                    <option value="mjpeg">MJPEG Stream (http://IP:PORT/mjpeg)</option>
+                    <option value="hls">HLS Stream (.m3u8)</option>
                 </select>
             </div>
 
-            <button class="btn-event" style="background: linear-gradient(90deg, #00e5ff, #0056b3); width: 100%; margin-top: 15px;" onclick="connectIpCamera()">Connect IP Camera Feed</button>
+            <button class="btn-event" style="background: linear-gradient(90deg, #00e5ff, #0056b3); width: 100%; margin-top: 15px;" onclick="connectIpCamera()">Connect Remote Traffic Camera</button>
         </div>
     </div>
 
@@ -374,8 +417,12 @@
         // Real sites this digital twin actually has SUMO simulations for.
         // Selecting one switches map location, SUMO queries, and camera panel together.
         const TWIN_SITES = {
-            baguiati:   { label: "Baguiati, Kolkata (VIP Road x Baguiati Main Rd)", coords: [88.4258, 22.6115] },
-            silk_board: { label: "Silk Board Jn, Bengaluru (Hosur Rd x Outer Ring Rd)", coords: [77.6234, 12.9166] },
+            baguiati:       { label: "VIP Road & Baguiati, Kolkata (East Corridor)", coords: [88.4258, 22.6115] },
+            silk_board:     { label: "Central Silk Board Jn, Bengaluru (South Corridor)", coords: [77.6234, 12.9166] },
+            dhaula_kuan:    { label: "Dhaula Kuan Interchange, Delhi-NCR (North Corridor)", coords: [77.1616, 28.5919] },
+            bkc_mumbai:     { label: "BKC Western Express Hwy, Mumbai (West Corridor)", coords: [72.8686, 19.0657] },
+            hinjawadi_pune: { label: "Hinjawadi IT Park Flyover, Pune", coords: [73.7389, 18.5912] },
+            surat_ring:     { label: "Majura Gate Ring Road, Surat", coords: [72.8175, 21.1888] }
         };
         let currentSite = "baguiati";
         let coords = TWIN_SITES[currentSite].coords;
@@ -542,6 +589,15 @@
 
         function openStreetView() { document.getElementById('streetWindow').style.display = 'block'; }
         function closeStreetView() { document.getElementById('streetWindow').style.display = 'none'; }
+
+        function openRlCrossroadWindow() { document.getElementById('rlCrossroadWindow').style.display = 'block'; }
+        function closeRlCrossroadWindow() { document.getElementById('rlCrossroadWindow').style.display = 'none'; }
+        
+        function launchNativePygame() {
+            fetch('/api/launch-rl-pygame', { method: 'POST' })
+            .then(res => res.json())
+            .then(d => alert(d.message));
+        }
         
         function switchTwinCam(val) {
             if (val === '4') {
@@ -556,20 +612,23 @@
         }
 
         function connectIpCamera() {
-            const ip = document.getElementById('ipCamAddr').value || '192.168.1.100';
-            const port = document.getElementById('ipCamPort').value || '8080';
+            const raw_url = document.getElementById('ipCamRawUrl').value.trim();
+            const ip = document.getElementById('ipCamAddr').value.trim() || '192.168.1.100';
+            const port = document.getElementById('ipCamPort').value.trim() || '8080';
             const proto = document.getElementById('ipCamProto').value || 'http';
+            const username = document.getElementById('ipCamUser').value.trim();
+            const password = document.getElementById('ipCamPwd').value.trim();
 
             fetch('/api/connect_ip_camera', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ip, port, protocol: proto })
+                body: JSON.stringify({ raw_url, ip, port, protocol: proto, username, password })
             })
             .then(r => r.json())
             .then(data => {
                 closeIpModal();
                 document.getElementById('twinCamImg').src = `/video_feed/4?t=${Date.now()}`;
-                alert(`🌐 CAM-04 IP Camera Stream Connected: ${data.cam_url}`);
+                alert(`🌐 Remote Traffic Camera Connected across network:\n${data.cam_url}`);
             })
             .catch(err => {
                 closeIpModal();

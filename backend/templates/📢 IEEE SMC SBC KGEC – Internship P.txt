@@ -1,0 +1,63 @@
+📢 IEEE SMC SBC KGEC – Internship Programme 2026
+
+Dear Interns,
+
+As we are concluding the 3-Month IEEE SMC SBC KGEC Internship Programme, all interns are requested to submit their Final Internship Report, Project Details, GitHub Repository Link, and other required information through the Google Form given below.
+
+🔗 Submission Form:
+https://forms.gle/3CtqGxs3KA8t9Q6g9
+
+📌 Before submitting, please ensure that:
+1️⃣ Your final internship report is complete and uploaded in PDF format.
+2️⃣ Your project code has been pushed to the assigned IEEE-SMC-KGEC-Internship-2026 GitHub repository.
+3️⃣ The GitHub repository contains a proper README.md and all relevant project files.
+4️⃣ All required supporting documents/presentations have been uploaded.
+5️⃣ Please follow the prescribed file-naming format and verify all information before final submission.
+
+⏰ Submission Deadline: 21st August 9:30 PM
+
+⚠️ Please submit the form only once and make sure that all required fields and files are properly completed.
+
+For any queries regarding the submission, please contact the internship coordination team.
+
+Regards,
+Chair
+IEEE SMC SBC KGEC
+
+
+📢 GitHub Project Submission – IEEE SMC SBC KGEC Internship Programme 2026
+
+Dear Interns,
+
+All teams are requested to upload their complete internship project code to the official GitHub repository:
+
+🔗 Repository: https://github.com/ieeesmckgec-student-branch-chapter/IEEE-SMC-KGEC-Internship-2026.git
+
+📌 Before uploading, please ensure:
+1️⃣ Upload your project inside your assigned Team folder/repository.
+2️⃣ Include all relevant source code, documentation, and project files.
+3️⃣ Add a proper README.md containing the project title, team members, project description, technologies used, setup/installation instructions, and usage details.
+4️⃣ Do not upload passwords, API keys, tokens, credentials, or any confidential information.
+5️⃣ Verify that the latest and complete version of your project has been successfully pushed before submitting the repository link.
+
+📁 Recommended project structure:
+
+Project Name/
+├── README.md
+├── src/
+├── docs/
+└── requirements.txt / relevant project files
+
+⚠️ Important: The GitHub repository will be considered the official record of your team's project submission. Please make sure your repository is properly organized and accessible to the evaluation team.
+
+⏰ Submission Deadline: 21st August 9:30 PM
+
+Regards,
+Chair
+IEEE SMC SBC KGEC
+
+Please contact me through WhatsApp for any kind of confusion or issues regarding project submission. Make sure your submission is error free
+
+Reports submission name format is: Project name.pdf
+
+Sir say to me this message!

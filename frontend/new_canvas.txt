@@ -1,0 +1,151 @@
+# Run this script from inside your frontend folder:
+#   cd "D:\Users\Welcome\Downloads\ai-traffic-management-system-main\ai-traffic-management-system-main\frontend"
+#   powershell -ExecutionPolicy Bypass -File .\upgrade_digital_twin.ps1
+
+$path = "src\App.jsx"
+
+if (-not (Test-Path $path)) {
+    Write-Host "ERROR: Could not find $path — make sure you're inside the frontend folder." -ForegroundColor Red
+    exit 1
+}
+
+$content = Get-Content $path -Raw
+
+$newCanvasBlock = @'
+  // 2D Spatial Twin Canvas Animation Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    const W = canvas.width, H = canvas.height;
+    const roadW = 90;
+    const cx = W / 2, cy = H / 2;
+
+    const vehicles = [
+      { id: 'Car-1', dir: 'N', pos: 0, speed: 1.6, color: '#10b981', w: 18, h: 30, lane: -18 },
+      { id: 'Truck-2', dir: 'S', pos: 0, speed: 1.1, color: '#ef4444', w: 22, h: 38, lane: 18 },
+      { id: 'Bike-3', dir: 'E', pos: 0, speed: 2.0, color: '#f59e0b', w: 28, h: 14, lane: -18 },
+      { id: 'Car-4', dir: 'W', pos: 0, speed: 1.4, color: '#3b82f6', w: 20, h: 32, lane: 18 },
+    ];
+
+    let signalPhase = 0; // 0 = N-S green, 1 = E-W green
+    let signalTimer = 0;
+
+    const drawRoad = () => {
+      ctx.fillStyle = '#0b0f1a';
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(cx - roadW / 2, 0, roadW, H);
+      ctx.fillRect(0, cy - roadW / 2, W, roadW);
+
+      ctx.strokeStyle = '#475569';
+      ctx.setLineDash([10, 10]);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, 0); ctx.lineTo(cx, cy - roadW / 2);
+      ctx.moveTo(cx, cy + roadW / 2); ctx.lineTo(cx, H);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, cy); ctx.lineTo(cx - roadW / 2, cy);
+      ctx.moveTo(cx + roadW / 2, cy); ctx.lineTo(W, cy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#e5e7eb';
+      const stripeW = 5, gap = 6, stripes = 6;
+      for (let i = 0; i < stripes; i++) {
+        const off = -roadW / 2 + i * (stripeW + gap) + gap / 2;
+        ctx.fillRect(cx + off, cy - roadW / 2 - 12, stripeW, 10);
+        ctx.fillRect(cx + off, cy + roadW / 2 + 2, stripeW, 10);
+        ctx.fillRect(cx - roadW / 2 - 12, cy + off, 10, stripeW);
+        ctx.fillRect(cx + roadW / 2 + 2, cy + off, 10, stripeW);
+      }
+
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(cx - roadW / 2, cy - roadW / 2, roadW, roadW);
+    };
+
+    const drawSignals = () => {
+      const nsColor = signalPhase === 0 ? '#22c55e' : '#ef4444';
+      const ewColor = signalPhase === 1 ? '#22c55e' : '#ef4444';
+      ctx.fillStyle = nsColor;
+      ctx.beginPath(); ctx.arc(cx - roadW / 2 - 16, cy - roadW / 2 - 16, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx + roadW / 2 + 16, cy + roadW / 2 + 16, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = ewColor;
+      ctx.beginPath(); ctx.arc(cx + roadW / 2 + 16, cy - roadW / 2 - 16, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx - roadW / 2 - 16, cy + roadW / 2 + 16, 6, 0, Math.PI * 2); ctx.fill();
+    };
+
+    const drawVehicle = (v) => {
+      ctx.save();
+      let x, y, angle;
+      if (v.dir === 'N') { x = cx + v.lane; y = H - v.pos; angle = 0; }
+      else if (v.dir === 'S') { x = cx + v.lane; y = v.pos; angle = Math.PI; }
+      else if (v.dir === 'E') { x = v.pos; y = cy + v.lane; angle = Math.PI / 2; }
+      else { x = W - v.pos; y = cy + v.lane; angle = -Math.PI / 2; }
+
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.fillStyle = v.color;
+      ctx.beginPath();
+      ctx.roundRect(-v.w / 2, -v.h / 2, v.w, v.h, 4);
+      ctx.fill();
+      ctx.fillStyle = '#fef3c7';
+      ctx.fillRect(-v.w / 2 + 2, -v.h / 2 + 2, v.w - 4, 3);
+      ctx.restore();
+
+      ctx.fillStyle = '#e5e7eb';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.fillText(`${v.id} (${Math.round(v.speed * 42)} km/h)`, x - 30, y - v.h / 2 - 6);
+    };
+
+    const renderTwin = () => {
+      signalTimer += 1;
+      if (signalTimer > 150) { signalTimer = 0; signalPhase = 1 - signalPhase; }
+
+      drawRoad();
+      drawSignals();
+
+      vehicles.forEach((v) => {
+        const approaching = v.pos < H / 2 - roadW / 2 - 10;
+        const nsMoving = signalPhase === 0;
+        const ewMoving = signalPhase === 1;
+        const canMove =
+          (v.dir === 'N' || v.dir === 'S') ? (nsMoving || approaching) :
+          (ewMoving || approaching);
+
+        if (canMove) v.pos += v.speed;
+        if (v.pos > H) v.pos = 0;
+        drawVehicle(v);
+      });
+
+      animationFrameId = requestAnimationFrame(renderTwin);
+    };
+
+    renderTwin();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+'@
+
+# Regex match: from the old canvas comment through the closing "}, []);" right before triggerOverride
+$pattern = '(?s)  // 2D Spatial Twin Canvas Animation Loop.*?\r?\n  \}, \[\]\);\r?\n\r?\n  const triggerOverride'
+$replacement = $newCanvasBlock + "`r`n`r`n  const triggerOverride"
+
+if ($content -notmatch $pattern) {
+    Write-Host "WARNING: Could not find the expected canvas block pattern. No changes made to the canvas." -ForegroundColor Yellow
+} else {
+    $content = [regex]::Replace($content, $pattern, { param($m) $replacement }, 1)
+    Write-Host "Canvas animation block replaced." -ForegroundColor Green
+}
+
+# Fix the dropdown label
+$content = $content.Replace('Node 1: Connaught Place Intersection', 'Node 1: VIP Road, Baguiati Intersection')
+$content = $content.Replace('Node 2: AIIMS Ring Road Signal', 'Node 2: Jessore Road Junction')
+$content = $content.Replace('Node 3: Cyber Hub Highway Express', 'Node 3: Baguiati Metro Crossing')
+
+Set-Content $path $content -NoNewline -Encoding UTF8
+Write-Host "Done! App.jsx updated. Your dev server should hot-reload automatically." -ForegroundColor Green

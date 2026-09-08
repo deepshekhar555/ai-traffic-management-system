@@ -127,28 +127,51 @@
 
     <!-- IP Camera Config Modal (CAM-04) -->
     <div id="ipCamModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:9999; justify-content:center; align-items:center;">
-        <div style="background:#0a0f1d; border:2px solid #00e5ff; border-radius:14px; width:460px; padding:24px; color:white; box-shadow:0 20px 50px rgba(0,229,255,0.5);">
+        <div style="background:#0a0f1d; border:2px solid #00e5ff; border-radius:14px; width:520px; padding:24px; color:white; box-shadow:0 20px 50px rgba(0,229,255,0.5);">
             <div style="font-weight:900; font-size:15px; color:#00e5ff; margin-bottom:16px; display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">
-                <span>🌐 Connect CAM-04 IP & Port Network Camera</span>
+                <span>🌐 Connect Remote Traffic Camera (WAN / Internet / IP)</span>
                 <span style="cursor:pointer; color:#ff3b30;" onclick="closeIpModal()">✕</span>
             </div>
+
             <div style="margin-bottom:12px;">
-                <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">IP Address / Hostname</label>
-                <input type="text" id="ipCamAddr" value="192.168.1.100" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+                <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Direct Stream URL (Optional - Pastes Full RTSP / HTTP Stream)</label>
+                <input type="text" id="ipCamRawUrl" placeholder="e.g. rtsp://admin:pass@203.192.15.80:554/stream1 or http://203.192.15.80:8080/video" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
             </div>
-            <div style="margin-bottom:12px;">
-                <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Port Number</label>
-                <input type="number" id="ipCamPort" value="8080" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+
+            <div style="text-align:center; font-size:11px; color:#94a3b8; margin:10px 0;">— OR ENTER IP & PORT DETAILS BELOW —</div>
+
+            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px; margin-bottom:12px;">
+                <div>
+                    <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Public IP / Domain / Hostname</label>
+                    <input type="text" id="ipCamAddr" value="192.168.1.100" placeholder="e.g. 203.192.15.80 or mycam.ddns.net" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+                </div>
+                <div>
+                    <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Port</label>
+                    <input type="number" id="ipCamPort" value="8080" placeholder="e.g. 8080 or 554" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+                </div>
             </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
+                <div>
+                    <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Username (Optional)</label>
+                    <input type="text" id="ipCamUser" placeholder="e.g. admin" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+                </div>
+                <div>
+                    <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Password (Optional)</label>
+                    <input type="password" id="ipCamPwd" placeholder="e.g. 12345" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
+                </div>
+            </div>
+
             <div style="margin-bottom:16px;">
                 <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">Stream Protocol</label>
                 <select id="ipCamProto" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px; color:white; font-size:12px;">
-                    <option value="http">HTTP Video Stream (/video)</option>
-                    <option value="rtsp">RTSP Stream (rtsp://)</option>
-                    <option value="mjpeg">MJPEG Stream (/mjpeg)</option>
+                    <option value="http">HTTP Video Stream (http://IP:PORT/video)</option>
+                    <option value="rtsp">RTSP CCTV Stream (rtsp://IP:PORT/live)</option>
+                    <option value="mjpeg">MJPEG Stream (http://IP:PORT/mjpeg)</option>
+                    <option value="hls">HLS Stream (.m3u8)</option>
                 </select>
             </div>
-            <button style="width:100%; padding:10px; background:linear-gradient(90deg, #00e5ff, #0056b3); border:none; border-radius:6px; color:white; font-weight:bold; cursor:pointer;" onclick="connectIpCamera()">Connect IP Camera Feed</button>
+            <button style="width:100%; padding:10px; background:linear-gradient(90deg, #00e5ff, #0056b3); border:none; border-radius:6px; color:white; font-weight:bold; cursor:pointer;" onclick="connectIpCamera()">Connect Remote Traffic Camera</button>
         </div>
     </div>
 
@@ -166,20 +189,23 @@
         }
 
         function connectIpCamera() {
-            const ip = document.getElementById('ipCamAddr').value || '192.168.1.100';
-            const port = document.getElementById('ipCamPort').value || '8080';
+            const raw_url = document.getElementById('ipCamRawUrl').value.trim();
+            const ip = document.getElementById('ipCamAddr').value.trim() || '192.168.1.100';
+            const port = document.getElementById('ipCamPort').value.trim() || '8080';
             const proto = document.getElementById('ipCamProto').value || 'http';
+            const username = document.getElementById('ipCamUser').value.trim();
+            const password = document.getElementById('ipCamPwd').value.trim();
 
             fetch('/api/connect_ip_camera', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ip, port, protocol: proto })
+                body: JSON.stringify({ raw_url, ip, port, protocol: proto, username, password })
             })
             .then(r => r.json())
             .then(data => {
                 closeIpModal();
                 document.getElementById('liveFeedImg').src = `/video_feed/4?t=${Date.now()}`;
-                alert(`🌐 CAM-04 IP Camera Connected: ${data.cam_url}`);
+                alert(`🌐 Remote Traffic Camera Connected across network:\n${data.cam_url}`);
             })
             .catch(err => {
                 closeIpModal();

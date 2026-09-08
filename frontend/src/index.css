@@ -122,3 +122,103 @@ body {
   font-size: 10px;
   font-weight: 900;
 }
+
+/* ─── D3QN Neural RL Brain Styles ─── */
+.d3qn-banner {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(0, 162, 232, 0.08) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.d3qn-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #a855f7, #00a2e8, #10b981);
+}
+
+.qbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  height: 18px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.qbar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qbar-active {
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+  border: 1px solid #00e5ff;
+}
+
+.tech-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tech-tag-purple {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+}
+
+.tech-tag-cyan {
+  background: rgba(0, 162, 232, 0.15);
+  border-color: rgba(0, 162, 232, 0.4);
+  color: #38bdf8;
+}
+
+.tech-tag-green {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.nav-tab {
+  background: transparent;
+  border: 1px solid #374151;
+  color: #9ca3af;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.nav-tab:hover {
+  border-color: #00a2e8;
+  color: #ffffff;
+}
+
+.nav-tab.active {
+  background: rgba(0, 162, 232, 0.18);
+  border-color: #00a2e8;
+  color: #00e5ff;
+  box-shadow: 0 0 10px rgba(0, 162, 232, 0.3);
+}
+

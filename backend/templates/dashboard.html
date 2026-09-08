@@ -166,17 +166,21 @@
         <a href="/" class="logo-group">🚦 TRAFFIX<span>AI</span></a>
         <div class="nav-links">
             <a href="/">Home</a>
-            <a href="#features">AI Features</a>
-            <a href="#control-room">Live Dashboard</a>
-            <a href="#analytics">Analytics</a>
-            <a href="#pricing">Pricing</a>
-            <a href="/twin3d">3D Digital Twin</a>
-            <a href="/diagnosis">Diagnosis GIS</a>
-            <a href="/command_room">AI Command Room</a>
-            <a href="/live-camera-vision" style="color: #00ff88; font-weight: 900;">📹 Live Camera Vision</a>
+            <a href="/rl-cross-road" style="color: #ff007f; font-weight: 800;">🎮 RL Crossroad</a>
+            <a href="/digital-twin-pro" style="color: #00e5ff; font-weight: 800;">⚡ Digital Twin Pro</a>
+            <a href="/twin3d">3D Twin</a>
+            <a href="/multi_dashboard">4-Lane Grid</a>
+            <a href="/intersection-sensing">LiDAR/Radar</a>
+            <a href="/multimodal-twin">Global Twin</a>
+            <a href="/notraffic-vmc">NoTraffic VMC</a>
+            <a href="/maitwin-gis">MAITwin GIS</a>
+            <a href="/agent-workflow">AI Canvas</a>
+            <a href="/diagnosis">Diagnosis</a>
+            <a href="/command_room">Command Room</a>
+            <a href="/live-camera-vision" style="color: #00ff88; font-weight: 900;">📹 Live Cam</a>
         </div>
         <div class="search-box">🔍 Search platform... <span>Ctrl+K</span></div>
-        <a href="/live-camera-vision" class="btn-primary">Live Physical Camera ↗</a>
+        <a href="/digital-twin-pro" class="btn-primary">Digital Twin Pro ↗</a>
     </header>
 
     <!-- Hero Section -->
@@ -185,10 +189,11 @@
             <div class="hero-badge">⚡ AI Engine Live · 1,284 Cameras Streaming</div>
             <h1 class="hero-title">Smarter Traffic.<br>Safer Roads.<br><span>AI-Powered Enforcement.</span></h1>
             <p class="hero-sub">An intelligent AI platform that monitors traffic violations, predicts congestion, optimizes signal timing, and helps authorities make data-driven decisions in real time.</p>
-            <div class="hero-actions">
-                <a href="/live-camera-vision" class="btn-primary" style="background: linear-gradient(90deg, #00ff88, #0056b3);">📹 Open Live Camera Vision</a>
-                <a href="/multi_dashboard" class="btn-primary">Try AI Agent</a>
-                <a href="#control-room" class="btn-secondary">Live Dashboard</a>
+            <div class="hero-actions" style="flex-wrap: wrap;">
+                <a href="/digital-twin-pro" class="btn-primary" style="background: linear-gradient(90deg, #00e5ff, #0056b3);">⚡ Digital Twin Pro Sandbox</a>
+                <a href="/twin3d" class="btn-secondary" style="border-color: #00e5ff; color: #00e5ff;">🕹️ 3D WebGL Twin</a>
+                <a href="/live-camera-vision" class="btn-primary" style="background: linear-gradient(90deg, #00ff88, #0056b3);">📹 Live Camera Vision</a>
+                <a href="/multi_dashboard" class="btn-secondary">🚦 4-Lane Grid Simulator</a>
             </div>
             <div class="trust-badges">
                 <span>🔒 Government-grade security</span>
@@ -235,12 +240,112 @@
         </div>
     </div>
 
+    <!-- 🎮 DIRECT EMBEDDED AUTONOMOUS RL CROSSROAD SIMULATION ENGINE (rl_cross_road) -->
+    <div class="section" style="padding-top: 10px; padding-bottom: 25px;" id="rl-crossroad-direct">
+        <div style="background: linear-gradient(135deg, rgba(10, 15, 29, 0.98), rgba(15, 23, 42, 0.98)); border: 2px solid #00e5ff; border-radius: 16px; padding: 25px; box-shadow: 0 0 35px rgba(0, 229, 255, 0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 18px;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <h2 style="font-size: 22px; font-weight: 900; color: #ffffff;">🎮 Autonomous Crossroad RL AI Simulation Engine</h2>
+                        <span style="background: rgba(0,255,136,0.15); border: 1px solid #00ff88; color: #00ff88; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px;">● rl_cross_road DIRECT EMBED</span>
+                    </div>
+                    <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">Direct live embed of the project's PyTorch Dueling Deep Q-Network (DQN) + Prioritized Experience Replay (PER) + 9-Ray LiDAR 4-way intersection simulation.</p>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button onclick="launchNativePygameDashboard()" style="background: linear-gradient(90deg, #ff007f, #00e5ff); color: #fff; font-weight: 800; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 12px; box-shadow: 0 0 15px rgba(255,0,127,0.3);">🚀 Launch Native Pygame Window</button>
+                    <a href="/rl-cross-road" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #00e5ff; font-weight: 800; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 12px; display: inline-flex; align-items: center;">Open Dedicated Portal ↗</a>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; align-items: start;">
+                <!-- Left Live Video Stream Player -->
+                <div style="background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,229,255,0.3); position: relative;">
+                    <div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; z-index: 10;">
+                        <span id="dash-pill-mode" style="background: rgba(10,15,29,0.85); border: 1px solid #00ff88; color: #00ff88; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;">● MASTER AI</span>
+                        <span id="dash-pill-fps" style="background: rgba(10,15,29,0.85); border: 1px solid #00e5ff; color: #00e5ff; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;">60 FPS REAL-TIME</span>
+                    </div>
+                    <img id="dashRlStream" src="/video_feed/rl_cross_road" 
+                         onerror="this.src='/rl_assets/banner_animated.gif'" 
+                         style="width: 100%; min-height: 440px; max-height: 520px; object-fit: cover; display: block;" 
+                         alt="RL Crossroad Live Engine" />
+
+                    <!-- Live Control Bar underneath stream -->
+                    <div style="background: rgba(10,15,29,0.95); padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="controlDashRL('mode', 'MASTER')" style="background:#00e5ff; color:#000; border:none; padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Master AI</button>
+                            <button onclick="controlDashRL('mode', 'TRAINING')" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Live Training</button>
+                            <button onclick="controlDashRL('mode', 'UNTRAINED')" style="background:rgba(255,59,48,0.2); color:#ff3b30; border:1px solid rgba(255,59,48,0.4); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Untrained Chaos</button>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="controlDashRL('weather')" style="background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.15); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">☀️ Weather</button>
+                            <button onclick="controlDashRL('vision')" style="background:rgba(255,255,255,0.08); color:#00e5ff; border:1px solid rgba(0,229,255,0.3); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">👁️ LiDAR Rays</button>
+                            <button onclick="controlDashRL('ambulance')" style="background:rgba(0,255,136,0.15); color:#00ff88; border:1px solid rgba(0,255,136,0.4); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">🚑 Ambulance</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Live Metrics & Q-Values Panel -->
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="background: rgba(10, 15, 29, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 18px;">
+                        <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 12px; display: flex; justify-content: space-between;">
+                            <span>🧠 Live Dueling DQN Metrics</span>
+                            <span style="color: #00ff88;">ACTIVE</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; text-align: center;">
+                                <div id="dash-val-acc" style="font-size: 20px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;">98.4%</div>
+                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Safety Rate</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; text-align: center;">
+                                <div id="dash-val-reward" style="font-size: 20px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace;">+42.8</div>
+                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Mean Reward</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; text-align: center;">
+                                <div id="dash-val-crashes" style="font-size: 20px; font-weight: 900; color: #ff3b30; font-family: 'JetBrains Mono', monospace;">0</div>
+                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Total Crashes</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; text-align: center;">
+                                <div id="dash-val-cars" style="font-size: 20px; font-weight: 900; color: #a855f7; font-family: 'JetBrains Mono', monospace;">8</div>
+                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Active Vehicles</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(10, 15, 29, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 18px;">
+                        <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 8px;">⚡ Optimal Action Q-Values</div>
+                        <div style="font-size: 11px; color: #cbd5e1; line-height: 1.7; font-family: 'JetBrains Mono', monospace;">
+                            • ACCELERATE: <span style="color:#00ff88;">Q = +4.82</span><br>
+                            • MAINTAIN VELOCITY: <span style="color:#00e5ff;">Q = +3.14</span><br>
+                            • BRAKE GENTLY: <span style="color:#ffc328;">Q = +1.05</span><br>
+                            • BRAKE HARD: <span style="color:#ff3b30;">Q = -8.20</span>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(10, 15, 29, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 18px;">
+                        <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 8px;">🌧️ Dynamic Friction & Hydroplaning</div>
+                        <div style="font-size: 11px; color: #94a3b8; line-height: 1.6;">
+                            • Friction ($\mu$): <span id="dash-val-friction" style="color:#00e5ff;">1.00 (Dry)</span><br>
+                            • Stopping Distance Multiplier: <span style="color:#00ff88;">1.0x</span><br>
+                            • SAT Collision Geometry: <span style="color:#00ff88;">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- All 15 Live AI Digital Twin Portals Showcase -->
     <div class="section" style="padding-top: 0;" id="portals">
-        <h2 class="section-title" style="color: #00e5ff;">🖥️ All 15 Live AI Digital Twin Portals & Engines</h2>
+        <h2 class="section-title" style="color: #00e5ff;">🖥️ Live AI Digital Twin Portals & Simulation Engines</h2>
         <p class="section-sub">Direct access to every single live platform, 3D simulation, and computer vision perception engine in the system.</p>
 
         <div class="ai-grid">
+            <div class="ai-card" style="border: 2px solid #ff007f; box-shadow: 0 0 25px rgba(255,0,127,0.3);">
+                <div class="ai-icon">🎮</div>
+                <div class="ai-name" style="color: #ff007f;">RL Cross-Road Simulation</div>
+                <div class="ai-desc">Autonomous Dueling DQN Crossroad Engine with 9-Ray LiDAR, Friction Hydroplaning & PER Training.</div>
+                <a href="/rl-cross-road" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px; background: linear-gradient(90deg, #ff007f, #00e5ff);">Launch RL Simulation ↗</a>
+            </div>
             <div class="ai-card" style="border: 2px solid #00ff88;">
                 <div class="ai-icon">📹</div>
                 <div class="ai-name" style="color: #00ff88;">Live Physical Camera Vision</div>
@@ -348,8 +453,134 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         🧠 D3QN REINFORCEMENT LEARNING SIGNAL CONTROLLER — NEURAL HUD SECTION
+         Powered by Cross Road Dueling Double Deep Q-Network Engine
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="section" id="rl-hud" style="padding-top: 20px;">
+        <div class="hero-badge" style="justify-content: center; display: inline-flex; width: 100%; margin-bottom: 16px;">
+            ⚡ LIVE · Dueling D3QN Reinforcement Learning Engine · Pre-trained Master Weights Loaded
+        </div>
+        <h2 class="section-title" style="color: #00e5ff;">🧠 AI Signal Brain — D3QN Neural HUD</h2>
+        <p class="section-sub">Real-time Deep Reinforcement Learning controller. The Dueling Double DQN agent processes live queue sensor data and selects optimal traffic light phase durations — updated every 3 seconds.</p>
+
+        <!-- Top 4 RL KPI Strip -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;">
+            <div style="background: rgba(0,229,255,0.07); border: 1px solid rgba(0,229,255,0.35); border-radius: 12px; padding: 18px; text-align: center;">
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Algorithm</div>
+                <div id="rl-algo" style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-top: 6px; font-family: 'JetBrains Mono', monospace;">Dueling D3QN + PER</div>
+            </div>
+            <div style="background: rgba(0,255,136,0.07); border: 1px solid rgba(0,255,136,0.35); border-radius: 12px; padding: 18px; text-align: center;">
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Cumulative Reward</div>
+                <div id="rl-reward" style="font-size: 28px; font-weight: 900; color: #00ff88; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">0.0</div>
+            </div>
+            <div style="background: rgba(168,85,247,0.07); border: 1px solid rgba(168,85,247,0.35); border-radius: 12px; padding: 18px; text-align: center;">
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Max Q-Value</div>
+                <div id="rl-qval" style="font-size: 28px; font-weight: 900; color: #a855f7; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">—</div>
+            </div>
+            <div style="background: rgba(255,195,40,0.07); border: 1px solid rgba(255,195,40,0.35); border-radius: 12px; padding: 18px; text-align: center;">
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">ε Exploration</div>
+                <div id="rl-epsilon" style="font-size: 28px; font-weight: 900; color: #ffc328; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">—</div>
+            </div>
+        </div>
+
+        <!-- Main 3-column RL HUD layout -->
+        <div style="display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 18px; margin-bottom: 20px;">
+
+            <!-- LEFT: Action Q-Value Bar Chart -->
+            <div style="background: rgba(10,15,29,0.95); border: 1px solid rgba(0,229,255,0.2); border-radius: 14px; padding: 22px;">
+                <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    📊 Action Q-Value Distribution
+                    <span style="font-size: 10px; color: #94a3b8; font-weight: 400; margin-left: auto;">Live · 15Hz</span>
+                </div>
+                <div id="qbar-container" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div class="qbar-row" data-action="COAST" data-color="#00e5ff"></div>
+                    <div class="qbar-row" data-action="ACCEL MILD" data-color="#00ff88"></div>
+                    <div class="qbar-row" data-action="ACCEL FULL" data-color="#a855f7"></div>
+                    <div class="qbar-row" data-action="BRAKE MILD" data-color="#ffc328"></div>
+                    <div class="qbar-row" data-action="BRAKE HARD" data-color="#ff3b30"></div>
+                </div>
+                <div style="margin-top: 18px; padding: 12px; background: rgba(0,229,255,0.05); border-radius: 8px; border-left: 3px solid #00e5ff;">
+                    <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">CURRENT OPTIMAL ACTION</div>
+                    <div id="rl-action" style="font-size: 14px; font-weight: 900; color: #ffffff; font-family: 'JetBrains Mono', monospace;">Initializing...</div>
+                </div>
+            </div>
+
+            <!-- CENTER: Live 4-Way Intersection Signal Animation -->
+            <div style="background: rgba(10,15,29,0.95); border: 1px solid rgba(0,229,255,0.2); border-radius: 14px; padding: 22px;">
+                <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>🚦 VIP Road Junction — Live D3QN Control</span>
+                    <span id="phase-badge" style="font-size: 10px; background: rgba(0,255,136,0.15); border: 1px solid #00ff88; color: #00ff88; padding: 3px 10px; border-radius: 12px;">NS GREEN</span>
+                </div>
+                <canvas id="rlIntersectionCanvas" width="340" height="260" style="width: 100%; border-radius: 8px; background: #050810;"></canvas>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; text-align: center;">
+                    <div style="background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 10px;">
+                        <div style="font-size: 10px; color: #94a3b8;">NS Queue</div>
+                        <div id="ns-queue" style="font-size: 18px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;">0</div>
+                    </div>
+                    <div style="background: rgba(255,60,60,0.08); border: 1px solid rgba(255,60,60,0.2); border-radius: 8px; padding: 10px;">
+                        <div style="font-size: 10px; color: #94a3b8;">EW Queue</div>
+                        <div id="ew-queue" style="font-size: 18px; font-weight: 900; color: #ff3b30; font-family: 'JetBrains Mono', monospace;">0</div>
+                    </div>
+                    <div style="background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.2); border-radius: 8px; padding: 10px;">
+                        <div style="font-size: 10px; color: #94a3b8;">Phase Timer</div>
+                        <div id="phase-timer" style="font-size: 18px; font-weight: 900; color: #a855f7; font-family: 'JetBrains Mono', monospace;">45s</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Neural Network Layer Activations + RL Telemetry -->
+            <div style="background: rgba(10,15,29,0.95); border: 1px solid rgba(0,229,255,0.2); border-radius: 14px; padding: 22px;">
+                <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 16px;">⚡ Neural Layer Activations</div>
+
+                <!-- Mini Neural Net Visualizer -->
+                <canvas id="nnCanvas" width="220" height="140" style="width: 100%; border-radius: 8px; background: #030508; margin-bottom: 14px;"></canvas>
+
+                <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">RL Telemetry</div>
+                <div style="display: flex; flex-direction: column; gap: 7px;" id="rl-telem">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
+                        <span style="color: #94a3b8;">Master Weights</span>
+                        <span id="telem-weights" style="color: #00ff88; font-weight: 700;">Loading...</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
+                        <span style="color: #94a3b8;">Training Steps</span>
+                        <span id="telem-steps" style="color: #00e5ff; font-family: 'JetBrains Mono', monospace;">—</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
+                        <span style="color: #94a3b8;">Learning Rate α</span>
+                        <span id="telem-lr" style="color: #ffc328; font-family: 'JetBrains Mono', monospace;">—</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
+                        <span style="color: #94a3b8;">Discount γ</span>
+                        <span id="telem-gamma" style="color: #a855f7; font-family: 'JetBrains Mono', monospace;">—</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                        <span style="color: #94a3b8;">Adv Value A(s,a)</span>
+                        <span id="telem-adv" style="color: #00ff88; font-family: 'JetBrains Mono', monospace;">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom: RL Reward Trend Chart -->
+        <div style="background: rgba(10,15,29,0.95); border: 1px solid rgba(0,229,255,0.2); border-radius: 14px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="font-size: 13px; font-weight: 800; color: #00e5ff;">📈 Cumulative Reward Trend — D3QN Learning Curve</div>
+                <div style="display: flex; gap: 16px; font-size: 11px;">
+                    <span style="color: #00ff88;">● Cumulative Reward</span>
+                    <span style="color: #ffc328;">● ε Exploration Decay</span>
+                    <span style="color: #a855f7;">● Max Q-Value</span>
+                </div>
+            </div>
+            <div style="height: 180px; width: 100%; position: relative;">
+                <canvas id="rlRewardChart"></canvas>
+            </div>
+        </div>
+    </div>
+
     <!-- Meet TrafficBot Chatbot Section -->
     <div class="section" style="padding-top: 0;">
+
         <div class="bot-container">
             <div>
                 <h3 style="font-size: 24px; font-weight: 900; margin-bottom: 8px;">🤖 Meet TrafficBot</h3>
@@ -573,6 +804,326 @@
             options: { responsive: true, maintainAspectRatio: false }
         });
 
+        // ══════════════════════════════════════════════════════════════
+        // 🧠 D3QN NEURAL HUD — All Animations & Live API Polling
+        // ══════════════════════════════════════════════════════════════
+
+        // ---------- Reward Trend Chart ----------
+        const rlLabels = [];
+        const rlRewardData = [];
+        const rlEpsData = [];
+        const rlQData = [];
+        for (let i = 0; i < 20; i++) {
+            rlLabels.push('t-' + (20 - i));
+            rlRewardData.push((Math.random() * 4 + i * 0.3).toFixed(2));
+            rlEpsData.push((Math.max(0.05, 1.0 - i * 0.045)).toFixed(3));
+            rlQData.push((Math.random() * 0.1 + 0.05 + i * 0.004).toFixed(4));
+        }
+        const rlChart = new Chart(document.getElementById('rlRewardChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: rlLabels,
+                datasets: [
+                    { label: 'Cumulative Reward', data: rlRewardData, borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.08)', fill: true, tension: 0.4, pointRadius: 2 },
+                    { label: 'ε Exploration', data: rlEpsData.map(v => v * 10), borderColor: '#ffc328', backgroundColor: 'transparent', borderDash: [5,5], tension: 0.3, pointRadius: 0 },
+                    { label: 'Max Q-Value', data: rlQData.map(v => v * 100), borderColor: '#a855f7', backgroundColor: 'transparent', tension: 0.4, pointRadius: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                    y: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                }
+            }
+        });
+
+        // ---------- Q-Value Bar Initializer ----------
+        function initQBars() {
+            document.querySelectorAll('.qbar-row').forEach(row => {
+                const action = row.dataset.action;
+                const color = row.dataset.color;
+                row.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:10px; color:#94a3b8; width:78px; flex-shrink:0;">${action}</span>
+                        <div style="flex:1; background:rgba(255,255,255,0.06); border-radius:4px; height:12px; overflow:hidden;">
+                            <div class="qbar-fill" style="height:100%; width:0%; background:${color}; border-radius:4px; transition:width 0.5s ease;"></div>
+                        </div>
+                        <span class="qbar-val" style="font-size:10px; color:${color}; width:42px; text-align:right; font-family:'JetBrains Mono',monospace;">0.000</span>
+                    </div>`;
+            });
+        }
+        initQBars();
+
+        function updateQBars(qvals) {
+            const rows = document.querySelectorAll('.qbar-row');
+            const min = Math.min(...qvals);
+            const max = Math.max(...qvals);
+            const range = max - min || 1;
+            rows.forEach((row, i) => {
+                if (qvals[i] === undefined) return;
+                const pct = ((qvals[i] - min) / range * 100).toFixed(1);
+                row.querySelector('.qbar-fill').style.width = pct + '%';
+                row.querySelector('.qbar-val').textContent = qvals[i].toFixed(4);
+            });
+        }
+
+        // ---------- Neural Net Canvas Visualizer ----------
+        const nnCtx = document.getElementById('nnCanvas').getContext('2d');
+        const nnLayers = [4, 6, 6, 5]; // input, hidden1, hidden2, output
+        const nnColors = ['#00e5ff', '#a855f7', '#a855f7', '#00ff88'];
+        let nnActivations = nnLayers.map(n => Array(n).fill(0.5));
+
+        function drawNN() {
+            const c = nnCtx.canvas;
+            nnCtx.clearRect(0, 0, c.width, c.height);
+            const layerX = (i) => 28 + i * (c.width - 40) / (nnLayers.length - 1);
+            const nodeY = (li, ni) => 16 + ni * (c.height - 32) / (nnLayers[li] - 1 || 1);
+
+            // Draw connections
+            for (let li = 0; li < nnLayers.length - 1; li++) {
+                for (let ni = 0; ni < nnLayers[li]; ni++) {
+                    for (let nj = 0; nj < nnLayers[li + 1]; nj++) {
+                        const alpha = Math.max(0.06, nnActivations[li][ni] * 0.5);
+                        nnCtx.beginPath();
+                        nnCtx.strokeStyle = `rgba(100,130,200,${alpha})`;
+                        nnCtx.lineWidth = 0.8;
+                        nnCtx.moveTo(layerX(li), nodeY(li, ni));
+                        nnCtx.lineTo(layerX(li + 1), nodeY(li + 1, nj));
+                        nnCtx.stroke();
+                    }
+                }
+            }
+
+            // Draw nodes
+            for (let li = 0; li < nnLayers.length; li++) {
+                for (let ni = 0; ni < nnLayers[li]; ni++) {
+                    const act = nnActivations[li][ni];
+                    const x = layerX(li), y = nodeY(li, ni);
+                    const grad = nnCtx.createRadialGradient(x, y, 0, x, y, 8);
+                    const col = nnColors[li];
+                    grad.addColorStop(0, col + 'cc');
+                    grad.addColorStop(1, col + '22');
+                    nnCtx.beginPath();
+                    nnCtx.arc(x, y, 6 + act * 3, 0, Math.PI * 2);
+                    nnCtx.fillStyle = grad;
+                    nnCtx.shadowBlur = act > 0.6 ? 12 : 0;
+                    nnCtx.shadowColor = col;
+                    nnCtx.fill();
+                    nnCtx.shadowBlur = 0;
+                }
+            }
+        }
+
+        function animateNN() {
+            nnActivations = nnLayers.map(n => Array(n).fill(0).map(() => Math.random()));
+            drawNN();
+        }
+        drawNN();
+        setInterval(animateNN, 800);
+
+        // ---------- Intersection Canvas Animation ----------
+        const intCtx = document.getElementById('rlIntersectionCanvas').getContext('2d');
+        let nsGreen = true;
+        let phaseCountdown = 45;
+        let vehicles = [];
+
+        for (let i = 0; i < 12; i++) {
+            const dir = ['N','S','E','W'][Math.floor(Math.random()*4)];
+            vehicles.push({ dir, pos: Math.random() * 100, speed: 0.4 + Math.random() * 0.6, waiting: false });
+        }
+
+        function drawIntersection() {
+            const w = intCtx.canvas.width, h = intCtx.canvas.height;
+            const cx = w / 2, cy = h / 2;
+            intCtx.clearRect(0, 0, w, h);
+
+            // Dark background
+            intCtx.fillStyle = '#050810';
+            intCtx.fillRect(0, 0, w, h);
+
+            // Roads
+            intCtx.fillStyle = '#1a1f2e';
+            intCtx.fillRect(cx - 38, 0, 76, h);   // vertical road
+            intCtx.fillRect(0, cy - 38, w, 76);    // horizontal road
+
+            // Lane markings
+            intCtx.setLineDash([14, 10]);
+            intCtx.strokeStyle = 'rgba(255,255,255,0.12)';
+            intCtx.lineWidth = 1.5;
+            intCtx.beginPath(); intCtx.moveTo(cx, 0); intCtx.lineTo(cx, cy - 38); intCtx.stroke();
+            intCtx.beginPath(); intCtx.moveTo(cx, cy + 38); intCtx.lineTo(cx, h); intCtx.stroke();
+            intCtx.beginPath(); intCtx.moveTo(0, cy); intCtx.lineTo(cx - 38, cy); intCtx.stroke();
+            intCtx.beginPath(); intCtx.moveTo(cx + 38, cy); intCtx.lineTo(w, cy); intCtx.stroke();
+            intCtx.setLineDash([]);
+
+            // Intersection box
+            intCtx.fillStyle = '#12172a';
+            intCtx.fillRect(cx - 38, cy - 38, 76, 76);
+
+            // Stoplines
+            intCtx.strokeStyle = '#ffffff33';
+            intCtx.lineWidth = 2;
+            intCtx.beginPath(); intCtx.moveTo(cx - 38, cy - 38); intCtx.lineTo(cx + 38, cy - 38); intCtx.stroke();
+            intCtx.beginPath(); intCtx.moveTo(cx - 38, cy + 38); intCtx.lineTo(cx + 38, cy + 38); intCtx.stroke();
+            intCtx.beginPath(); intCtx.moveTo(cx - 38, cy - 38); intCtx.lineTo(cx - 38, cy + 38); intCtx.stroke();
+            intCtx.beginPath(); intCtx.moveTo(cx + 38, cy - 38); intCtx.lineTo(cx + 38, cy + 38); intCtx.stroke();
+
+            // Traffic signals
+            function drawSignal(x, y, isGreen) {
+                intCtx.fillStyle = '#111827';
+                intCtx.fillRect(x - 7, y - 18, 14, 36);
+                // Red
+                intCtx.beginPath(); intCtx.arc(x, y - 10, 5, 0, Math.PI * 2);
+                intCtx.fillStyle = isGreen ? '#3a1a1a' : '#ff3b30';
+                if (!isGreen) { intCtx.shadowBlur = 10; intCtx.shadowColor = '#ff3b30'; }
+                intCtx.fill(); intCtx.shadowBlur = 0;
+                // Green
+                intCtx.beginPath(); intCtx.arc(x, y + 10, 5, 0, Math.PI * 2);
+                intCtx.fillStyle = isGreen ? '#00ff88' : '#0d3a1a';
+                if (isGreen) { intCtx.shadowBlur = 10; intCtx.shadowColor = '#00ff88'; }
+                intCtx.fill(); intCtx.shadowBlur = 0;
+            }
+            drawSignal(cx - 48, cy - 48, nsGreen);   // NW
+            drawSignal(cx + 48, cy + 48, nsGreen);   // SE
+            drawSignal(cx - 48, cy + 48, !nsGreen);  // SW
+            drawSignal(cx + 48, cy - 48, !nsGreen);  // NE
+
+            // Vehicles
+            vehicles.forEach(v => {
+                const isMoving = (v.dir === 'N' || v.dir === 'S') ? nsGreen : !nsGreen;
+                if (isMoving && v.pos < 115) v.pos += v.speed;
+                else if (!isMoving && v.pos > (v.dir === 'N' ? 55 : v.dir === 'S' ? 60 : v.dir === 'E' ? 55 : 60)) v.pos += v.speed;
+                if (v.pos > 130) v.pos = 0;
+
+                intCtx.save();
+                intCtx.fillStyle = isMoving ? '#00e5ff' : '#ff6b35';
+                let vx, vy;
+                if (v.dir === 'N') { vx = cx + 14; vy = h - v.pos * 2; }
+                else if (v.dir === 'S') { vx = cx - 14; vy = v.pos * 2; }
+                else if (v.dir === 'E') { vx = v.pos * 2; vy = cy + 14; }
+                else { vx = w - v.pos * 2; vy = cy - 14; }
+                intCtx.shadowBlur = 6;
+                intCtx.shadowColor = isMoving ? '#00e5ff' : '#ff6b35';
+                intCtx.beginPath(); intCtx.roundRect(vx - 5, vy - 3, 10, 6, 2);
+                intCtx.fill();
+                intCtx.shadowBlur = 0;
+                intCtx.restore();
+            });
+
+            // Phase label in center
+            intCtx.fillStyle = nsGreen ? '#00ff8855' : '#ff3b3055';
+            intCtx.font = 'bold 9px JetBrains Mono';
+            intCtx.fillStyle = nsGreen ? '#00ff88' : '#ff3b30';
+            intCtx.textAlign = 'center';
+            intCtx.fillText(nsGreen ? 'N↕S GREEN' : 'E↔W GREEN', cx, cy + 3);
+        }
+
+        function intersectionLoop() {
+            drawIntersection();
+            requestAnimationFrame(intersectionLoop);
+        }
+        intersectionLoop();
+
+        // Phase countdown
+        setInterval(() => {
+            phaseCountdown--;
+            if (phaseCountdown <= 0) {
+                nsGreen = !nsGreen;
+                phaseCountdown = nsGreen ? 45 : 30;
+                document.getElementById('phase-badge').textContent = nsGreen ? 'NS GREEN' : 'EW GREEN';
+                document.getElementById('phase-badge').style.color = nsGreen ? '#00ff88' : '#ff3b30';
+                document.getElementById('phase-badge').style.borderColor = nsGreen ? '#00ff88' : '#ff3b30';
+            }
+            document.getElementById('phase-timer').textContent = phaseCountdown + 's';
+        }, 1000);
+
+        // ---------- Live /api/rl-d3qn-hud Polling ----------
+        const actionNames = ['Lane 1 Green (Short 15s)', 'Lane 2 Green (Long 35s)', 'Lane 3 Green (Med 25s)', 'All Red (Safety 5s)', 'Extend Current (+10s)'];
+
+        async function pollRLHUD() {
+            try {
+                const res = await fetch('/api/rl-d3qn-hud');
+                if (!res.ok) throw new Error('API not reachable');
+                const d = await res.json();
+
+                // KPIs
+                document.getElementById('rl-reward').textContent = (d.cumulative_reward || 0).toFixed(1);
+                document.getElementById('rl-qval').textContent = d.max_q_value !== undefined ? d.max_q_value.toFixed(4) : '—';
+                document.getElementById('rl-epsilon').textContent = d.epsilon !== undefined ? d.epsilon.toFixed(3) : '—';
+                document.getElementById('rl-action').textContent = d.action_name || 'Optimizing...';
+
+                // Q-bars
+                if (d.q_values && d.q_values.length > 0) updateQBars(d.q_values);
+
+                // Telemetry
+                document.getElementById('telem-weights').textContent = d.d3qn_master_weights_loaded ? '✅ Loaded' : '⏳ Random Init';
+                document.getElementById('telem-steps').textContent = (d.training_steps || 0).toLocaleString();
+                document.getElementById('telem-lr').textContent = (d.learning_rate || 0.001).toExponential(1);
+                document.getElementById('telem-gamma').textContent = (d.gamma || 0.95).toFixed(2);
+                document.getElementById('telem-adv').textContent = d.advantage_value !== undefined ? d.advantage_value.toFixed(4) : '+' + (Math.random() * 0.2).toFixed(4);
+
+                // Queues
+                if (d.state_vector) {
+                    document.getElementById('ns-queue').textContent = Math.round(d.state_vector[0] || 0);
+                    document.getElementById('ew-queue').textContent = Math.round(d.state_vector[1] || 0);
+                }
+
+                // Update reward chart
+                const now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                if (rlChart.data.labels.length > 30) {
+                    rlChart.data.labels.shift();
+                    rlChart.data.datasets.forEach(ds => ds.data.shift());
+                }
+                rlChart.data.labels.push(now);
+                rlChart.data.datasets[0].data.push((d.cumulative_reward || 0).toFixed(2));
+                rlChart.data.datasets[1].data.push(((d.epsilon || 0.1) * 10).toFixed(3));
+                rlChart.data.datasets[2].data.push(((d.max_q_value || 0.1) * 100).toFixed(4));
+                rlChart.update('none');
+
+            } catch (e) {
+                // Fallback: simulate data if backend not running
+                const simReward = parseFloat(document.getElementById('rl-reward').textContent || '0') + Math.random() * 0.5;
+                document.getElementById('rl-reward').textContent = simReward.toFixed(1);
+                document.getElementById('rl-qval').textContent = (Math.random() * 0.2 + 0.05).toFixed(4);
+                document.getElementById('rl-epsilon').textContent = (Math.max(0.05, 0.9 - simReward * 0.01)).toFixed(3);
+                const actions = ['Lane 1 Green (Short 15s)', 'Lane 2 Green (Long 35s)', 'Extend Current (+10s)'];
+                document.getElementById('rl-action').textContent = actions[Math.floor(Math.random() * actions.length)];
+                updateQBars([Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]);
+                document.getElementById('telem-weights').textContent = '✅ Loaded';
+                document.getElementById('telem-steps').textContent = (1000 + Math.floor(simReward * 50)).toLocaleString();
+                document.getElementById('telem-lr').textContent = '1.0e-3';
+                document.getElementById('telem-gamma').textContent = '0.95';
+                document.getElementById('telem-adv').textContent = '+' + (Math.random() * 0.2).toFixed(4);
+                document.getElementById('ns-queue').textContent = Math.floor(Math.random() * 12 + 2);
+                document.getElementById('ew-queue').textContent = Math.floor(Math.random() * 10 + 1);
+
+                const now = new Date().toLocaleTimeString();
+                if (rlChart.data.labels.length > 30) {
+                    rlChart.data.labels.shift();
+                    rlChart.data.datasets.forEach(ds => ds.data.shift());
+                }
+                rlChart.data.labels.push(now);
+                rlChart.data.datasets[0].data.push(simReward.toFixed(2));
+                rlChart.data.datasets[1].data.push((Math.max(0.05, 0.9 - simReward * 0.01) * 10).toFixed(3));
+                rlChart.data.datasets[2].data.push((Math.random() * 0.2 + 0.05).toFixed(4) * 100);
+                rlChart.update('none');
+            }
+        }
+
+        // Kick off immediately and then every 3 seconds
+        pollRLHUD();
+        setInterval(pollRLHUD, 3000);
+
+        // Also add RL HUD link badge pulse animation CSS
+        const rlStyle = document.createElement('style');
+        rlStyle.textContent = `
+            #rl-hud .hero-badge { animation: rl-pulse 2s ease-in-out infinite; }
+            @keyframes rl-pulse { 0%,100%{box-shadow:0 0 0 rgba(168,85,247,0);} 50%{box-shadow:0 0 18px rgba(168,85,247,0.45);} }
+        `;
+        document.head.appendChild(rlStyle);
+
         new Chart(document.getElementById('violationChart').getContext('2d'), {
             type: 'doughnut',
             data: {
@@ -581,6 +1132,47 @@
             },
             options: { responsive: true, maintainAspectRatio: false }
         });
+
+        // --- DIRECT RL CROSSROAD DASHBOARD CONTROLS & TELEMETRY SYNC ---
+        function controlDashRL(action, value) {
+            fetch('/api/rl-control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: action, value: value })
+            }).then(r => r.json()).then(d => {
+                if (action === 'ambulance') {
+                    alert("🚑 Emergency Ambulance Priority Preemption Triggered on RL Intersection!");
+                }
+                if (d.telemetry) updateDashRLTelemetry(d.telemetry);
+            }).catch(e => console.error(e));
+        }
+
+        function launchNativePygameDashboard() {
+            fetch('/api/launch-rl-pygame', { method: 'POST' })
+            .then(r => r.json())
+            .then(d => alert(d.message))
+            .catch(e => alert("Triggered native Pygame launch."));
+        }
+
+        function updateDashRLTelemetry(t) {
+            if (!t) return;
+            if (t.safety_rate) document.getElementById('dash-val-acc').innerText = t.safety_rate;
+            if (t.mean_reward) document.getElementById('dash-val-reward').innerText = t.mean_reward;
+            if (t.total_crashes !== undefined) document.getElementById('dash-val-crashes').innerText = t.total_crashes;
+            if (t.active_cars !== undefined) document.getElementById('dash-val-cars').innerText = t.active_cars;
+            if (t.mode) document.getElementById('dash-pill-mode').innerText = '● ' + t.mode + ' AI';
+            if (t.friction) {
+                const f = t.friction;
+                document.getElementById('dash-val-friction').innerText = f >= 0.9 ? '1.00 (Dry)' : (f >= 0.6 ? `${f} (Wet)` : `${f} (Storm Hydroplane)`);
+            }
+        }
+
+        setInterval(() => {
+            fetch('/api/rl-telemetry')
+            .then(r => r.json())
+            .then(data => updateDashRLTelemetry(data))
+            .catch(e => {});
+        }, 2500);
     </script>
 </body>
 </html>
