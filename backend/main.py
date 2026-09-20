@@ -40,6 +40,7 @@ from src.siren_detector import SirenDetector
 from src.rl_signal_agent import QLearningSignalAgent
 from src.challan_system import EChallanSystem
 from src.bev_transformer import BEVTransformer
+from src.spatial_perception import SpatialPerceptionEngine
 from src.vehicle_classifier_hotlist import VehicleHotlistClassifier
 from src.pedestrian_safety import PedestrianSafetySystem
 from src.hardware_controller import HardwareController
@@ -171,6 +172,9 @@ class TrafficManagementApp:
             self.drone_fleet = DroneFleetManager()
             self.smart_parking = SmartParkingGuidanceEngine()
             self.bev_transformer = BEVTransformer()
+            # A calibrated ego-world layer for camera/LiDAR fusion. Calibration is
+            # configured per installed camera; it remains safely inactive until then.
+            self.spatial_perception = SpatialPerceptionEngine()
             self.hotlist_classifier = VehicleHotlistClassifier()
             self.pedestrian_safety = PedestrianSafetySystem()
 
@@ -590,6 +594,8 @@ class TrafficManagementApp:
             
             # Track speeds and calculate movement early for SURTRAC & Digital Twin
             tracked_vehicles = self.speed_tracker.match_detections(vehicle_detections, frame.shape[0], frame.shape[1])
+            spatial_observations = [dict(vehicle, camera_id="primary") for vehicle in tracked_vehicles]
+            world_objects = self.spatial_perception.update(spatial_observations)
             speeding_vehicles = self.speed_tracker.get_speeding_vehicles(tracked_vehicles, 60)
             self.last_speed_stats = self.speed_tracker.get_speed_statistics(tracked_vehicles)
             
@@ -754,7 +760,11 @@ class TrafficManagementApp:
                 "green_corridor": corridor_telem,
                 "ev_grid": ev_telem,
                 "drone_fleet": drone_telem,
-                "smart_parking": parking_telem
+                "smart_parking": parking_telem,
+                "spatial_perception": {
+                    **self.spatial_perception.status(),
+                    "world_objects": world_objects,
+                }
             }
 
             # Export 100% Real Physical Camera Detections for 3D Digital Twin Mirroring
@@ -794,6 +804,7 @@ class TrafficManagementApp:
                         "vehicle_count": vehicle_count,
                         "total_count": person_count + motorcycle_count + vehicle_count,
                         "objects": live_objs,
+                        "spatial_perception": system_telemetry["spatial_perception"],
                         "signal_state": signal_state,
                         "co2_saved": round(self.co2_saved, 3)
                     }, f)
@@ -1150,4 +1161,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

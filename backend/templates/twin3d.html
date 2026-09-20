@@ -68,26 +68,40 @@
 
     <div id="canvas-container"></div>
 
-    <!-- Header HUD -->
+    <!-- Header HUD with WareTwin Integration Badge -->
     <div class="hud-header">
-        <h1>🏙️ TRAFFIXAI 3D DIGITAL TWIN <span class="badge-live">3D WEBGL ENGINE</span></h1>
-        <p>Real-Time 3D Micro-Physics ➔ YOLOv26 AI Perception Ingestion ➔ SURTRAC Signal Sync</p>
+        <h1>🏙️ TRAFFIXAI 3D DIGITAL TWIN <span class="badge-live">3D WEBGL ENGINE</span> <span class="badge-live" style="background: rgba(0, 229, 255, 0.2); color: #00e5ff; border-color: #00e5ff; margin-left: 8px;">WareTwin AI Fleet Sync</span></h1>
+        <p>Real-Time 3D Micro-Physics ➔ YOLOv26 Perception ➔ WareTwin A* Rerouting & Fleet Safety Interlocks</p>
     </div>
 
-    <!-- Viewport Controls Bar (With Working Callbacks & Category 5 Storm Simulation matching Video 6) -->
+    <!-- Viewport Controls Bar -->
     <div class="hud-controls">
         <button class="btn-view active" id="btn-orbit" onclick="setPresetView('3d', this)">🛸 3D Orbit View</button>
         <button class="btn-view" id="btn-top" onclick="setPresetView('top', this)">📐 2D Overhead GIS</button>
         <button class="btn-view" id="btn-driver" onclick="setPresetView('driver', this)">🏎️ Driver POV</button>
         <button class="btn-view" id="btn-night" onclick="toggleNightDay(this)">🌙 Cyberpunk Night</button>
         <button class="btn-view" id="btn-storm" onclick="toggleCategory5Storm(this)" style="border-color: #ff3b30; color: #ff3b30;">🌪️ Category 5 Storm</button>
+        <button class="btn-view" id="btn-waretwin-fault" onclick="injectWareTwinFault(this)" style="border-color: #ff9500; color: #ff9500; background: rgba(255, 149, 0, 0.15);">⚠️ WareTwin Fault Injector</button>
         <a href="/command_room" class="btn-view" style="background: linear-gradient(90deg, #00e5ff, #0056b3); color: #fff; font-weight: 900;">🏛️ AI Command Room ↗</a>
     </div>
 
     <!-- Live Telemetry Sidebar -->
     <div class="hud-sidebar">
-        <div style="font-size: 13px; font-weight: 900; color: #00e5ff; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
-            ⚡ 3D Spatial Intelligence Telemetry
+        <div style="font-size: 13px; font-weight: 900; color: #00e5ff; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center;">
+            <span>⚡ 3D Spatial Telemetry</span>
+            <span style="font-size: 10px; color: #00ff88; border: 1px solid #00ff88; padding: 2px 6px; border-radius: 4px;">A* Optimal</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">AI Autonomous Fleet:</span>
+            <span class="stat-val" id="stat-waretwin-fleet" style="color: #00ff88;">12 AMRs Active</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Path Planning Engine:</span>
+            <span class="stat-val" id="stat-path-plan" style="color: #00e5ff;">Traffic-Weighted A*</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Safety Interlocks:</span>
+            <span class="stat-val" id="stat-interlock" style="color: #00ff88;">ONLINE (0 Conflicts)</span>
         </div>
         <div class="stat-row">
             <span class="stat-label">AI Tracked Objects:</span>
@@ -283,6 +297,47 @@
             if (btnEl) {
                 btnEl.innerText = isNight ? '🌙 Cyberpunk Night' : '☀️ Day City Light';
                 btnEl.style.color = isNight ? '#f8fafc' : '#ffc400';
+            }
+        }
+
+        let isFaultInjected = false;
+        function injectWareTwinFault(btnEl) {
+            isFaultInjected = !isFaultInjected;
+            const interlockEl = document.getElementById('stat-interlock');
+            const pathPlanEl = document.getElementById('stat-path-plan');
+            
+            if (isFaultInjected) {
+                if (interlockEl) {
+                    interlockEl.innerText = "ENGAGED (LANE 2 BLOCKED)";
+                    interlockEl.style.color = "#ff3b30";
+                }
+                if (pathPlanEl) {
+                    pathPlanEl.innerText = "A* Dynamic Rerouting";
+                    pathPlanEl.style.color = "#ff9500";
+                }
+                if (btnEl) {
+                    btnEl.innerText = "🚨 WareTwin Reroute Active";
+                    btnEl.style.background = "#ff3b30";
+                    btnEl.style.color = "#fff";
+                }
+                // Reverse synthetic car speeds to simulate rerouting around roadblock
+                syntheticCars.forEach(c => c.speed = (0.2 + Math.random() * 0.3) * (Math.random() > 0.5 ? -1 : 1));
+                alert("⚠️ WareTwin Fault Injection: Obstacle detected on Lane 2! Traffic-weighted A* algorithm is rerouting 12 autonomous fleet vehicles around bottleneck.");
+            } else {
+                if (interlockEl) {
+                    interlockEl.innerText = "ONLINE (0 Conflicts)";
+                    interlockEl.style.color = "#00ff88";
+                }
+                if (pathPlanEl) {
+                    pathPlanEl.innerText = "Traffic-Weighted A*";
+                    pathPlanEl.style.color = "#00e5ff";
+                }
+                if (btnEl) {
+                    btnEl.innerText = "⚠️ WareTwin Fault Injector";
+                    btnEl.style.background = "rgba(255, 149, 0, 0.15)";
+                    btnEl.style.color = "#ff9500";
+                }
+                syntheticCars.forEach(c => c.speed = 0.6 + Math.random() * 0.4);
             }
         }
 

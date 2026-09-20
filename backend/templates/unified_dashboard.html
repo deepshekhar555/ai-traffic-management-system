@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TraffixAI | Unified Command Center</title>
+  <style>
+    :root { color-scheme: dark; --cyan:#21d4fd; --green:#36f28a; --panel:#101827; --line:#26354b; }
+    * { box-sizing:border-box; } body { margin:0; font-family:Segoe UI,Arial,sans-serif; background:#070b12; color:#e5edf8; }
+    header { min-height:72px; padding:14px 22px; display:flex; align-items:center; gap:18px; border-bottom:1px solid var(--line); background:linear-gradient(90deg,#0d1726,#0a0f1a); }
+    h1 { margin:0; font-size:20px; letter-spacing:.08em; color:var(--cyan); } p { margin:4px 0 0; color:#9eb0c8; font-size:13px; }
+    #status { margin-left:auto; color:var(--green); font-size:12px; font-weight:700; }
+    nav { display:flex; flex-wrap:wrap; gap:8px; padding:12px 18px; background:#0b111c; border-bottom:1px solid var(--line); }
+    button { color:#bfd0e7; background:var(--panel); border:1px solid var(--line); border-radius:7px; padding:9px 12px; cursor:pointer; font-weight:600; }
+    button:hover, button.active { color:#081019; background:var(--cyan); border-color:var(--cyan); }
+    main { height:calc(100vh - 137px); min-height:540px; padding:12px; }
+    iframe { width:100%; height:100%; border:1px solid var(--line); border-radius:10px; background:#fff; }
+    .notice { display:none; position:absolute; left:50%; top:140px; transform:translateX(-50%); padding:12px 16px; background:#3b2810; color:#ffd178; border:1px solid #8b6121; border-radius:8px; z-index:2; }
+  </style>
+</head>
+<body>
+  <header>
+    <div><h1>TRAFFIXAI — UNIFIED COMMAND CENTER</h1><p>One address for live vision, digital twins, intelligence and spatial perception.</p></div>
+    <div id="status">● API ONLINE</div>
+  </header>
+  <nav id="tabs">
+    <button class="active" data-url="/spatial-ai/">Spatial AI Dashboard</button>
+    <button data-url="/legacy-dashboard">Operations Dashboard</button>
+    <button data-url="/digital-twin-pro">Digital Twin Pro</button>
+    <button data-url="/twin3d">3D / RL Simulation</button>
+    <button data-url="/multi_dashboard">Multi-Camera Grid</button>
+    <button data-url="/analysis">Analytics</button>
+    <button data-url="/traffic-diagnosis">Traffic Diagnosis</button>
+  </nav>
+  <div class="notice" id="reactNotice">Spatial AI Dashboard is served directly by TraffixAI on port 5000.</div>
+  <main><iframe id="workspace" title="TraffixAI workspace" src="/spatial-ai/"></iframe></main>
+  <script>
+    const workspace = document.getElementById('workspace');
+    const notice = document.getElementById('reactNotice');
+    document.querySelectorAll('#tabs button').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('#tabs button').forEach(item => item.classList.remove('active'));
+      button.classList.add('active');
+      notice.style.display = false;
+      workspace.src = button.dataset.url;
+    }));
+  </script>
+</body>
+</html>

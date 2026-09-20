@@ -1,11 +1,25 @@
 import os
+import sys
 import cv2
 import pygame
 
 # Set dummy video driver to prevent opening a physical window
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-from src.simulation import RLIntersectionSim
+_rl_cross_road_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if _rl_cross_road_root not in sys.path:
+    sys.path.insert(0, _rl_cross_road_root)
+
+try:
+    from src.simulation import RLIntersectionSim
+except ModuleNotFoundError:
+    # Some launch contexts expose the project root under a different import path.
+    # Ensure the RL project can still resolve its own `src.*` modules when imported
+    # from the main dashboard backend.
+    try:
+        from rl_cross_road.src.simulation import RLIntersectionSim
+    except ModuleNotFoundError:
+        raise
 
 class WebRLBridge:
     def __init__(self):

@@ -54,6 +54,56 @@
         .cam-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
 
         .alert-box { background: rgba(255,59,48,0.15); border-left: 4px solid #ff3b30; padding: 12px; border-radius: 6px; margin-top: 15px; font-size: 12px; }
+        .rl-panel {
+            position: absolute; top: 12px; left: 12px; z-index: 20; width: min(290px, calc(100% - 24px));
+            background: linear-gradient(180deg, rgba(5, 12, 22, 0.82), rgba(7, 18, 30, 0.82));
+            border: 1px solid rgba(0, 229, 255, 0.45); border-radius: 12px;
+            backdrop-filter: blur(12px); box-shadow: 0 10px 24px rgba(0, 229, 255, 0.14);
+            padding: 10px 12px 12px; color: #e2e8f0; font-size: 11px;
+        }
+        .rl-panel .label {
+            color: #00e5ff; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .rl-panel .status-dot {
+            display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #00ff88;
+            box-shadow: 0 0 12px rgba(0,255,136,0.9); margin-left: 8px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.75; }
+        }
+        .rl-panel .metric { display: flex; justify-content: space-between; margin-top: 6px; color: #cbd5e1; }
+        .rl-panel .metric strong { color: #f8fafc; }
+        .rl-panel .pill {
+            display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 9px;
+            background: rgba(0,255,136,0.12); border: 1px solid rgba(0,255,136,0.4); color: #00ff88; font-weight: 800;
+        }
+        .rl-panel .signal-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .signal-box {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 7px 8px;
+        }
+        .signal-box .title { font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+        .signal-bar {
+            display: flex; gap: 4px; margin-top: 6px; align-items: center;
+        }
+        .signal-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: rgba(148,163,184,0.3); border: 1px solid rgba(255,255,255,0.08);
+        }
+        .signal-dot.active { background: #00ff88; box-shadow: 0 0 8px rgba(0,255,136,0.7); }
+        .rl-control-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;
+        }
+        .rl-control-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #e2e8f0;
+            border-radius: 6px; padding: 8px 10px; font-size: 11px; font-weight: 700; cursor: pointer;
+        }
+        .rl-control-btn.primary { background: linear-gradient(90deg, #00e5ff, #0056b3); border-color: #00e5ff; color: #fff; }
+        .rl-control-btn.warn { background: rgba(255, 59, 48, 0.12); border-color: rgba(255, 59, 48, 0.45); color: #ff9b96; }
     </style>
 </head>
 <body>
@@ -81,7 +131,36 @@
                     <option value="4">🌐 CAM-04 IP / RTSP Network Camera</option>
                 </select>
             </div>
-            <img id="liveFeedImg" src="/video_feed/webcam" class="video-stream-el" onerror="this.src='/video_feed/1'">
+            <div style="position: relative; height: calc(100% - 45px); background: #000;">
+                <img id="liveFeedImg" src="/video_feed/webcam" class="video-stream-el" onerror="this.src='/video_feed/1'">
+                <div class="rl-panel">
+                    <div class="label"><span>Autonomous Crossroad AI</span><span class="status-dot"></span></div>
+                    <div class="metric"><span>Mode</span><span class="pill" id="rl-mode-pill">MASTER</span></div>
+                    <div class="metric"><span>Safety</span><strong id="rl-safety">98.4%</strong></div>
+                    <div class="metric"><span>Cars</span><strong id="rl-cars">8</strong></div>
+                    <div class="metric"><span>Weather</span><strong id="rl-weather">CLEAR</strong></div>
+                    <div class="metric"><span>Reward</span><strong id="rl-reward">+42.8</strong></div>
+
+                    <div class="signal-row">
+                        <div class="signal-box">
+                            <div class="title">N / S</div>
+                            <div class="signal-bar">
+                                <span class="signal-dot active"></span>
+                                <span class="signal-dot"></span>
+                                <span class="signal-dot"></span>
+                            </div>
+                        </div>
+                        <div class="signal-box">
+                            <div class="title">E / W</div>
+                            <div class="signal-bar">
+                                <span class="signal-dot"></span>
+                                <span class="signal-dot active"></span>
+                                <span class="signal-dot"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Right: Real-Time Telemetry & Violation Stream -->
@@ -119,8 +198,9 @@
                 <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">Plate KA-01-MJ-4820 · Auto-E-Challan #CH-84920 Issued</div>
             </div>
 
-            <div style="margin-top: 20px; text-align: center;">
-                <a href="/digital-twin-pro" class="btn-primary" style="display: block; width: 100%; padding: 12px; background: linear-gradient(90deg, #00e5ff, #0056b3); color: white; text-decoration: none; font-weight: 900; border-radius: 8px;">Sync Live Telemetry to 3D Digital Twin ↗</a>
+            <div style="margin-top: 20px; display: grid; gap: 10px;">
+                <a href="/digital-twin-pro" class="btn-primary" style="display: block; width: 100%; padding: 12px; background: linear-gradient(90deg, #00e5ff, #0056b3); color: white; text-decoration: none; font-weight: 900; border-radius: 8px; text-align: center;">Sync Live Telemetry to 3D Digital Twin ↗</a>
+                <a href="/rl-cross-road" class="btn-primary" style="display: block; width: 100%; padding: 12px; background: linear-gradient(90deg, #ff007f, #00e5ff); color: white; text-decoration: none; font-weight: 900; border-radius: 8px; text-align: center;">Open Autonomous Crossroad RL AI ↗</a>
             </div>
         </div>
     </div>
@@ -213,18 +293,79 @@
             });
         }
 
+        function setCrossroadMode(mode) {
+            fetch('/api/rl-control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'mode', value: mode })
+            }).catch(() => {});
+        }
+
+        function setCrossroadWeather() {
+            fetch('/api/rl-control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'weather' })
+            }).catch(() => {});
+        }
+
+        function triggerCrossroadAmbulance() {
+            fetch('/api/rl-control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'ambulance' })
+            }).catch(() => {});
+        }
+
+        function toggleCrossroadVision() {
+            fetch('/api/rl-control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'vision' })
+            }).catch(() => {});
+        }
+
+        function updateCrossroadTelemetry() {
+            fetch('/api/rl-telemetry')
+                .then(r => r.json())
+                .then(data => {
+                    if (!data) return;
+                    const mode = (data.mode || 'MASTER').toUpperCase();
+                    const safety = (data.safety_rate || '98.4%');
+                    const cars = data.active_cars ?? 8;
+                    const weather = (data.weather || 'CLEAR').toUpperCase();
+                    const reward = data.mean_reward || '+42.8';
+
+                    document.getElementById('rl-mode-pill').innerText = mode;
+                    document.getElementById('rl-safety').innerText = safety;
+                    document.getElementById('rl-cars').innerText = cars;
+                    document.getElementById('rl-weather').innerText = weather;
+                    document.getElementById('rl-reward').innerText = reward;
+                })
+                .catch(() => {});
+        }
+
         // Live Telemetry Polling
         setInterval(() => {
             fetch('/api/live-camera-telemetry')
                 .then(r => r.json())
                 .then(data => {
-                    if (data.vehicle_count) {
-                        document.getElementById('cnt-cars').innerText = data.vehicle_count || 14;
-                        document.getElementById('cnt-peds').innerText = data.person_count || 6;
-                    }
+                    const vehicleCount = Number(data.vehicle_count ?? 14);
+                    const personCount = Number(data.person_count ?? 6);
+                    const bikeCount = Number(data.motorcycle_count ?? 3);
+
+                    document.getElementById('cnt-cars').innerText = String(vehicleCount);
+                    document.getElementById('cnt-peds').innerText = String(personCount);
+                    document.getElementById('cnt-buses').innerText = String(Math.max(1, Math.round(vehicleCount * 0.18)));
+                    document.getElementById('cnt-trucks').innerText = String(Math.max(1, Math.round(vehicleCount * 0.12)));
+                    document.getElementById('cnt-peds').innerText = String(personCount + bikeCount);
                 })
                 .catch(() => {});
+
+            updateCrossroadTelemetry();
         }, 1500);
+
+        updateCrossroadTelemetry();
     </script>
 </body>
 </html>

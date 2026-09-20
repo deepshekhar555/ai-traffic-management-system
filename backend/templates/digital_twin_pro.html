@@ -282,7 +282,7 @@
         </div>
 
         <!-- Real-Time Camera Telemetry & ANPR Box - now pulls from real backend endpoints -->
-        <div style="padding: 10px; font-size: 11px; color: white; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(5,7,15,0.95);">
+        <div style="padding: 10px; font-size: 11px; color: white; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: rgba(5,7,15,0.95);">
             <div style="background: rgba(0,229,255,0.08); border-left: 3px solid #00e5ff; padding: 6px 10px; border-radius: 4px;">
                 <div style="font-size: 9px; color: #94a3b8;">LIVE VEHICLE COUNTS</div>
                 <div style="font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace;" id="twin-veh-count">Loading...</div>
@@ -290,6 +290,10 @@
             <div style="background: rgba(0,255,136,0.08); border-left: 3px solid #00ff88; padding: 6px 10px; border-radius: 4px;">
                 <div style="font-size: 9px; color: #94a3b8;">LAST DETECTED ANPR PLATE</div>
                 <div style="font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;" id="twin-anpr-plate">No detections yet</div>
+            </div>
+            <div style="background: rgba(255, 130, 0, 0.08); border-left: 3px solid #ff9d00; padding: 6px 10px; border-radius: 4px;">
+                <div style="font-size: 9px; color: #94a3b8;">LIDAR + CAMERA FUSION</div>
+                <div style="font-weight: 900; color: #ffb347; font-family: 'JetBrains Mono', monospace;" id="twin-lidar-fusion">Loading...</div>
             </div>
         </div>
 
@@ -742,6 +746,23 @@
                     }
                 })
                 .catch(() => {});
+
+            fetch('/api/lidar-camera-perception')
+                .then(res => res.json())
+                .then(data => {
+                    const lidarEl = document.getElementById('twin-lidar-fusion');
+                    if (!lidarEl) return;
+                    const summary = data.scene_summary || {};
+                    const metrics = data.metrics || {};
+                    const count = Array.isArray(data.objects) ? data.objects.length : 0;
+                    const persons = summary.person_count ?? 0;
+                    const vehicles = summary.vehicle_count ?? 0;
+                    lidarEl.textContent = `${count} Tracked · ${vehicles} Veh · ${persons} Pers · ${metrics.fps ?? 24} FPS`;
+                })
+                .catch(() => {
+                    const lidarEl = document.getElementById('twin-lidar-fusion');
+                    if (lidarEl) lidarEl.textContent = 'Offline';
+                });
 
             fetch('/api/anpr')
                 .then(res => res.json())

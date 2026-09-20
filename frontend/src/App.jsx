@@ -55,6 +55,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('ALL');
   const [anprList, setAnprList] = useState([]);
   const [cameraNodes, setCameraNodes] = useState([]);
+  const [spatial, setSpatial] = useState({
+    active_world_objects: 0,
+    calibrated_cameras: [],
+    world_objects: []
+  });
   const [selectedNode, setSelectedNode] = useState('node_1');
   const mapRef = useRef(null);
   const canvasRef = useRef(null);
@@ -103,6 +108,14 @@ export default function App() {
         .then(res => res.json())
         .then(data => {
           if (Array.isArray(data)) setAnprList(data.slice(-5).reverse());
+        })
+        .catch(() => {});
+
+      // Calibrated ego-world perception from the camera/LiDAR fusion layer.
+      fetch('http://localhost:5000/api/live-camera-telemetry')
+        .then(res => res.json())
+        .then(data => {
+          if (data?.spatial_perception) setSpatial(data.spatial_perception);
         })
         .catch(() => {});
 
@@ -620,6 +633,29 @@ export default function App() {
           <div className="metric-card">
             <div className="label">🚶‍♂️ Crosswalk Time-to-Collision (TTC)</div>
             <div className="value" style={{ color: '#f59e0b' }}>{research.ttc_min_seconds}s Margin</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Unified 2D/3D world perception for calibrated traffic cameras. */}
+      <div className="glass-panel" style={{ marginBottom: 20, borderColor: 'rgba(16, 185, 129, 0.35)' }}>
+        <h3 style={{ fontSize: 14, color: '#10b981', fontWeight: 800, textTransform: 'uppercase', marginBottom: 12 }}>
+          ◉ Unified Spatial Perception
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
+          <div className="metric-card">
+            <div className="label">World Objects</div>
+            <div className="value">{spatial.active_world_objects || 0}</div>
+          </div>
+          <div className="metric-card">
+            <div className="label">Calibrated Cameras</div>
+            <div className="value">{spatial.calibrated_cameras?.length || 0}</div>
+          </div>
+          <div className="metric-card">
+            <div className="label">Fusion Status</div>
+            <div className="value" style={{ fontSize: 14, color: spatial.calibrated_cameras?.length ? '#10b981' : '#f59e0b' }}>
+              {spatial.calibrated_cameras?.length ? 'ACTIVE' : 'AWAITING CALIBRATION'}
+            </div>
           </div>
         </div>
       </div>
