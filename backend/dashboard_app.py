@@ -12,7 +12,7 @@ if str(_backend_dir) not in sys.path:
 if str(_root_dir) not in sys.path:
     sys.path.insert(0, str(_root_dir))
 
-from flask import Flask, render_template, jsonify, request, Response, send_from_directory
+from flask import Flask, render_template, jsonify, request, Response, send_from_directory, redirect
 try:
     from src.traffic_database import TrafficDatabase
     from src.gps_tracker import GPSTracker
@@ -193,8 +193,8 @@ def _build_spatial_perception_payload():
 
 @app.route('/')
 def dashboard():
-    """Single entry point for every TraffixAI dashboard experience."""
-    return render_template('unified_dashboard.html')
+    """Primary landing experience is the live emergency control room."""
+    return redirect('/terratwin-sos')
 
 @app.route('/legacy-dashboard')
 def legacy_dashboard():
@@ -633,6 +633,107 @@ def command_room_page():
 def smart_city_page():
     """Smart City Management Portal matching Video 8 (Drone, CCTV, Mission Planner, IoT Sensors)"""
     return render_template('smart_city.html')
+
+@app.route('/terratwin-sos', endpoint='terratwin_sos_1')
+@app.route('/terratwin_sos', endpoint='terratwin_sos_2')
+def terratwin_sos_page():
+    """TerraTwin SOS: multi-hazard emergency response dashboard inspired by the reference demo."""
+    return render_template('terratwin_sos.html')
+
+@app.route('/api/emergency-sos')
+def get_emergency_sos():
+    """Return live multi-hazard emergency telemetry for the TerraTwin SOS command center."""
+    now = int(__import__('time').time())
+    overview = {
+        "incident_count": 7,
+        "active_units": 14,
+        "avg_response_time": 4.8,
+        "risk_index": 82,
+        "evacuation_zones": 3,
+        "critical_alerts": 2,
+        "city_status": "ELEVATED RESPONSE",
+    }
+
+    hazards = [
+        {
+            "id": "H-204",
+            "type": "Fire",
+            "severity": "CRITICAL",
+            "status": "Active",
+            "location": "Warehouse District, Sector 7",
+            "latitude": 12.9716,
+            "longitude": 77.5946,
+            "distance_km": 1.8,
+            "eta_min": 3,
+            "description": "Industrial blaze spreading via stacked chemical storage.",
+            "resource": "Fire Ladder + Hazmat Crew"
+        },
+        {
+            "id": "H-187",
+            "type": "Traffic Accident",
+            "severity": "HIGH",
+            "status": "Stabilizing",
+            "location": "Ring Road Junction",
+            "latitude": 12.9652,
+            "longitude": 77.6012,
+            "distance_km": 2.4,
+            "eta_min": 6,
+            "description": "Multi-vehicle collision causing severe congestion and lane blockage.",
+            "resource": "Ambulance + Traffic Police"
+        },
+        {
+            "id": "H-162",
+            "type": "Flooding",
+            "severity": "MEDIUM",
+            "status": "Monitoring",
+            "location": "Old Town Drainage Corridor",
+            "latitude": 12.9789,
+            "longitude": 77.5864,
+            "distance_km": 3.1,
+            "eta_min": 9,
+            "description": "Stormwater accumulation threatening low-lying residential streets.",
+            "resource": "Drainage Crew + Patrol Unit"
+        }
+    ]
+
+    units = [
+        {"id": "R-01", "name": "Rescue-01", "type": "Fire", "status": "En Route", "eta_min": 3, "latitude": 12.9698, "longitude": 77.5911},
+        {"id": "A-04", "name": "Ambulance-04", "type": "Medical", "status": "On Scene", "eta_min": 1, "latitude": 12.9701, "longitude": 77.5967},
+        {"id": "P-12", "name": "Patrol-12", "type": "Police", "status": "Blocking Access", "eta_min": 5, "latitude": 12.9668, "longitude": 77.5984},
+        {"id": "D-07", "name": "Drone-07", "type": "Drone", "status": "Surveying", "eta_min": 2, "latitude": 12.9722, "longitude": 77.5962},
+    ]
+
+    routes = [
+        {"name": "North Relief Corridor", "status": "Open", "time_min": 7, "coverage": 92},
+        {"name": "South Hospital Link", "status": "Degraded", "time_min": 11, "coverage": 68},
+        {"name": "Industrial Access Path", "status": "Priority", "time_min": 5, "coverage": 84},
+    ]
+
+    timeline = [
+        {"time": "06:10", "event": "Fire reported in warehouse district"},
+        {"time": "06:14", "event": "Ambulance and fire crew dispatched"},
+        {"time": "06:19", "event": "Drone confirms spread pattern"},
+        {"time": "06:24", "event": "Additional traffic diversion activated"},
+    ]
+
+    risk_breakdown = {
+        "fire": 88,
+        "traffic": 74,
+        "flood": 56,
+        "medical": 63,
+        "infrastructure": 49,
+    }
+
+    return jsonify({
+        "status": "ONLINE",
+        "timestamp": now,
+        "overview": overview,
+        "hazards": hazards,
+        "units": units,
+        "routes": routes,
+        "timeline": timeline,
+        "risk_breakdown": risk_breakdown,
+    })
 
 @app.route('/intersection-sensing', endpoint='intersection_sensing_1')
 @app.route('/intersection', endpoint='intersection_sensing_2')

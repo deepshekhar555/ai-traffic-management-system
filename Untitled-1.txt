@@ -1,1 +1,0 @@
-set(ONNXRUNTIME_ROOT "/opt/onnxruntime")

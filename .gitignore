@@ -51,4 +51,10 @@ Thumbs.db
 __pycache__/
 *.pyc
 backend/logs/*.log
+backend/uploads/
+backend/reports/
+backend/logs/
+incidents/*
 logs/*.log
+logs/
+reports/

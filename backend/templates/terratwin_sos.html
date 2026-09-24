@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TerraTwin SOS | Multi-Hazard Emergency Response</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #07111d;
+      --panel: rgba(13, 25, 40, 0.92);
+      --panel-strong: rgba(17, 32, 49, 0.98);
+      --stroke: rgba(128, 163, 197, 0.28);
+      --text: #eaf3ff;
+      --muted: #9bb4cf;
+      --cyan: #49d7ff;
+      --blue: #48a7ff;
+      --green: #4ade80;
+      --amber: #fbbf24;
+      --red: #ff5d5d;
+      --purple: #a78bfa;
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at top, #0e1c2d 0%, var(--bg) 42%); color: var(--text); font-family: 'Inter', sans-serif; }
+    body { padding: clamp(10px, 1.5vw, 22px); overflow-x: hidden; }
+
+    .shell {
+      width: min(100%, 1680px); margin: 0 auto;
+      display: grid; gap: 18px;
+    }
+
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center; gap: 18px;
+      background: linear-gradient(180deg, rgba(16, 29, 45, 0.96), rgba(9, 17, 27, 0.96));
+      border: 1px solid var(--stroke); border-radius: 16px; padding: 18px 22px;
+      box-shadow: 0 16px 42px var(--shadow);
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: grid; place-items: center; font-size: 20px;
+      background: linear-gradient(135deg, rgba(73, 215, 255, 0.24), rgba(72, 167, 255, 0.12));
+      border: 1px solid rgba(73, 215, 255, 0.45);
+      box-shadow: inset 0 0 22px rgba(73, 215, 255, 0.2);
+    }
+
+    .title-block h1 {
+      margin: 0; font-size: clamp(20px, 2vw, 32px); line-height: 1.1; letter-spacing: 0.08em; text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .title-block small {
+      display: block; margin-top: 4px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+
+    .status-chip {
+      display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 999px;
+      border: 1px solid rgba(74, 222, 128, 0.4); background: rgba(74, 222, 128, 0.08); color: var(--green); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    .dot {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 18px rgba(74, 222, 128, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .button-bar {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+
+    .ghost-btn {
+      background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--stroke); border-radius: 10px; padding: 9px 12px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+    }
+
+    .capability-rail {
+      display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px;
+    }
+
+    .capability-link {
+      display: block; min-height: 76px; padding: 12px; color: var(--text); text-decoration: none;
+      background: linear-gradient(145deg, rgba(31, 53, 76, 0.72), rgba(11, 22, 35, 0.94));
+      border: 1px solid var(--stroke); border-radius: 12px; transition: border-color .2s, transform .2s, background .2s;
+    }
+
+    .capability-link:hover { transform: translateY(-2px); border-color: var(--cyan); background: rgba(73, 215, 255, 0.1); }
+    .capability-link strong { display: block; margin-bottom: 6px; color: var(--cyan); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+    .capability-link small { color: var(--muted); font-size: 10px; line-height: 1.35; }
+
+    .health-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .health-card { padding: 14px; border: 1px solid var(--stroke); border-radius: 12px; background: rgba(255,255,255,0.025); }
+    .health-card header { min-height: 0; padding: 0 0 9px; border: 0; background: transparent; }
+    .health-card h3 { margin: 0; font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .health-value { display: block; min-height: 28px; color: var(--green); font-size: 20px; font-weight: 800; }
+    .health-detail { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+
+    .grid {
+      display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(220px, 1.1fr) minmax(220px, 1.1fr); gap: 18px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(14, 25, 36, 0.98), rgba(10, 17, 27, 0.96));
+      border: 1px solid var(--stroke); border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      min-width: 0; overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 14px 18px; border-bottom: 1px solid var(--stroke); display: flex; justify-content: space-between; align-items: center;
+      background: rgba(73, 215, 255, 0.04);
+    }
+
+    .panel-header h2 {
+      margin: 0; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cyan);
+    }
+
+    .pill {
+      padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(73, 215, 255, 0.26); font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cyan);
+      background: rgba(73, 215, 255, 0.06);
+    }
+
+    .map-wrap { height: 440px; position: relative; }
+    #map {
+      width: 100%; height: 100%; border: 0;
+      background: #07141d;
+    }
+
+    .leaflet-container {
+      background: #07141d;
+      font: inherit;
+    }
+
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+      background: rgba(7, 17, 29, 0.96);
+      color: var(--text);
+      border: 1px solid var(--stroke);
+    }
+
+    .leaflet-control-zoom a {
+      background: rgba(9, 17, 27, 0.92);
+      color: var(--text);
+      border-color: var(--stroke);
+    }
+
+    .panel-body { min-width: 0; padding: clamp(12px, 1.4vw, 18px); }
+    .stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .stat-box {
+      border-radius: 14px; border: 1px solid var(--stroke); background: rgba(255,255,255,0.02); padding: 16px;
+    }
+    .stat-box span { color: var(--muted); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .stat-box strong { display: block; margin-top: 8px; font-size: clamp(22px, 4vw, 36px); line-height: 1; }
+    .stat-box:nth-child(1) strong { color: var(--red); }
+    .stat-box:nth-child(2) strong { color: var(--cyan); }
+    .stat-box:nth-child(3) strong { color: var(--amber); }
+    .stat-box:nth-child(4) strong { color: var(--green); }
+
+    .risk-chart { height: 220px; }
+    .list { display: grid; gap: 12px; }
+    .item {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--stroke);
+    }
+    .severity {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 12px rgba(255, 93, 93, 0.7);
+    }
+    .item strong { display: block; font-size: 14px; }
+    .item small { color: var(--muted); }
+    .item .meta { text-align: right; font-size: 11px; color: var(--muted); }
+
+    .table-wrap { overflow: auto; }
+    table {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+    }
+    th, td {
+      text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--stroke);
+    }
+    th {
+      color: var(--cyan); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; background: rgba(73, 215, 255, 0.04);
+    }
+    td { color: var(--text); }
+    .status-badge {
+      display: inline-block; padding: 5px 8px; border-radius: 999px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .status-badge.open { background: rgba(74, 222, 128, 0.12); color: var(--green); }
+    .status-badge.priority { background: rgba(251, 191, 36, 0.12); color: var(--amber); }
+    .status-badge.degraded { background: rgba(255, 93, 93, 0.12); color: var(--red); }
+    .timeline { display: grid; gap: 10px; }
+    .event {
+      display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--stroke);
+    }
+    .time { color: var(--cyan); font-weight: 700; }
+    .event:last-child { border-bottom: none; }
+
+    .bottom-grid {
+      display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.2fr) minmax(0, 0.95fr); gap: 18px;
+    }
+
+    .video-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px;
+    }
+
+    .video-tile {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--stroke); border-radius: 14px; overflow: hidden; min-height: 180px;
+    }
+
+    .video-tile img {
+      width: 100%; height: 180px; object-fit: cover; display: block; filter: saturate(1.1) contrast(1.06);
+    }
+
+    .tile-label {
+      display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border-top: 1px solid var(--stroke);
+      background: rgba(73, 215, 255, 0.04);
+    }
+
+    .live-pill {
+      background: rgba(74, 222, 128, 0.08); color: var(--green); border: 1px solid rgba(74, 222, 128, 0.4); border-radius: 999px; padding: 4px 7px; font-size: 9px; font-weight: 800;
+    }
+
+    @media (max-width: 1100px) {
+      .grid, .bottom-grid { grid-template-columns: 1fr; }
+      .map-wrap { height: 360px; }
+      .video-grid { grid-template-columns: 1fr; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .top-actions { width: 100%; justify-content: space-between; }
+      .capability-rail, .health-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      .capability-rail, .health-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">🛰️</div>
+        <div class="title-block">
+          <h1>TerraTwin SOS</h1>
+          <small>Multi-Hazard Digital Twin & Emergency Rescue Command</small>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="status-chip"><span class="dot"></span> System Live</div>
+        <div class="button-bar">
+          <button class="ghost-btn">Dispatch</button>
+          <button class="ghost-btn">Evacuation</button>
+          <button class="ghost-btn">Drone Scan</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Integrated City Systems</h2>
+        <span class="pill">Project Modules</span>
+      </div>
+      <div class="panel-body capability-rail">
+        <a class="capability-link" href="/live-camera-vision"><strong>Vision AI</strong><small>YOLO detection, tracking, speed and ANPR</small></a>
+        <a class="capability-link" href="/digital-twin-pro"><strong>Digital Twin</strong><small>SUMO network, what-if signals and GPS</small></a>
+        <a class="capability-link" href="/spatial-ai/"><strong>Spatial Fusion</strong><small>LiDAR, camera, radar and BEV world model</small></a>
+        <a class="capability-link" href="/rl-cross-road"><strong>RL Control</strong><small>D3QN signal policy and live simulation</small></a>
+        <a class="capability-link" href="/smart-city"><strong>City IoT</strong><small>Drone, CCTV, mission planning and sensors</small></a>
+        <a class="capability-link" href="/traffic-diagnosis"><strong>Analytics GIS</strong><small>Congestion diagnosis and geospatial insights</small></a>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Fusion Stack Health</h2>
+        <span class="pill" id="fusionTimestamp">Synchronizing</span>
+      </div>
+      <div class="panel-body health-grid">
+        <div class="health-card"><header><h3>Camera + Traffic</h3></header><strong class="health-value" id="cameraHealth">--</strong><small class="health-detail" id="cameraDetail">Waiting for telemetry</small></div>
+        <div class="health-card"><header><h3>LiDAR + World Model</h3></header><strong class="health-value" id="spatialHealth">--</strong><small class="health-detail" id="spatialDetail">Waiting for telemetry</small></div>
+        <div class="health-card"><header><h3>Edge Hardware</h3></header><strong class="health-value" id="hardwareHealth">--</strong><small class="health-detail" id="hardwareDetail">Waiting for telemetry</small></div>
+        <div class="health-card"><header><h3>Research / AI</h3></header><strong class="health-value" id="researchHealth">--</strong><small class="health-detail" id="researchDetail">Waiting for telemetry</small></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Incident Map</h2>
+          <span class="pill">Live Response Grid</span>
+        </div>
+        <div class="map-wrap">
+          <div id="map"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Operational Snapshot</h2>
+          <span class="pill" id="cityStatus">Monitoring</span>
+        </div>
+        <div class="panel-body">
+          <div class="stats-grid" id="overviewStats"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Risk Distribution</h2>
+          <span class="pill">AI Confidence</span>
+        </div>
+        <div class="panel-body risk-chart">
+          <canvas id="riskChart"></canvas>
+        </div>
+      </section>
+    </div>
+
+    <div class="bottom-grid">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Active Hazards</h2>
+          <span class="pill">7 Incidents</span>
+        </div>
+        <div class="panel-body list" id="hazardList"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Response Units</h2>
+          <span class="pill">14 Deployed</span>
+        </div>
+        <div class="panel-body table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>ETA</th>
+              </tr>
+            </thead>
+            <tbody id="unitsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Access Routes</h2>
+          <span class="pill">Priority</span>
+        </div>
+        <div class="panel-body" id="routeList"></div>
+      </section>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 1.2fr 0.8fr;">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Incident Timeline</h2>
+          <span class="pill">Last 30 min</span>
+        </div>
+        <div class="panel-body timeline" id="timelineList"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Command Summary</h2>
+          <span class="pill">AI Advisory</span>
+        </div>
+        <div class="panel-body">
+          <div class="item" style="display:block; padding:16px; background: rgba(73,215,255,0.02);">
+            <strong style="font-size: 18px; margin-bottom: 10px;">Prioritized action plan</strong>
+            <small style="display:block; line-height:1.7; color: var(--muted);">
+              1. Route fire crews through the industrial corridor.<br>
+              2. Maintain live blockage at Ring Road until traffic is diverted.<br>
+              3. Deploy drone sweep for flood perimeter verification.<br>
+              4. Keep hospital access corridor clear for ambulance movement.
+            </small>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Live Sensor Feeds</h2>
+        <span class="pill">CCTV / Drone / Junction</span>
+      </div>
+      <div class="panel-body">
+        <div class="video-grid">
+          <div class="video-tile">
+            <img src="/video_feed/1" alt="Junction feed" onerror="this.src='https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=900&q=80';" />
+            <div class="tile-label"><span>Junction Feed</span><span class="live-pill">LIVE</span></div>
+          </div>
+          <div class="video-tile">
+            <img src="/video_feed/webcam" alt="Traffic camera feed" onerror="this.src='https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?auto=format&fit=crop&w=900&q=80';" />
+            <div class="tile-label"><span>Traffic Camera</span><span class="live-pill">LIVE</span></div>
+          </div>
+          <div class="video-tile">
+            <img src="/video_feed/rl_cross_road" alt="Drone aerial feed" onerror="this.src='https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80';" />
+            <div class="tile-label"><span>Drone Aerial</span><span class="live-pill">LIVE</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const cityCenter = [12.9716, 77.5946];
+    const map = L.map('map', {
+      zoomControl: true,
+      attributionControl: true,
+      scrollWheelZoom: true,
+      dragging: true,
+      doubleClickZoom: true
+    }).setView(cityCenter, 13);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 20
+    }).addTo(map);
+
+    const incidentColors = {
+      fire: '#ff5d5d',
+      ambulance: '#fbbf24',
+      police: '#49d7ff',
+      drone: '#4ade80'
+    };
+
+    const hazardCoords = [
+      { key: 'fire', label: 'Warehouse Blaze', color: 'fire', position: [12.9718, 77.5912] },
+      { key: 'ambulance', label: 'Hospital Access', color: 'ambulance', position: [12.9701, 77.5967] },
+      { key: 'police', label: 'Traffic Diversion', color: 'police', position: [12.9687, 77.5998] },
+      { key: 'drone', label: 'Drone Sweep', color: 'drone', position: [12.9725, 77.5963] }
+    ];
+
+    hazardCoords.forEach((item) => {
+      const circle = L.circle(item.position, {
+        radius: item.color === 'fire' ? 350 : 220,
+        color: incidentColors[item.color],
+        fillColor: incidentColors[item.color],
+        fillOpacity: 0.14,
+        weight: 1.5
+      }).addTo(map);
+
+      const marker = L.circleMarker(item.position, {
+        radius: 8,
+        color: incidentColors[item.color],
+        fillColor: incidentColors[item.color],
+        fillOpacity: 1,
+        weight: 2
+      }).addTo(map);
+
+      marker.bindPopup(`<b>${item.label}</b><br>Status: Active response`);
+      circle.bindPopup(`<b>${item.label}</b><br>Priority radio corridor active`);
+    });
+
+    const safeCenter = L.circle(cityCenter, {
+      radius: 900,
+      color: '#49d7ff',
+      fillColor: '#49d7ff',
+      fillOpacity: 0.06,
+      weight: 1
+    }).addTo(map);
+
+    safeCenter.bindPopup('Central response zone');
+
+    async function loadSosData() {
+      try {
+        const response = await fetch('/api/emergency-sos');
+        const data = await response.json();
+        if (!response.ok || !data) return;
+
+        document.getElementById('cityStatus').textContent = data.overview.city_status || 'Monitoring';
+
+        const overview = [{ label: 'Incidents', value: data.overview.incident_count },
+          { label: 'Units', value: data.overview.active_units },
+          { label: 'Avg. RT', value: `${data.overview.avg_response_time} min` },
+          { label: 'Risk Index', value: `${data.overview.risk_index}/100` }];
+
+        document.getElementById('overviewStats').innerHTML = overview.map(item => `
+          <div class="stat-box">
+            <span>${item.label}</span>
+            <strong>${item.value}</strong>
+          </div>
+        `).join('');
+
+        const hazardList = document.getElementById('hazardList');
+        hazardList.innerHTML = (data.hazards || []).map(h => `
+          <div class="item">
+            <div class="severity" style="background:${h.severity === 'CRITICAL' ? '#ff5d5d' : h.severity === 'HIGH' ? '#fbbf24' : '#4ade80'}"></div>
+            <div>
+              <strong>${h.type} • ${h.location}</strong>
+              <small>${h.description}</small>
+            </div>
+            <div class="meta">
+              ${h.severity}<br>${h.eta_min} min ETA
+            </div>
+          </div>
+        `).join('');
+
+        const unitsTable = document.getElementById('unitsTable');
+        unitsTable.innerHTML = (data.units || []).map(unit => `
+          <tr>
+            <td>${unit.name}</td>
+            <td>${unit.type}</td>
+            <td><span class="status-badge ${unit.status.toLowerCase().includes('en route') ? 'open' : unit.status.toLowerCase().includes('on scene') ? 'priority' : 'degraded'}">${unit.status}</span></td>
+            <td>${unit.eta_min} min</td>
+          </tr>
+        `).join('');
+
+        const routeList = document.getElementById('routeList');
+        routeList.innerHTML = (data.routes || []).map(route => `
+          <div class="item" style="margin-bottom: 10px;">
+            <div class="severity" style="background:${route.status === 'Open' ? '#4ade80' : route.status === 'Priority' ? '#fbbf24' : '#ff5d5d'}"></div>
+            <div>
+              <strong>${route.name}</strong>
+              <small>${route.coverage}% coverage</small>
+            </div>
+            <div class="meta">
+              <span class="status-badge ${route.status.toLowerCase() === 'open' ? 'open' : route.status.toLowerCase() === 'priority' ? 'priority' : 'degraded'}">${route.status}</span><br>${route.time_min} min
+            </div>
+          </div>
+        `).join('');
+
+        document.getElementById('timelineList').innerHTML = (data.timeline || []).map(item => `
+          <div class="event">
+            <div class="time">${item.time}</div>
+            <div>${item.event}</div>
+          </div>
+        `).join('');
+
+        const labels = Object.keys(data.risk_breakdown || {});
+        const values = Object.values(data.risk_breakdown || {});
+        const ctx = document.getElementById('riskChart').getContext('2d');
+        if (window.riskChart) window.riskChart.destroy();
+        window.riskChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels.map(label => label.toUpperCase()),
+            datasets: [{
+              label: 'Risk score',
+              data: values,
+              backgroundColor: ['#ff5d5d', '#fbbf24', '#49d7ff', '#4ade80', '#a78bfa'],
+              borderRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, max: 100 } }
+          }
+        });
+      } catch (error) {
+        console.error('Failed to load TerraTwin SOS telemetry:', error);
+      }
+    }
+
+    async function loadFusionHealth() {
+      const sources = [
+        ['/api/live-camera-telemetry', 'camera'],
+        ['/api/spatial-perception-stack', 'spatial'],
+        ['/api/hardware-status', 'hardware'],
+        ['/api/research-metrics', 'research']
+      ];
+
+      const results = await Promise.allSettled(sources.map(([url]) => fetch(url).then(response => {
+        if (!response.ok) throw new Error(`${response.status}`);
+        return response.json();
+      })));
+
+      const updateCard = (kind, value, detail) => {
+        document.getElementById(`${kind}Health`).textContent = value;
+        document.getElementById(`${kind}Detail`).textContent = detail;
+      };
+
+      results.forEach((result, index) => {
+        const kind = sources[index][1];
+        if (result.status !== 'fulfilled') {
+          updateCard(kind, 'OFFLINE', 'Endpoint unavailable');
+          return;
+        }
+        const data = result.value;
+        if (kind === 'camera') updateCard(kind, data.status || 'ONLINE', `${data.total_count || 0} tracked objects · ${data.vehicle_count || 0} vehicles`);
+        if (kind === 'spatial') updateCard(kind, data.status || 'ONLINE', `${(data.world_objects || []).length} world objects · ${data.metrics?.latency_ms || '--'} ms`);
+        if (kind === 'hardware') updateCard(kind, 'CONNECTED', `${data.edge_fps || '--'} FPS · ${data.cpu_temp_c || '--'}°C edge`);
+        if (kind === 'research') updateCard(kind, data.research_compliance_score || 'ONLINE', `TTC ${data.ttc_min_seconds || '--'} s · BEV error ${data.bev_homography_error_m || '--'} m`);
+      });
+      document.getElementById('fusionTimestamp').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+    }
+
+    loadSosData();
+    loadFusionHealth();
+    setInterval(loadSosData, 15000);
+    setInterval(loadFusionHealth, 10000);
+  </script>
+</body>
+</html>
