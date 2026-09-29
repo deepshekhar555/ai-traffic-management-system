@@ -5,6 +5,8 @@ a SUMO-based digital twin simulation, and reinforcement-learning signal control 
 built for **Decode SIH 2026 (Bharat Nirman track, PS1: AI Traffic Digital Twin)**
 and as a Final Year Project (patent filed: AU 2021101076).
 
+Demo video : https://youtu.be/x6F9QH6RAFE
+
 ## What this project does
 
 1. **Computer Vision Layer** — YOLOv8 + ByteTrack detect and track vehicles from
