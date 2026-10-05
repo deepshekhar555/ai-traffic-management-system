@@ -1,11 +1,11 @@
 # AI-RTITMS: AI Traffic Digital Twin & Real-Time Intelligent Traffic Management System
 
 An AI-powered smart traffic management system combining real-time computer vision,
-a SUMO-based digital twin simulation, and reinforcement-learning signal control —
-built for **Decode SIH 2026 (Bharat Nirman track, PS1: AI Traffic Digital Twin)**
-and as a Final Year Project (patent filed: AU 2021101076).
+a SUMO-based digital twin simulation, and reinforcement-learning signal control.(patent filed: AU 2021101076).
 
 Demo video : https://youtu.be/x6F9QH6RAFE
+
+Live Demo : https://deepshekhar555.github.io/ai-traffic-management-system/
 
 ## What this project does
 
