@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraffixAI — AI-Powered Smart City Traffic Platform</title>
+    <title>RoadSense India | Traffic Management Prototype</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -157,86 +157,205 @@
         .form-group input, .form-group textarea { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 12px; color: white; font-size: 13px; }
 
         footer { padding: 40px 60px; background: rgba(5, 7, 15, 0.95); border-top: 1px solid rgba(255,255,255,0.08); text-align: center; color: #94a3b8; font-size: 13px; }
+
+        /* Dashboard refresh */
+        html { scroll-padding-top: 84px; }
+        body { background: #080d16; color: #edf3fb; }
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+            outline: 3px solid #42d4e8; outline-offset: 3px;
+        }
+        .skip-link {
+            position: fixed; top: 8px; left: 8px; transform: translateY(-160%);
+            z-index: 1200; padding: 10px 14px; border-radius: 8px;
+            background: #fff; color: #10243b; font-weight: 700;
+        }
+        .skip-link:focus { transform: translateY(0); }
+        header {
+            height: 72px; padding: 0 clamp(20px, 4vw, 64px);
+            background: rgba(8, 13, 22, .96); border-bottom-color: rgba(148, 163, 184, .16);
+        }
+        .nav-links { gap: clamp(12px, 1.8vw, 26px); }
+        .nav-links a { white-space: nowrap; }
+        .search-box { display: none; }
+        .btn-primary { box-shadow: none; }
+        .hero-section {
+            min-height: 640px; padding: 142px clamp(24px, 5vw, 72px) 76px;
+            max-width: 1500px; gap: clamp(28px, 5vw, 72px);
+        }
+        .hero-title { max-width: 760px; font-size: clamp(38px, 4.2vw, 58px); letter-spacing: -1.7px; }
+        .hero-sub { max-width: 660px; font-size: 16px; }
+        .hero-preview-card { border-color: #26384d; background: #0e1623; box-shadow: 0 20px 50px rgba(0,0,0,.28); }
+        .hero-badge { letter-spacing: .04em; }
+        .section { padding: 72px clamp(24px, 5vw, 72px); max-width: 1500px; }
+        .section-title { font-size: clamp(26px, 3vw, 36px); letter-spacing: -.5px; }
+        .section-sub { max-width: 760px; line-height: 1.65; }
+        .ai-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+        .ai-card, .kpi-card, .analytics-card, .pipe-card, .case-card, .plan-card, .chart-card {
+            background: #0e1623; border-color: #253449; box-shadow: none;
+        }
+        .ai-card { min-height: 150px; }
+        .control-kpis { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+        .kpi-val, .analytics-val { font-size: 20px; }
+        .charts-row { grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr); }
+        .chart-card { min-width: 0; }
+        .alerts-feed-card { background: #0e1623; border-color: #253449; }
+        .analytics-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        .pipeline-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+        .case-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        .project-status-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px; max-width: 1100px; margin: 0 auto;
+        }
+        .project-status-card {
+            min-height: 150px; padding: 22px; background: #0e1623;
+            border: 1px solid #253449; border-radius: 12px;
+        }
+        .project-status-card strong {
+            display: block; margin-bottom: 10px; color: #edf3fb; font-size: 15px;
+        }
+        .project-status-card p { color: #9aabc0; font-size: 13px; line-height: 1.6; }
+        .project-status-label {
+            display: inline-flex; margin-bottom: 13px; padding: 5px 9px;
+            border: 1px solid rgba(251, 191, 36, .34); border-radius: 20px;
+            background: rgba(251, 191, 36, .08); color: #fbbf24;
+            font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+        }
+        .resource-links {
+            display: flex; justify-content: center; flex-wrap: wrap; gap: 12px;
+        }
+        .resource-links a {
+            display: inline-flex; align-items: center; min-height: 44px; padding: 10px 16px;
+            border: 1px solid #2c4058; border-radius: 8px; color: #c9d8ea;
+            background: #101a28; text-decoration: none; font-size: 13px; font-weight: 700;
+        }
+        .resource-links a:hover { border-color: #42d4e8; color: #42d4e8; }
+        .hero-actions { flex-wrap: wrap; }
+        .hero-actions a { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; }
+        .rl-kpi-strip { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+        .rl-hud-grid { grid-template-columns: 1fr 1.4fr 1fr !important; }
+        .rl-stream-grid { grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr) !important; }
+        @media (max-width: 1100px) {
+            header { gap: 18px; }
+            .nav-links { overflow-x: auto; scrollbar-width: thin; }
+            .hero-section { grid-template-columns: 1fr 1fr; }
+            .rl-hud-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+            .rl-hud-grid > div:last-child { grid-column: 1 / -1; }
+        }
+        @media (max-width: 760px) {
+            header { position: sticky; height: auto; min-height: 64px; padding: 12px 18px; flex-wrap: wrap; }
+            .logo-group { font-size: 18px; }
+            .nav-links { order: 3; width: 100%; padding: 4px 0; gap: 18px; }
+            header > .btn-primary { margin-left: auto; }
+            .hero-section { min-height: auto; padding: 58px 20px 32px; grid-template-columns: 1fr; gap: 28px; }
+            .hero-title { font-size: clamp(36px, 10vw, 52px); }
+            .hero-actions { gap: 10px; }
+            .trust-badges { flex-wrap: wrap; gap: 10px 16px; }
+            .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .section { padding: 54px 20px; }
+            .section-sub { margin-bottom: 30px; }
+            .charts-row { grid-template-columns: 1fr; }
+            .chart-card { height: 280px; }
+            .rl-kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+            .rl-hud-grid, .rl-stream-grid { grid-template-columns: 1fr !important; }
+            .rl-hud-grid > div:last-child { grid-column: auto; }
+            #dashRlStream { min-height: 240px !important; }
+            #rl-hud .section-sub { overflow-wrap: anywhere; }
+            .bot-container { grid-template-columns: 1fr; padding: 20px; }
+            footer { padding: 30px 20px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
+        body { background: #0a1424; color: #edf3f8; }
+        header { background: rgba(8, 20, 36, 0.97); border-bottom-color: rgba(148, 163, 184, 0.22); }
+        .logo-group span, .hero-title span { color: #77c9c1; }
+        .nav-links a { color: #c3ceda; }
+        .nav-links a:hover { color: #8bd5ce; }
+        .btn-primary { background: #12636d; box-shadow: none; }
+        .btn-primary:hover { background: #187782; transform: translateY(-1px); }
+        .btn-secondary { background: rgba(255,255,255,0.04); border-color: rgba(203, 213, 225, 0.24); }
+        .hero-badge { color: #a8ded8; border-color: rgba(119, 201, 193, 0.34); background: rgba(119, 201, 193, 0.08); }
+        .hero-preview-card, .bot-container, .chart-card, .alerts-feed-card, .ai-card, .analytics-card, .kpi-card, .pipe-card, .project-status-card {
+            background: #101f33;
+            border-color: rgba(148, 163, 184, 0.2);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+        }
+        .preview-header, .kpi-val, .metric-val { color: #8bd5ce; }
+        .metric-card { background: rgba(255,255,255,0.035); border-color: rgba(148, 163, 184, 0.18); }
+        .section-title { letter-spacing: -0.035em; }
+        .ai-card:hover { border-color: #77c9c1; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2); }
+        .topic-pill { border-color: rgba(148, 163, 184, 0.24); }
+        .prompt-btn { color: #a8ded8; border-color: rgba(119, 201, 193, 0.34); background: rgba(119, 201, 193, 0.08); }
+        .kpi-sub { color: #a8ded8; }
+        a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid #8bd5ce; outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
     </style>
 </head>
 <body>
 
+    <a class="skip-link" href="#main-content">Skip to project overview</a>
     <!-- Header Nav -->
     <header>
-        <a href="/" class="logo-group">🚦 TRAFFIX<span>AI</span></a>
+        <a href="/" class="logo-group">🚦 ROADSENSE<span>INDIA</span></a>
         <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/rl-cross-road" style="color: #ff007f; font-weight: 800;">🎮 RL Crossroad</a>
-            <a href="/digital-twin-pro" style="color: #00e5ff; font-weight: 800;">⚡ Digital Twin Pro</a>
-            <a href="/twin3d">3D Twin</a>
-            <a href="/multi_dashboard">4-Lane Grid</a>
-            <a href="/intersection-sensing">LiDAR/Radar</a>
-            <a href="/multimodal-twin">Global Twin</a>
-            <a href="/notraffic-vmc">NoTraffic VMC</a>
-            <a href="/maitwin-gis">MAITwin GIS</a>
-            <a href="/agent-workflow">AI Canvas</a>
-            <a href="/diagnosis">Diagnosis</a>
-            <a href="/command_room">Command Room</a>
-            <a href="/live-camera-vision" style="color: #00ff88; font-weight: 900;">📹 Live Cam</a>
+            <a href="#overview">Overview</a>
+            <a href="#modules">Project modules</a>
+            <a href="#control-room">Demo dashboard</a>
+            <a href="#validation">Validation</a>
         </div>
-        <div class="search-box">🔍 Search platform... <span>Ctrl+K</span></div>
-        <a href="/digital-twin-pro" class="btn-primary">Digital Twin Pro ↗</a>
+        <a href="/dashboards" class="btn-primary">Explore dashboards</a>
     </header>
 
     <!-- Hero Section -->
-    <div class="hero-section">
+    <main id="main-content">
+    <div class="hero-section" id="overview">
         <div>
-            <div class="hero-badge">⚡ AI Engine Live · 1,284 Cameras Streaming</div>
-            <h1 class="hero-title">Smarter Traffic.<br>Safer Roads.<br><span>AI-Powered Enforcement.</span></h1>
-            <p class="hero-sub">An intelligent AI platform that monitors traffic violations, predicts congestion, optimizes signal timing, and helps authorities make data-driven decisions in real time.</p>
+            <div class="hero-badge">ROAD SENSE INDIA · PROTOTYPE DASHBOARD</div>
+            <h1 class="hero-title">Understand traffic.<br>Evaluate better signals.<br><span>Keep operators in control.</span></h1>
+            <p class="hero-sub">A camera-assisted traffic-management prototype for Indian mixed-traffic junctions. Explore its interface, simulation and planned validation workflow. A real-camera feed and field performance have not been verified.</p>
             <div class="hero-actions" style="flex-wrap: wrap;">
-                <a href="/digital-twin-pro" class="btn-primary" style="background: linear-gradient(90deg, #00e5ff, #0056b3);">⚡ Digital Twin Pro Sandbox</a>
-                <a href="/twin3d" class="btn-secondary" style="border-color: #00e5ff; color: #00e5ff;">🕹️ 3D WebGL Twin</a>
-                <a href="/live-camera-vision" class="btn-primary" style="background: linear-gradient(90deg, #00ff88, #0056b3);">📹 Live Camera Vision</a>
-                <a href="/multi_dashboard" class="btn-secondary">🚦 4-Lane Grid Simulator</a>
+                <a href="/dashboards" class="btn-primary">Explore project dashboards</a>
+                <a href="/multi_dashboard" class="btn-secondary">Open 4-lane demo</a>
+                <a href="/live-camera-vision" class="btn-secondary">Camera setup view</a>
             </div>
             <div class="trust-badges">
-                <span>🔒 Government-grade security</span>
-                <span>⚡ Edge + cloud inference</span>
-                <span>⚡ 99.98% uptime</span>
+                <span>Prototype / research project</span>
+                <span>Demo values are not field results</span>
+                <span>Human review required</span>
             </div>
         </div>
 
         <div class="hero-preview-card">
             <div class="preview-header">
-                <span>Smart City Grid · Sector 04 · Live</span>
-                <span style="color: #00ff88;">30 FPS YOLO SYNC</span>
+                <span>Intersection Preview · Demo Data</span>
+                <span style="color: #fbbf24;">SAMPLE VISUALIZATION</span>
             </div>
             <div class="road-canvas">
                 <canvas id="heroRoadCanvas"></canvas>
             </div>
             <div class="metrics-grid">
-                <div class="metric-card"><div class="metric-val">2.4M+</div><div class="metric-lbl">Vehicles Monitored Daily</div></div>
-                <div class="metric-card"><div class="metric-val">92%</div><div class="metric-lbl">AI Detection Accuracy</div></div>
-                <div class="metric-card"><div class="metric-val">40%</div><div class="metric-lbl">Congestion Reduction</div></div>
-                <div class="metric-card"><div class="metric-val">1.2s</div><div class="metric-lbl">Alert Latency</div></div>
+                <div class="metric-card"><div class="metric-val">YOLO</div><div class="metric-lbl">Vehicle Detection</div></div>
+                <div class="metric-card"><div class="metric-val">SUMO</div><div class="metric-lbl">Traffic Simulation</div></div>
+                <div class="metric-card"><div class="metric-val">RL</div><div class="metric-lbl">Signal-Control Research</div></div>
+                <div class="metric-card"><div class="metric-val">V2X</div><div class="metric-lbl">Connected-System Modules</div></div>
             </div>
         </div>
     </div>
 
-    <!-- 12 AI Models Grid Section -->
-    <div class="section" id="features">
-        <h2 class="section-title">Twelve AI Models. One Enforcement Brain.</h2>
-        <p class="section-sub">Every camera on the network runs the full detection stack at the edge, streaming only structured events to the control room.</p>
+    <!-- Project dashboard modules -->
+    <div class="section" id="modules">
+        <h2 class="section-title">Explore the project modules</h2>
+        <p class="section-sub">These are project views and research concepts, not a claim of a live city deployment. Data availability varies by module.</p>
 
         <div class="ai-grid">
-            <div class="ai-card"><div class="ai-icon">🚗</div><div class="ai-name">AI Vehicle Detection</div><div class="ai-desc">Detect and classify cars, bikes, buses and trucks across every lane, day or night.</div></div>
-            <div class="ai-card"><div class="ai-icon">🔤</div><div class="ai-name">Number Plate Recognition</div><div class="ai-desc">OCR-based ANPR identifies vehicles at speed and cross-checks registry databases.</div></div>
-            <div class="ai-card"><div class="ai-icon">🪖</div><div class="ai-name">Helmet Detection</div><div class="ai-desc">Flags two-wheeler riders and pillions travelling without a helmet in real time.</div></div>
-            <div class="ai-card"><div class="ai-icon">🎽</div><div class="ai-name">Seatbelt Detection</div><div class="ai-desc">IR-assisted windshield analysis detects unbelted drivers and front passengers.</div></div>
-            <div class="ai-card"><div class="ai-icon">🚥</div><div class="ai-name">Red-Light Violation</div><div class="ai-desc">Signal-state fusion captures defensible three-frame evidence of red-light jumps.</div></div>
-            <div class="ai-card"><div class="ai-icon">⚡</div><div class="ai-name">Speed Monitoring</div><div class="ai-desc">Radar and section-speed vision measure velocity and flag repeat offenders.</div></div>
-            <div class="ai-card"><div class="ai-icon">🅿️</div><div class="ai-name">Illegal Parking</div><div class="ai-desc">Polygon-based restricted zones with dwell thresholds and towing recommendations.</div></div>
-            <div class="ai-card"><div class="ai-icon">⛔</div><div class="ai-name">Wrong-Way Detection</div><div class="ai-desc">Per-lane heading vectors catch counterflow movement within 15 metres.</div></div>
-            <div class="ai-card"><div class="ai-icon">💥</div><div class="ai-name">Accident Detection</div><div class="ai-desc">Trajectory anomaly models raise incident alerts in under 8 seconds.</div></div>
-            <div class="ai-card"><div class="ai-icon">🚑</div><div class="ai-name">Emergency Vehicle Priority</div><div class="ai-desc">Green-corridor pre-emption clears the route for ambulances and fire units.</div></div>
-            <div class="ai-card"><div class="ai-icon">🔮</div><div class="ai-name">AI Congestion Prediction</div><div class="ai-desc">Spatiotemporal forecasting surfaces hotspots 30–90 minutes before they form.</div></div>
-            <div class="ai-card"><div class="ai-icon">🧠</div><div class="ai-name">Smart Signal Optimization</div><div class="ai-desc">Adaptive split, cycle and offset control builds coordinated green waves.</div></div>
+            <a class="ai-card" href="/multi_dashboard" style="text-decoration:none"><div class="ai-icon">🚦</div><div class="ai-name">4-Lane Traffic Grid</div><div class="ai-desc">Open the multi-lane interface. Video sources must be configured and verified before interpreting results.</div></a>
+            <a class="ai-card" href="/analysis" style="text-decoration:none"><div class="ai-icon">📊</div><div class="ai-name">Traffic Analysis</div><div class="ai-desc">Review the project’s chart and table interface; displayed sample values are not field measurements.</div></a>
+            <a class="ai-card" href="/digital-twin-pro" style="text-decoration:none"><div class="ai-icon">🧪</div><div class="ai-name">Digital Twin Pro</div><div class="ai-desc">Explore the simulation and scenario controls; this view is not a live junction controller.</div></a>
+            <a class="ai-card" href="/twin3d" style="text-decoration:none"><div class="ai-icon">🛣️</div><div class="ai-name">3D Intersection View</div><div class="ai-desc">Explore a visual intersection concept. It does not represent a validated site installation.</div></a>
+            <a class="ai-card" href="/live-camera-vision" style="text-decoration:none"><div class="ai-icon">📷</div><div class="ai-name">Camera Vision</div><div class="ai-desc">Camera interface for testing. A working physical camera feed has not been confirmed.</div></a>
+            <a class="ai-card" href="/traffic-diagnosis" style="text-decoration:none"><div class="ai-icon">🧭</div><div class="ai-name">Traffic Diagnosis</div><div class="ai-desc">Open the diagnostic concept view; confirm its inputs and data source before operational use.</div></a>
         </div>
     </div>
 
@@ -246,10 +365,10 @@
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 18px;">
                 <div>
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <h2 style="font-size: 22px; font-weight: 900; color: #ffffff;">🎮 Autonomous Crossroad RL AI Simulation Engine</h2>
+                        <h2 style="font-size: 22px; font-weight: 900; color: #ffffff;">Intersection Simulation Research Demo</h2>
                         <span style="background: rgba(0,255,136,0.15); border: 1px solid #00ff88; color: #00ff88; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px;">● rl_cross_road DIRECT EMBED</span>
                     </div>
-                    <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">Direct live embed of the project's PyTorch Dueling Deep Q-Network (DQN) + Prioritized Experience Replay (PER) + 9-Ray LiDAR 4-way intersection simulation.</p>
+                    <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">A software simulation for exploring intersection scenarios. It is not connected to a physical junction or verified camera feed.</p>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <button onclick="launchNativePygameDashboard()" style="background: linear-gradient(90deg, #ff007f, #00e5ff); color: #fff; font-weight: 800; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 12px; box-shadow: 0 0 15px rgba(255,0,127,0.3);">🚀 Launch Native Pygame Window</button>
@@ -257,24 +376,25 @@
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; align-items: start;">
-                <!-- Left Live Video Stream Player -->
+            <div class="rl-stream-grid" style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; align-items: start;">
+                <!-- Simulation stream -->
                 <div style="background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,229,255,0.3); position: relative;">
                     <div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; z-index: 10;">
-                        <span id="dash-pill-mode" style="background: rgba(10,15,29,0.85); border: 1px solid #00ff88; color: #00ff88; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;">● MASTER AI</span>
-                        <span id="dash-pill-fps" style="background: rgba(10,15,29,0.85); border: 1px solid #00e5ff; color: #00e5ff; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;">60 FPS REAL-TIME</span>
+                        <span id="dash-pill-mode" style="background: rgba(10,15,29,0.85); border: 1px solid #fbbf24; color: #fbbf24; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;">SIMULATION</span>
+                        <span id="dash-pill-fps" style="background: rgba(10,15,29,0.85); border: 1px solid #94a3b8; color: #cbd5e1; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;">FEED UNVERIFIED</span>
                     </div>
-                    <img id="dashRlStream" src="/video_feed/rl_cross_road" 
-                         onerror="this.src='/rl_assets/banner_animated.gif'" 
-                         style="width: 100%; min-height: 440px; max-height: 520px; object-fit: cover; display: block;" 
-                         alt="RL Crossroad Live Engine" />
+                    <img id="dashRlStream" src="/video_feed/rl_cross_road"
+                         onload="if (this.src.includes('/video_feed/')) document.getElementById('dash-pill-fps').textContent='SIMULATION STREAM';"
+                         onerror="this.onerror=null; this.src='/rl_assets/banner_animated.gif'; document.getElementById('dash-pill-fps').textContent='SIMULATION PREVIEW';"
+                         style="width: 100%; min-height: 440px; max-height: 520px; object-fit: cover; display: block;"
+                         alt="Illustrative traffic intersection simulation" />
 
-                    <!-- Live Control Bar underneath stream -->
+                    <!-- Simulation controls -->
                     <div style="background: rgba(10,15,29,0.95); padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <div style="display: flex; gap: 8px;">
-                            <button onclick="controlDashRL('mode', 'MASTER')" style="background:#00e5ff; color:#000; border:none; padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Master AI</button>
-                            <button onclick="controlDashRL('mode', 'TRAINING')" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Live Training</button>
-                            <button onclick="controlDashRL('mode', 'UNTRAINED')" style="background:rgba(255,59,48,0.2); color:#ff3b30; border:1px solid rgba(255,59,48,0.4); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Untrained Chaos</button>
+                            <button onclick="controlDashRL('mode', 'MASTER')" style="background:#00e5ff; color:#000; border:none; padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Default mode</button>
+                            <button onclick="controlDashRL('mode', 'TRAINING')" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Training mode (simulation)</button>
+                            <button onclick="controlDashRL('mode', 'UNTRAINED')" style="background:rgba(255,59,48,0.2); color:#ff3b30; border:1px solid rgba(255,59,48,0.4); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">Baseline mode</button>
                         </div>
                         <div style="display: flex; gap: 8px;">
                             <button onclick="controlDashRL('weather')" style="background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.15); padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">☀️ Weather</button>
@@ -288,210 +408,91 @@
                 <div style="display: flex; flex-direction: column; gap: 15px;">
                     <div style="background: rgba(10, 15, 29, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 18px;">
                         <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 12px; display: flex; justify-content: space-between;">
-                            <span>🧠 Live Dueling DQN Metrics</span>
-                            <span style="color: #00ff88;">ACTIVE</span>
+                            <span>Simulation telemetry</span>
+                            <span style="color: #fbbf24;">SIMULATION ONLY</span>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; text-align: center;">
-                                <div id="dash-val-acc" style="font-size: 20px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;">98.4%</div>
-                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Safety Rate</div>
+                                <div id="dash-val-acc" style="font-size: 20px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;">—</div>
+                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Safety metric (simulation)</div>
                             </div>
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; text-align: center;">
-                                <div id="dash-val-reward" style="font-size: 20px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace;">+42.8</div>
-                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Mean Reward</div>
+                                <div id="dash-val-reward" style="font-size: 20px; font-weight: 900; color: #00e5ff; font-family: 'JetBrains Mono', monospace;">—</div>
+                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Mean reward (simulation)</div>
                             </div>
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; text-align: center;">
-                                <div id="dash-val-crashes" style="font-size: 20px; font-weight: 900; color: #ff3b30; font-family: 'JetBrains Mono', monospace;">0</div>
-                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Total Crashes</div>
+                                <div id="dash-val-crashes" style="font-size: 20px; font-weight: 900; color: #ff3b30; font-family: 'JetBrains Mono', monospace;">—</div>
+                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Crash count (simulation)</div>
                             </div>
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; text-align: center;">
-                                <div id="dash-val-cars" style="font-size: 20px; font-weight: 900; color: #a855f7; font-family: 'JetBrains Mono', monospace;">8</div>
-                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Active Vehicles</div>
+                                <div id="dash-val-cars" style="font-size: 20px; font-weight: 900; color: #a855f7; font-family: 'JetBrains Mono', monospace;">—</div>
+                                <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Vehicles (simulation)</div>
                             </div>
                         </div>
                     </div>
 
                     <div style="background: rgba(10, 15, 29, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 18px;">
-                        <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 8px;">⚡ Optimal Action Q-Values</div>
-                        <div style="font-size: 11px; color: #cbd5e1; line-height: 1.7; font-family: 'JetBrains Mono', monospace;">
-                            • ACCELERATE: <span style="color:#00ff88;">Q = +4.82</span><br>
-                            • MAINTAIN VELOCITY: <span style="color:#00e5ff;">Q = +3.14</span><br>
-                            • BRAKE GENTLY: <span style="color:#ffc328;">Q = +1.05</span><br>
-                            • BRAKE HARD: <span style="color:#ff3b30;">Q = -8.20</span>
-                        </div>
+                        <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 8px;">Simulation output status</div>
+                        <div style="font-size: 11px; color: #cbd5e1; line-height: 1.7;">Metrics appear only when supplied by the running simulation. No field or camera telemetry is connected here.</div>
                     </div>
 
                     <div style="background: rgba(10, 15, 29, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 18px;">
                         <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 8px;">🌧️ Dynamic Friction & Hydroplaning</div>
-                        <div style="font-size: 11px; color: #94a3b8; line-height: 1.6;">
-                            • Friction ($\mu$): <span id="dash-val-friction" style="color:#00e5ff;">1.00 (Dry)</span><br>
-                            • Stopping Distance Multiplier: <span style="color:#00ff88;">1.0x</span><br>
-                            • SAT Collision Geometry: <span style="color:#00ff88;">Active</span>
-                        </div>
+                        <div style="font-size: 11px; color: #94a3b8; line-height: 1.6;">Weather and collision scenarios are simulation controls, not road-safety measurements.</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- All 15 Live AI Digital Twin Portals Showcase -->
-    <div class="section" style="padding-top: 0;" id="portals">
-        <h2 class="section-title" style="color: #00e5ff;">🖥️ Live AI Digital Twin Portals & Simulation Engines</h2>
-        <p class="section-sub">Direct access to every single live platform, 3D simulation, and computer vision perception engine in the system.</p>
-
-        <div class="ai-grid">
-            <div class="ai-card" style="border: 2px solid #ff007f; box-shadow: 0 0 25px rgba(255,0,127,0.3);">
-                <div class="ai-icon">🎮</div>
-                <div class="ai-name" style="color: #ff007f;">RL Cross-Road Simulation</div>
-                <div class="ai-desc">Autonomous Dueling DQN Crossroad Engine with 9-Ray LiDAR, Friction Hydroplaning & PER Training.</div>
-                <a href="/rl-cross-road" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px; background: linear-gradient(90deg, #ff007f, #00e5ff);">Launch RL Simulation ↗</a>
-            </div>
-            <div class="ai-card" style="border: 2px solid #00ff88;">
-                <div class="ai-icon">📹</div>
-                <div class="ai-name" style="color: #00ff88;">Live Physical Camera Vision</div>
-                <div class="ai-desc">Physical webcam YOLO 30 FPS vehicle/pedestrian detection, ANPR OCR box & live violation alerts.</div>
-                <a href="/live-camera-vision" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card" style="border: 2px solid #00e5ff;">
-                <div class="ai-icon">🏙️</div>
-                <div class="ai-name" style="color: #00e5ff;">Unified Global Digital Twin</div>
-                <div class="ai-desc">Multi-city workbench (Melbourne, Luxembourg, Shanghai, Singapore, Stockholm, Amaravati) & Dijkstra Router.</div>
-                <a href="/multimodal-twin" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card" style="border: 2px solid #a855f7;">
-                <div class="ai-icon">⚡</div>
-                <div class="ai-name" style="color: #a855f7;">NoTraffic Autonomous VMC</div>
-                <div class="ai-desc">Priority Policy Configurator (Pedestrians, Buses, Heavy Freight, EVP), AR V2X Cards & Mesh Network.</div>
-                <a href="/notraffic-vmc" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🌱</div>
-                <div class="ai-name">MAITwin-TEC Multi-Layer GIS</div>
-                <div class="ai-desc">US EPA MOVES + AERMOD pollution dispersion, air quality AQI hotspot maps & What-If scenarios.</div>
-                <a href="/maitwin-gis" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🧠</div>
-                <div class="ai-name">How AI Works Deep Dive</div>
-                <div class="ai-desc">PyTorch Deep Q-Network (DQN) Reinforcement Learning Agent & XGBoost time-series forecasting.</div>
-                <a href="/how-ai-works" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🚀</div>
-                <div class="ai-name">Space Coast TPO 3-Tier Roadmap</div>
-                <div class="ai-desc">Current deployed, coming pipeline, and future innovation tiers across 8 core ITS technology cards.</div>
-                <a href="/tpo-roadmap" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🇻🇳</div>
-                <div class="ai-name">Viettel ITS & TOC Center</div>
-                <div class="ai-desc">V-TSS live camera map surveillance with streaming popups & V-TOC 43,441 violation analytics.</div>
-                <a href="/viettel-its" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">📡</div>
-                <div class="ai-name">SmartMicro Hybrid AI Tracking</div>
-                <div class="ai-desc">60GHz Microwave Radar + OpenCV Camera fusion, 300m range & 9-class object classification tree.</div>
-                <a href="/hybrid-ai-tracking" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🏙️</div>
-                <div class="ai-name">3D Pro Digital Twin (Satellite)</div>
-                <div class="ai-desc">Esri 3D satellite city, moving 3D vehicles, Real Browser GPS Geolocation & 3D fire anomaly.</div>
-                <a href="/digital-twin-pro" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🌐</div>
-                <div class="ai-name">Full Intersection Sensing</div>
-                <div class="ai-desc">51WORLD LiDAR radar scanning rings, 3D vehicle bounding boxes, trajectory lines & 6-CCTV strip.</div>
-                <a href="/intersection-sensing" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🚁</div>
-                <div class="ai-name">Smart City Portal</div>
-                <div class="ai-desc">Drone monitoring map, CCTV surveillance, Mission Planner, IoT sensors & Drone fleet modal.</div>
-                <a href="/smart-city" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🏛️</div>
-                <div class="ai-name">AI Command Room</div>
-                <div class="ai-desc">Executive 6-screen control room, Cat 5 storm resilience mode & water main stress sensors.</div>
-                <a href="/command_room" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🗺️</div>
-                <div class="ai-name">GIS Diagnosis Platform</div>
-                <div class="ai-desc">Dark Vector GIS map, Real GPS location lock & Emergency Ambulance preemption route.</div>
-                <a href="/diagnosis" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🏎️</div>
-                <div class="ai-name">3D WebGL Digital Twin</div>
-                <div class="ai-desc">Three.js 3D skyscrapers, Lerp camera modes (Orbit, Overhead GIS, Driver POV, Night).</div>
-                <a href="/twin3d" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
-
-            <div class="ai-card">
-                <div class="ai-icon">🚥</div>
-                <div class="ai-name">4-Lane OpenCV Signal Grid</div>
-                <div class="ai-desc">2x2 Grid Live OpenCV video feeds with SURTRAC adaptive signal timing.</div>
-                <a href="/multi_dashboard" class="btn-primary" style="display:inline-block; margin-top:12px; padding:6px 14px; font-size:11px;">Launch Platform ↗</a>
-            </div>
+    <div class="section" style="padding-top: 0;" id="project-views">
+        <h2 class="section-title">Project views</h2>
+        <p class="section-sub">A short directory of the interfaces relevant to this prototype. Check each view’s data source before using its output.</p>
+        <div class="resource-links">
+            <a href="/analysis">Traffic analysis interface</a>
+            <a href="/multi_dashboard">4-lane dashboard</a>
+            <a href="/digital-twin-pro">Simulation workbench</a>
+            <a href="/live-camera-vision">Camera setup interface</a>
+            <a href="/rl-cross-road">RL intersection simulation</a>
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         🧠 D3QN REINFORCEMENT LEARNING SIGNAL CONTROLLER — NEURAL HUD SECTION
-         Powered by Cross Road Dueling Double Deep Q-Network Engine
-         ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- Reinforcement-learning research interface -->
     <div class="section" id="rl-hud" style="padding-top: 20px;">
         <div class="hero-badge" style="justify-content: center; display: inline-flex; width: 100%; margin-bottom: 16px;">
-            ⚡ LIVE · Dueling D3QN Reinforcement Learning Engine · Pre-trained Master Weights Loaded
+            RESEARCH DEMO · NOT CONNECTED TO A ROAD SIGNAL
         </div>
-        <h2 class="section-title" style="color: #00e5ff;">🧠 AI Signal Brain — D3QN Neural HUD</h2>
-        <p class="section-sub">Real-time Deep Reinforcement Learning controller. The Dueling Double DQN agent processes live queue sensor data and selects optimal traffic light phase durations — updated every 3 seconds.</p>
+        <h2 class="section-title" style="color: #00e5ff;">Reinforcement-learning interface</h2>
+        <p class="section-sub">Telemetry is not queried by this page because the backend endpoint does not provide verified sensor or training-session data. No model performance or road-control capability is claimed.</p>
 
         <!-- Top 4 RL KPI Strip -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;">
+        <div class="rl-kpi-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;">
             <div style="background: rgba(0,229,255,0.07); border: 1px solid rgba(0,229,255,0.35); border-radius: 12px; padding: 18px; text-align: center;">
-                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Algorithm</div>
-                <div id="rl-algo" style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-top: 6px; font-family: 'JetBrains Mono', monospace;">Dueling D3QN + PER</div>
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Telemetry status</div>
+                <div id="rl-algo" aria-live="polite" style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-top: 6px; font-family: 'JetBrains Mono', monospace;">Not connected</div>
             </div>
             <div style="background: rgba(0,255,136,0.07); border: 1px solid rgba(0,255,136,0.35); border-radius: 12px; padding: 18px; text-align: center;">
-                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Cumulative Reward</div>
-                <div id="rl-reward" style="font-size: 28px; font-weight: 900; color: #00ff88; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">0.0</div>
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Reward data</div>
+                <div id="rl-reward" style="font-size: 28px; font-weight: 900; color: #00ff88; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">—</div>
             </div>
             <div style="background: rgba(168,85,247,0.07); border: 1px solid rgba(168,85,247,0.35); border-radius: 12px; padding: 18px; text-align: center;">
-                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Max Q-Value</div>
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Q-value data</div>
                 <div id="rl-qval" style="font-size: 28px; font-weight: 900; color: #a855f7; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">—</div>
             </div>
             <div style="background: rgba(255,195,40,0.07); border: 1px solid rgba(255,195,40,0.35); border-radius: 12px; padding: 18px; text-align: center;">
-                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">ε Exploration</div>
-                <div id="rl-epsilon" style="font-size: 28px; font-weight: 900; color: #ffc328; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">—</div>
+                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Sensor input</div>
+                <div id="rl-epsilon" style="font-size: 20px; font-weight: 900; color: #ffc328; margin-top: 8px; font-family: 'JetBrains Mono', monospace;">Not connected</div>
             </div>
         </div>
 
         <!-- Main 3-column RL HUD layout -->
-        <div style="display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 18px; margin-bottom: 20px;">
+        <div class="rl-hud-grid" style="display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 18px; margin-bottom: 20px;">
 
             <!-- LEFT: Action Q-Value Bar Chart -->
             <div style="background: rgba(10,15,29,0.95); border: 1px solid rgba(0,229,255,0.2); border-radius: 14px; padding: 22px;">
                 <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                    📊 Action Q-Value Distribution
-                    <span style="font-size: 10px; color: #94a3b8; font-weight: 400; margin-left: auto;">Live · 15Hz</span>
+                        📊 Action value data
+                    <span style="font-size: 10px; color: #94a3b8; font-weight: 400; margin-left: auto;">No measured values</span>
                 </div>
                 <div id="qbar-container" style="display: flex; flex-direction: column; gap: 10px;">
                     <div class="qbar-row" data-action="COAST" data-color="#00e5ff"></div>
@@ -501,29 +502,29 @@
                     <div class="qbar-row" data-action="BRAKE HARD" data-color="#ff3b30"></div>
                 </div>
                 <div style="margin-top: 18px; padding: 12px; background: rgba(0,229,255,0.05); border-radius: 8px; border-left: 3px solid #00e5ff;">
-                    <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">CURRENT OPTIMAL ACTION</div>
-                    <div id="rl-action" style="font-size: 14px; font-weight: 900; color: #ffffff; font-family: 'JetBrains Mono', monospace;">Initializing...</div>
+                    <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">ACTION OUTPUT</div>
+                    <div id="rl-action" style="font-size: 14px; font-weight: 900; color: #ffffff; font-family: 'JetBrains Mono', monospace;">Not reported</div>
                 </div>
             </div>
 
             <!-- CENTER: Live 4-Way Intersection Signal Animation -->
             <div style="background: rgba(10,15,29,0.95); border: 1px solid rgba(0,229,255,0.2); border-radius: 14px; padding: 22px;">
                 <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
-                    <span>🚦 VIP Road Junction — Live D3QN Control</span>
-                    <span id="phase-badge" style="font-size: 10px; background: rgba(0,255,136,0.15); border: 1px solid #00ff88; color: #00ff88; padding: 3px 10px; border-radius: 12px;">NS GREEN</span>
+                    <span>Illustrative intersection animation</span>
+                    <span id="phase-badge" style="font-size: 10px; background: rgba(0,255,136,0.15); border: 1px solid #00ff88; color: #00ff88; padding: 3px 10px; border-radius: 12px;">DEMO PHASE</span>
                 </div>
                 <canvas id="rlIntersectionCanvas" width="340" height="260" style="width: 100%; border-radius: 8px; background: #050810;"></canvas>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; text-align: center;">
                     <div style="background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); border-radius: 8px; padding: 10px;">
-                        <div style="font-size: 10px; color: #94a3b8;">NS Queue</div>
-                        <div id="ns-queue" style="font-size: 18px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;">0</div>
+                        <div style="font-size: 10px; color: #94a3b8;">NS queue (demo)</div>
+                        <div id="ns-queue" style="font-size: 18px; font-weight: 900; color: #00ff88; font-family: 'JetBrains Mono', monospace;">—</div>
                     </div>
                     <div style="background: rgba(255,60,60,0.08); border: 1px solid rgba(255,60,60,0.2); border-radius: 8px; padding: 10px;">
-                        <div style="font-size: 10px; color: #94a3b8;">EW Queue</div>
-                        <div id="ew-queue" style="font-size: 18px; font-weight: 900; color: #ff3b30; font-family: 'JetBrains Mono', monospace;">0</div>
+                        <div style="font-size: 10px; color: #94a3b8;">EW queue (demo)</div>
+                        <div id="ew-queue" style="font-size: 18px; font-weight: 900; color: #ff3b30; font-family: 'JetBrains Mono', monospace;">—</div>
                     </div>
                     <div style="background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.2); border-radius: 8px; padding: 10px;">
-                        <div style="font-size: 10px; color: #94a3b8;">Phase Timer</div>
+                        <div style="font-size: 10px; color: #94a3b8;">Demo phase timer</div>
                         <div id="phase-timer" style="font-size: 18px; font-weight: 900; color: #a855f7; font-family: 'JetBrains Mono', monospace;">45s</div>
                     </div>
                 </div>
@@ -531,32 +532,32 @@
 
             <!-- RIGHT: Neural Network Layer Activations + RL Telemetry -->
             <div style="background: rgba(10,15,29,0.95); border: 1px solid rgba(0,229,255,0.2); border-radius: 14px; padding: 22px;">
-                <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 16px;">⚡ Neural Layer Activations</div>
+                <div style="font-size: 13px; font-weight: 800; color: #00e5ff; margin-bottom: 16px;">Illustrative network animation</div>
 
                 <!-- Mini Neural Net Visualizer -->
                 <canvas id="nnCanvas" width="220" height="140" style="width: 100%; border-radius: 8px; background: #030508; margin-bottom: 14px;"></canvas>
 
-                <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">RL Telemetry</div>
+                <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Backend values not supplied</div>
                 <div style="display: flex; flex-direction: column; gap: 7px;" id="rl-telem">
                     <div style="display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
                         <span style="color: #94a3b8;">Master Weights</span>
-                        <span id="telem-weights" style="color: #00ff88; font-weight: 700;">Loading...</span>
+                        <span id="telem-weights" style="color: #00ff88; font-weight: 700;">Not reported</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
                         <span style="color: #94a3b8;">Training Steps</span>
-                        <span id="telem-steps" style="color: #00e5ff; font-family: 'JetBrains Mono', monospace;">—</span>
+                        <span id="telem-steps" style="color: #00e5ff; font-family: 'JetBrains Mono', monospace;">Not reported</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
                         <span style="color: #94a3b8;">Learning Rate α</span>
-                        <span id="telem-lr" style="color: #ffc328; font-family: 'JetBrains Mono', monospace;">—</span>
+                        <span id="telem-lr" style="color: #ffc328; font-family: 'JetBrains Mono', monospace;">Not reported</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
                         <span style="color: #94a3b8;">Discount γ</span>
-                        <span id="telem-gamma" style="color: #a855f7; font-family: 'JetBrains Mono', monospace;">—</span>
+                        <span id="telem-gamma" style="color: #a855f7; font-family: 'JetBrains Mono', monospace;">Not reported</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 12px;">
                         <span style="color: #94a3b8;">Adv Value A(s,a)</span>
-                        <span id="telem-adv" style="color: #00ff88; font-family: 'JetBrains Mono', monospace;">—</span>
+                        <span id="telem-adv" style="color: #00ff88; font-family: 'JetBrains Mono', monospace;">Not reported</span>
                     </div>
                 </div>
             </div>
@@ -565,7 +566,7 @@
         <!-- Bottom: RL Reward Trend Chart -->
         <div style="background: rgba(10,15,29,0.95); border: 1px solid rgba(0,229,255,0.2); border-radius: 14px; padding: 18px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div style="font-size: 13px; font-weight: 800; color: #00e5ff;">📈 Cumulative Reward Trend — D3QN Learning Curve</div>
+                <div style="font-size: 13px; font-weight: 800; color: #00e5ff;">📈 Reward trend — no session history available</div>
                 <div style="display: flex; gap: 16px; font-size: 11px;">
                     <span style="color: #00ff88;">● Cumulative Reward</span>
                     <span style="color: #ffc328;">● ε Exploration Decay</span>
@@ -578,35 +579,35 @@
         </div>
     </div>
 
-    <!-- Meet TrafficBot Chatbot Section -->
+    <!-- Scripted FAQ preview -->
     <div class="section" style="padding-top: 0;">
 
         <div class="bot-container">
             <div>
-                <h3 style="font-size: 24px; font-weight: 900; margin-bottom: 8px;">🤖 Meet TrafficBot</h3>
-                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">A conversational assistant for officers, planners and citizens — covering rules, violations, congestion and emergency operations.</p>
-                <div style="margin-top: 20px; font-size: 12px; font-weight: bold; color: #00e5ff;">Topics Covered:</div>
+                <h3 style="font-size: 24px; font-weight: 900; margin-bottom: 8px;">Prototype FAQ preview</h3>
+                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">This is a scripted interface demonstration, not a connected AI assistant or source of operational guidance.</p>
+                <div style="margin-top: 20px; font-size: 12px; font-weight: bold; color: #00e5ff;">Example topics:</div>
                 <div class="topics-grid">
-                    <span class="topic-pill">Helmet detection</span><span class="topic-pill">Seatbelt detection</span><span class="topic-pill">Speed monitoring</span>
+                            <span class="topic-pill">Helmet detection</span><span class="topic-pill">Seatbelt detection</span><span class="topic-pill">Speed monitoring</span>
                     <span class="topic-pill">Red-light violation</span><span class="topic-pill">Wrong-way driving</span><span class="topic-pill">Illegal parking</span>
-                    <span class="topic-pill">Congestion prediction</span><span class="topic-pill">Smart signals</span><span class="topic-pill">Emergency routing</span>
+                            <span class="topic-pill">Congestion prediction</span><span class="topic-pill">Signal timing</span><span class="topic-pill">Emergency routing</span>
                 </div>
             </div>
 
             <div>
                 <div class="chat-box" id="chatBox">
-                    <div class="chat-msg bot"><strong>TrafficBot:</strong> Hi, I'm TrafficBot — the TraffixAI assistant. Ask me about traffic rules, violations, congestion prediction, emergency routing or smart signals.</div>
+                    <div class="chat-msg bot"><strong>Prototype FAQ:</strong> Select a topic to see a scripted response. No live AI service is connected.</div>
                 </div>
 
                 <div class="prompt-pills">
-                    <span class="prompt-btn" onclick="askPrompt('How does helmet detection work?')">How does helmet detection work?</span>
-                    <span class="prompt-btn" onclick="askPrompt('Can you predict congestion?')">Can you predict congestion?</span>
-                    <span class="prompt-btn" onclick="askPrompt('How is emergency routing prioritized?')">How is emergency routing prioritized?</span>
+                    <button class="prompt-btn" type="button" onclick="askPrompt('How does helmet detection work?')">How does helmet detection work?</button>
+                    <button class="prompt-btn" type="button" onclick="askPrompt('Can you predict congestion?')">Can you predict congestion?</button>
+                    <button class="prompt-btn" type="button" onclick="askPrompt('How is emergency routing prioritized?')">How is emergency routing prioritized?</button>
                 </div>
 
                 <div class="chat-input">
-                    <input type="text" id="userInput" placeholder="Ask TrafficBot..." onkeypress="if(event.key==='Enter') sendChat()">
-                    <button class="btn-primary" onclick="sendChat()">Ask TrafficBot</button>
+                    <input type="text" id="userInput" aria-label="Enter an FAQ topic" placeholder="Enter an FAQ topic..." onkeypress="if(event.key==='Enter') sendChat()">
+                    <button class="btn-primary" type="button" onclick="sendChat()">Show demo response</button>
                 </div>
             </div>
         </div>
@@ -614,132 +615,90 @@
 
     <!-- Control Room Dashboard Section -->
     <div class="section" id="control-room">
-        <h2 class="section-title">The Control Room, In Your Browser</h2>
-        <p class="section-sub">Operators see density, violations, incidents and signal state on a single adaptive surface — refreshed continuously.</p>
+        <h2 class="section-title">Dashboard preview</h2>
+        <p class="section-sub">Illustrative interface only. Values and events below are sample content, not live camera telemetry or verified field results.</p>
 
         <div class="control-kpis">
-            <div class="kpi-card"><div class="kpi-title">Traffic Density</div><div class="kpi-val">125%</div><div class="kpi-sub">Citywide Corridor Load</div></div>
-            <div class="kpi-card"><div class="kpi-title">Active Cameras</div><div class="kpi-val">1,352</div><div class="kpi-sub">Of 1,355 Deployed</div></div>
-            <div class="kpi-card"><div class="kpi-title">Average Speed</div><div class="kpi-val">60 km/h</div><div class="kpi-sub">Arterial Network Avg</div></div>
-            <div class="kpi-card"><div class="kpi-title">Today's Violations</div><div class="kpi-val">1,155</div><div class="kpi-sub">+6.2% vs Yesterday</div></div>
-            <div class="kpi-card"><div class="kpi-title">Accident Reports</div><div class="kpi-val">7</div><div class="kpi-sub">2 Awaiting Dispatch</div></div>
+            <div class="kpi-card"><div class="kpi-title">Data mode</div><div class="kpi-val">DEMO</div><div class="kpi-sub">Sample interface content</div></div>
+            <div class="kpi-card"><div class="kpi-title">Camera source</div><div class="kpi-val">Unverified</div><div class="kpi-sub">Connect and test before use</div></div>
+            <div class="kpi-card"><div class="kpi-title">Field results</div><div class="kpi-val">None</div><div class="kpi-sub">No site measurements provided</div></div>
+            <div class="kpi-card"><div class="kpi-title">Signal control</div><div class="kpi-val">Disabled</div><div class="kpi-sub">Decision support only</div></div>
         </div>
 
         <div class="charts-row">
             <div class="chart-card">
-                <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px;">Congestion Trend vs AI Prediction</div>
+                <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px;">Illustrative traffic scenario (sample values)</div>
                 <canvas id="trendChart"></canvas>
             </div>
             <div class="chart-card">
-                <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px;">Violation Mix</div>
+                <div style="font-size: 13px; font-weight: 800; margin-bottom: 10px;">Example category mix (not measured)</div>
                 <canvas id="violationChart"></canvas>
             </div>
         </div>
 
         <div class="alerts-feed-card">
-            <div style="font-size: 13px; font-weight: 800; margin-bottom: 12px; color: #00e5ff;">🚨 AI Alerts Feed (98.4% Auto-Triage Rate)</div>
-            <div class="alert-item"><span>⛔ <strong>Wrong-way vehicle</strong> — Ring Road North</span> <span style="color: #94a3b8;">12s ago</span></div>
-            <div class="alert-item"><span>🚥 <strong>Red-light violation</strong> — MG Road Junction</span> <span style="color: #94a3b8;">48s ago</span></div>
-            <div class="alert-item"><span>⚠️ <strong>Congestion forming</strong> — Airport Junction</span> <span style="color: #94a3b8;">2m ago</span></div>
+            <div style="font-size: 13px; font-weight: 800; margin-bottom: 12px; color: #00e5ff;">Example alert cards — illustrative only</div>
+            <div class="alert-item"><span>Queue estimate</span><span style="color: #94a3b8;">Sample event</span></div>
+            <div class="alert-item"><span>Camera source status</span><span style="color: #94a3b8;">Requires verification</span></div>
+            <div class="alert-item"><span>Operator review</span><span style="color: #94a3b8;">Required before action</span></div>
         </div>
     </div>
 
     <!-- Analytics Section -->
-    <div class="section" id="analytics">
-        <h2 class="section-title">Numbers Authorities Can Defend in a Review Meeting</h2>
-        <p class="section-sub">Every KPI is traceable to raw events, audited samples and signed evidence packets.</p>
+    <div class="section" id="validation">
+        <h2 class="section-title">What must be validated next</h2>
+        <p class="section-sub">Report these outcomes only after controlled, reproducible testing with documented methods and ground truth.</p>
 
         <div class="analytics-grid">
-            <div class="analytics-card"><div class="analytics-val">2.4M</div><div class="analytics-sub">Vehicles monitored per day across 218 junctions</div></div>
-            <div class="analytics-card"><div class="analytics-val">486,000+</div><div class="analytics-sub">Violations detected auto-evidenced this year</div></div>
-            <div class="analytics-card"><div class="analytics-val">40%</div><div class="analytics-sub">Congestion reduction average on adaptive corridors</div></div>
-            <div class="analytics-card"><div class="analytics-val">1.2s</div><div class="analytics-sub">Response time detection to control-room alert</div></div>
-            <div class="analytics-card"><div class="analytics-val">92.4%</div><div class="analytics-sub">AI accuracy validated against manual audit</div></div>
-            <div class="analytics-card"><div class="analytics-val">99.4%</div><div class="analytics-sub">Camera uptime rolling 30-day availability</div></div>
+            <div class="analytics-card"><div class="analytics-val">01</div><div class="analytics-sub">Select a permitted test junction and document the observation window.</div></div>
+            <div class="analytics-card"><div class="analytics-val">02</div><div class="analytics-sub">Compare vehicle counts and queue estimates with manual ground truth.</div></div>
+            <div class="analytics-card"><div class="analytics-val">03</div><div class="analytics-sub">Compare timing proposals with a fixed-time baseline under the same demand.</div></div>
+            <div class="analytics-card"><div class="analytics-val">04</div><div class="analytics-sub">Report latency, errors, uncertainty and test conditions.</div></div>
+            <div class="analytics-card"><div class="analytics-val">05</div><div class="analytics-sub">Review camera permissions, privacy, fail-safe behavior and operator override.</div></div>
+            <div class="analytics-card"><div class="analytics-val">06</div><div class="analytics-sub">Publish no performance claim until results are independently reproducible.</div></div>
         </div>
     </div>
 
     <!-- How It Works Section -->
     <div class="section">
-        <h2 class="section-title">From Photon to Policy in Under Two Seconds</h2>
+        <h2 class="section-title">Proposed evaluation workflow</h2>
+        <p class="section-sub">A development sequence for a controlled prototype; it is not a description of a deployed traffic-control service.</p>
         <div class="pipeline-grid">
-            <div class="pipe-card"><div class="pipe-step">1</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">AI cameras monitor roads</div><div style="font-size: 12px; color: #94a3b8;">Edge-enabled CCTV and ANPR units stream every lane 24/7.</div></div>
-            <div class="pipe-card"><div class="pipe-step">2</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Computer vision analyses traffic</div><div style="font-size: 12px; color: #94a3b8;">Detection, tracking and classification run on-device in real time.</div></div>
-            <div class="pipe-card"><div class="pipe-step">3</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">AI detects violations</div><div style="font-size: 12px; color: #94a3b8;">Twelve models score each event against local traffic rules.</div></div>
-            <div class="pipe-card"><div class="pipe-step">4</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Alerts are generated</div><div style="font-size: 12px; color: #94a3b8;">Evidence packets bundle frames, plate, GPS and signal state.</div></div>
-            <div class="pipe-card"><div class="pipe-step">5</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Authorities are notified</div><div style="font-size: 12px; color: #94a3b8;">Control room, patrols and emergency services receive synchronised alerts.</div></div>
-            <div class="pipe-card"><div class="pipe-step">6</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Signals adapt automatically</div><div style="font-size: 12px; color: #94a3b8;">Adaptive control retimes junctions to dissolve the queue.</div></div>
+            <div class="pipe-card"><div class="pipe-step">1</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Obtain authorized video</div><div style="font-size: 12px; color: #94a3b8;">Use permissioned test footage or a documented camera source.</div></div>
+            <div class="pipe-card"><div class="pipe-step">2</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Validate detections</div><div style="font-size: 12px; color: #94a3b8;">Compare sample detections with annotated ground truth.</div></div>
+            <div class="pipe-card"><div class="pipe-step">3</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Estimate traffic state</div><div style="font-size: 12px; color: #94a3b8;">Measure counts and occupancy by approach; calibrate before queue-distance estimates.</div></div>
+            <div class="pipe-card"><div class="pipe-step">4</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Generate a proposal</div><div style="font-size: 12px; color: #94a3b8;">Apply documented phase, clearance and safety constraints.</div></div>
+            <div class="pipe-card"><div class="pipe-step">5</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Review as an operator</div><div style="font-size: 12px; color: #94a3b8;">Keep human review and override; do not connect to a live junction.</div></div>
+            <div class="pipe-card"><div class="pipe-step">6</div><div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">Evaluate outcomes</div><div style="font-size: 12px; color: #94a3b8;">Compare against a baseline and publish measured results with limitations.</div></div>
         </div>
     </div>
 
-    <!-- Case Studies & Testimonials -->
+    <!-- Project readiness -->
     <div class="section">
-        <h2 class="section-title">Deployed Outcomes, Not Slideware</h2>
-        <div class="case-grid">
-            <div class="case-card"><div class="case-num">31%</div><div style="font-weight: 800; margin-top: 6px;">Metro Corridor</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Congestion reduction across 64 junctions</div></div>
-            <div class="case-card"><div class="case-num">60%</div><div style="font-weight: 800; margin-top: 6px;">Emergency Services</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Faster emergency ambulance transit</div></div>
-            <div class="case-card"><div class="case-num">84%</div><div style="font-weight: 800; margin-top: 6px;">Enforcement Programme</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">AI detection accuracy confirmed</div></div>
-            <div class="case-card"><div class="case-num">32%</div><div style="font-weight: 800; margin-top: 6px;">Highway Safety</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Fewer repeat traffic violations</div></div>
-        </div>
-
-        <div class="testimonial-box">
-            "TraffixAI replaced three disconnected systems. Our officers now spend their time on the incidents that matter instead of scrubbing footage."
-            <div style="font-weight: bold; color: #00e5ff; font-style: normal; margin-top: 8px;">— Deputy Commissioner, Metropolitan Traffic Authority</div>
-        </div>
-
-        <div class="tech-pills">
-            <span class="tech-pill">Artificial Intelligence</span>
-            <span class="tech-pill">Machine Learning</span>
-            <span class="tech-pill">Computer Vision</span>
-            <span class="tech-pill">Deep Learning</span>
-            <span class="tech-pill">IoT Sensors</span>
-            <span class="tech-pill">Edge Computing</span>
-            <span class="tech-pill">Cloud Analytics</span>
-            <span class="tech-pill">Real-Time Data Processing</span>
+        <h2 class="section-title">Prototype status and boundaries</h2>
+        <p class="section-sub">The dashboard is a development interface. Confirm each capability against the code, hardware and test evidence before describing it as operational.</p>
+        <div class="project-status-grid">
+            <article class="project-status-card"><span class="project-status-label">Not verified</span><strong>Physical camera feed</strong><p>A working real-camera connection and live measurements have not been confirmed.</p></article>
+            <article class="project-status-card"><span class="project-status-label">Sample data</span><strong>Charts and alert examples</strong><p>Dashboard values and event cards are interface examples, not site-specific observations.</p></article>
+            <article class="project-status-card"><span class="project-status-label">Prototype only</span><strong>Signal recommendations</strong><p>Any timing output is for evaluation and operator review; certified actuation is out of scope.</p></article>
+            <article class="project-status-card"><span class="project-status-label">Future concept</span><strong>Pothole workflow</strong><p>Pothole detection is not implemented in the current project software.</p></article>
         </div>
     </div>
 
-    <!-- Pricing Section -->
-    <div class="section" id="pricing">
-        <h2 class="section-title">Procurement-Friendly, Camera-Based Pricing</h2>
-        <p class="section-sub">No per-violation fees. Transparent tiers that scale with your network, not your penalties.</p>
-
-        <div class="pricing-grid">
-            <div class="plan-card">
-                <h3>Starter</h3>
-                <div class="plan-price">$1,900<span style="font-size: 14px; color: #94a3b8;"> / mo</span></div>
-                <p style="font-size: 13px; color: #94a3b8;">Pilot deployments & single corridor trials up to 10 AI cameras.</p>
-            </div>
-            <div class="plan-card pro">
-                <h3>Professional</h3>
-                <div class="plan-price">$7,400<span style="font-size: 14px; color: #94a3b8;"> / mo</span></div>
-                <p style="font-size: 13px; color: #94a3b8;">City districts running active enforcement up to 100 cameras.</p>
-            </div>
-            <div class="plan-card">
-                <h3>Enterprise</h3>
-                <div class="plan-price">Custom</div>
-                <p style="font-size: 13px; color: #94a3b8;">Statewide programmes and national authorities with unlimited scale.</p>
-            </div>
+    <div class="section" id="resources">
+        <h2 class="section-title">Project resources</h2>
+        <p class="section-sub">Open the project interfaces and supporting design materials.</p>
+        <div class="resource-links">
+            <a href="/dashboards">Dashboard directory</a>
+            <a href="/analysis">Analysis interface</a>
+            <a href="/multi_dashboard">4-lane dashboard</a>
+            <a href="/digital-twin-pro">Simulation view</a>
         </div>
     </div>
-
-    <!-- Request Form Section -->
-    <div class="section">
-        <div class="form-section">
-            <h3 style="font-size: 24px; font-weight: 900; margin-bottom: 8px; text-align: center;">Ready to see TraffixAI on your corridors?</h3>
-            <p style="font-size: 13px; color: #94a3b8; text-align: center; margin-bottom: 25px;">Book a walkthrough with our deployment team.</p>
-
-            <div class="form-group"><input type="text" placeholder="Full name"></div>
-            <div class="form-group"><input type="email" placeholder="Work email"></div>
-            <div class="form-group"><input type="text" placeholder="Authority / organisation"></div>
-            <div class="form-group"><textarea rows="3" placeholder="Tell us about your network size and goals..."></textarea></div>
-
-            <button class="btn-primary" style="width: 100%; padding: 14px;" onclick="alert('Walkthrough Request Submitted!')">Request a Walkthrough</button>
-        </div>
-    </div>
+    </main>
 
     <footer>
-        <div>© 2026 TraffixAI — Team CipherSquad (SIH 2026 Bharat Nirman Track PS1). All rights reserved.</div>
+        <div>RoadSense India | Prototype interface | Sample data is not field evidence.</div>
     </footer>
 
     <script>
@@ -776,17 +735,25 @@
             const q = input.value.trim();
             if (!q) return;
 
-            box.innerHTML += `<div class="chat-msg user"><strong>You:</strong> ${q}</div>`;
+            const addMessage = (className, label, message) => {
+                const item = document.createElement('div');
+                item.className = `chat-msg ${className}`;
+                const heading = document.createElement('strong');
+                heading.textContent = `${label}: `;
+                item.append(heading, document.createTextNode(message));
+                box.appendChild(item);
+            };
+            addMessage('user', 'You', q);
             input.value = '';
 
-            let reply = "TraffixAI processes multi-camera perception streams using YOLOv26 and adjusts SURTRAC signals in real time.";
-            if (q.toLowerCase().includes('predict')) reply = "AI Congestion Prediction uses XGBoost time-series forecasting to surface bottlenecks 30-90 minutes before they occur!";
-            if (q.toLowerCase().includes('helmet')) reply = "Helmet Detection uses deep neural networks to flag two-wheeler riders without helmets and auto-generates E-Challans!";
-            if (q.toLowerCase().includes('emergency')) reply = "Emergency Vehicle Priority preempts traffic signals dynamically to clear green corridors for ambulances!";
-            if (q.toLowerCase().includes('red')) reply = "Red-Light Violation fusion captures defensible three-frame evidence of red-light jumps!";
+            let reply = "This scripted preview does not connect to an AI service. Check the project modules and validation plan for current scope.";
+            if (q.toLowerCase().includes('predict')) reply = "Traffic prediction is a project concept. No forecast accuracy or lead time has been validated for a real junction.";
+            if (q.toLowerCase().includes('helmet')) reply = "Helmet detection is not verified as an operational feature in this prototype. It would require authorized data and measured validation.";
+            if (q.toLowerCase().includes('emergency')) reply = "Emergency routing is not connected to live traffic signals. Any future test would require authorization and operator oversight.";
+            if (q.toLowerCase().includes('red')) reply = "Violation detection is not presented as an operational enforcement feature. No verified field evidence is available.";
 
             setTimeout(() => {
-                box.innerHTML += `<div class="chat-msg bot"><strong>TrafficBot:</strong> ${reply}</div>`;
+                addMessage('bot', 'Prototype FAQ', reply);
                 box.scrollTop = box.scrollHeight;
             }, 400);
         }
@@ -797,36 +764,26 @@
             data: {
                 labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
                 datasets: [
-                    { label: 'Actual Density', data: [35, 60, 45, 50, 75, 90, 65], borderColor: '#00e5ff', fill: false },
-                    { label: 'AI Prediction', data: [32, 58, 48, 52, 78, 88, 62], borderColor: '#00ff88', borderDash: [5, 5], fill: false }
+                    { label: 'Illustrative scenario A', data: [35, 60, 45, 50, 75, 90, 65], borderColor: '#00e5ff', fill: false },
+                    { label: 'Illustrative scenario B', data: [32, 58, 48, 52, 78, 88, 62], borderColor: '#00ff88', borderDash: [5, 5], fill: false }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false }
         });
 
         // ══════════════════════════════════════════════════════════════
-        // 🧠 D3QN NEURAL HUD — All Animations & Live API Polling
+        // Research-interface visuals and endpoint availability check
         // ══════════════════════════════════════════════════════════════
 
         // ---------- Reward Trend Chart ----------
-        const rlLabels = [];
-        const rlRewardData = [];
-        const rlEpsData = [];
-        const rlQData = [];
-        for (let i = 0; i < 20; i++) {
-            rlLabels.push('t-' + (20 - i));
-            rlRewardData.push((Math.random() * 4 + i * 0.3).toFixed(2));
-            rlEpsData.push((Math.max(0.05, 1.0 - i * 0.045)).toFixed(3));
-            rlQData.push((Math.random() * 0.1 + 0.05 + i * 0.004).toFixed(4));
-        }
         const rlChart = new Chart(document.getElementById('rlRewardChart').getContext('2d'), {
             type: 'line',
             data: {
-                labels: rlLabels,
+                labels: [],
                 datasets: [
-                    { label: 'Cumulative Reward', data: rlRewardData, borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.08)', fill: true, tension: 0.4, pointRadius: 2 },
-                    { label: 'ε Exploration', data: rlEpsData.map(v => v * 10), borderColor: '#ffc328', backgroundColor: 'transparent', borderDash: [5,5], tension: 0.3, pointRadius: 0 },
-                    { label: 'Max Q-Value', data: rlQData.map(v => v * 100), borderColor: '#a855f7', backgroundColor: 'transparent', tension: 0.4, pointRadius: 2 }
+                    { label: 'Cumulative Reward', data: [], borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.08)', fill: true, tension: 0.4, pointRadius: 2 },
+                    { label: 'Exploration', data: [], borderColor: '#ffc328', backgroundColor: 'transparent', borderDash: [5,5], tension: 0.3, pointRadius: 0 },
+                    { label: 'Max Q-Value', data: [], borderColor: '#a855f7', backgroundColor: 'transparent', tension: 0.4, pointRadius: 2 }
                 ]
             },
             options: {
@@ -850,7 +807,7 @@
                         <div style="flex:1; background:rgba(255,255,255,0.06); border-radius:4px; height:12px; overflow:hidden;">
                             <div class="qbar-fill" style="height:100%; width:0%; background:${color}; border-radius:4px; transition:width 0.5s ease;"></div>
                         </div>
-                        <span class="qbar-val" style="font-size:10px; color:${color}; width:42px; text-align:right; font-family:'JetBrains Mono',monospace;">0.000</span>
+                        <span class="qbar-val" style="font-size:10px; color:${color}; width:42px; text-align:right; font-family:'JetBrains Mono',monospace;">—</span>
                     </div>`;
             });
         }
@@ -1039,91 +996,6 @@
             document.getElementById('phase-timer').textContent = phaseCountdown + 's';
         }, 1000);
 
-        // ---------- Live /api/rl-d3qn-hud Polling ----------
-        const actionNames = ['Lane 1 Green (Short 15s)', 'Lane 2 Green (Long 35s)', 'Lane 3 Green (Med 25s)', 'All Red (Safety 5s)', 'Extend Current (+10s)'];
-
-        async function pollRLHUD() {
-            try {
-                const res = await fetch('/api/rl-d3qn-hud');
-                if (!res.ok) throw new Error('API not reachable');
-                const d = await res.json();
-
-                // KPIs
-                document.getElementById('rl-reward').textContent = (d.cumulative_reward || 0).toFixed(1);
-                document.getElementById('rl-qval').textContent = d.max_q_value !== undefined ? d.max_q_value.toFixed(4) : '—';
-                document.getElementById('rl-epsilon').textContent = d.epsilon !== undefined ? d.epsilon.toFixed(3) : '—';
-                document.getElementById('rl-action').textContent = d.action_name || 'Optimizing...';
-
-                // Q-bars
-                if (d.q_values && d.q_values.length > 0) updateQBars(d.q_values);
-
-                // Telemetry
-                document.getElementById('telem-weights').textContent = d.d3qn_master_weights_loaded ? '✅ Loaded' : '⏳ Random Init';
-                document.getElementById('telem-steps').textContent = (d.training_steps || 0).toLocaleString();
-                document.getElementById('telem-lr').textContent = (d.learning_rate || 0.001).toExponential(1);
-                document.getElementById('telem-gamma').textContent = (d.gamma || 0.95).toFixed(2);
-                document.getElementById('telem-adv').textContent = d.advantage_value !== undefined ? d.advantage_value.toFixed(4) : '+' + (Math.random() * 0.2).toFixed(4);
-
-                // Queues
-                if (d.state_vector) {
-                    document.getElementById('ns-queue').textContent = Math.round(d.state_vector[0] || 0);
-                    document.getElementById('ew-queue').textContent = Math.round(d.state_vector[1] || 0);
-                }
-
-                // Update reward chart
-                const now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                if (rlChart.data.labels.length > 30) {
-                    rlChart.data.labels.shift();
-                    rlChart.data.datasets.forEach(ds => ds.data.shift());
-                }
-                rlChart.data.labels.push(now);
-                rlChart.data.datasets[0].data.push((d.cumulative_reward || 0).toFixed(2));
-                rlChart.data.datasets[1].data.push(((d.epsilon || 0.1) * 10).toFixed(3));
-                rlChart.data.datasets[2].data.push(((d.max_q_value || 0.1) * 100).toFixed(4));
-                rlChart.update('none');
-
-            } catch (e) {
-                // Fallback: simulate data if backend not running
-                const simReward = parseFloat(document.getElementById('rl-reward').textContent || '0') + Math.random() * 0.5;
-                document.getElementById('rl-reward').textContent = simReward.toFixed(1);
-                document.getElementById('rl-qval').textContent = (Math.random() * 0.2 + 0.05).toFixed(4);
-                document.getElementById('rl-epsilon').textContent = (Math.max(0.05, 0.9 - simReward * 0.01)).toFixed(3);
-                const actions = ['Lane 1 Green (Short 15s)', 'Lane 2 Green (Long 35s)', 'Extend Current (+10s)'];
-                document.getElementById('rl-action').textContent = actions[Math.floor(Math.random() * actions.length)];
-                updateQBars([Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]);
-                document.getElementById('telem-weights').textContent = '✅ Loaded';
-                document.getElementById('telem-steps').textContent = (1000 + Math.floor(simReward * 50)).toLocaleString();
-                document.getElementById('telem-lr').textContent = '1.0e-3';
-                document.getElementById('telem-gamma').textContent = '0.95';
-                document.getElementById('telem-adv').textContent = '+' + (Math.random() * 0.2).toFixed(4);
-                document.getElementById('ns-queue').textContent = Math.floor(Math.random() * 12 + 2);
-                document.getElementById('ew-queue').textContent = Math.floor(Math.random() * 10 + 1);
-
-                const now = new Date().toLocaleTimeString();
-                if (rlChart.data.labels.length > 30) {
-                    rlChart.data.labels.shift();
-                    rlChart.data.datasets.forEach(ds => ds.data.shift());
-                }
-                rlChart.data.labels.push(now);
-                rlChart.data.datasets[0].data.push(simReward.toFixed(2));
-                rlChart.data.datasets[1].data.push((Math.max(0.05, 0.9 - simReward * 0.01) * 10).toFixed(3));
-                rlChart.data.datasets[2].data.push((Math.random() * 0.2 + 0.05).toFixed(4) * 100);
-                rlChart.update('none');
-            }
-        }
-
-        // Kick off immediately and then every 3 seconds
-        pollRLHUD();
-        setInterval(pollRLHUD, 3000);
-
-        // Also add RL HUD link badge pulse animation CSS
-        const rlStyle = document.createElement('style');
-        rlStyle.textContent = `
-            #rl-hud .hero-badge { animation: rl-pulse 2s ease-in-out infinite; }
-            @keyframes rl-pulse { 0%,100%{box-shadow:0 0 0 rgba(168,85,247,0);} 50%{box-shadow:0 0 18px rgba(168,85,247,0.45);} }
-        `;
-        document.head.appendChild(rlStyle);
-
         new Chart(document.getElementById('violationChart').getContext('2d'), {
             type: 'doughnut',
             data: {
@@ -1139,40 +1011,35 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: action, value: value })
-            }).then(r => r.json()).then(d => {
+            }).then(r => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json();
+            }).then(d => {
                 if (action === 'ambulance') {
-                    alert("🚑 Emergency Ambulance Priority Preemption Triggered on RL Intersection!");
+                    alert("Simulation event requested. This does not affect a real junction.");
                 }
                 if (d.telemetry) updateDashRLTelemetry(d.telemetry);
-            }).catch(e => console.error(e));
+            }).catch(e => alert(`Simulation control unavailable: ${e.message}`));
         }
 
         function launchNativePygameDashboard() {
             fetch('/api/launch-rl-pygame', { method: 'POST' })
-            .then(r => r.json())
+            .then(r => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json();
+            })
             .then(d => alert(d.message))
-            .catch(e => alert("Triggered native Pygame launch."));
+            .catch(e => alert(`Could not launch the simulation: ${e.message}`));
         }
 
         function updateDashRLTelemetry(t) {
             if (!t) return;
-            if (t.safety_rate) document.getElementById('dash-val-acc').innerText = t.safety_rate;
-            if (t.mean_reward) document.getElementById('dash-val-reward').innerText = t.mean_reward;
-            if (t.total_crashes !== undefined) document.getElementById('dash-val-crashes').innerText = t.total_crashes;
-            if (t.active_cars !== undefined) document.getElementById('dash-val-cars').innerText = t.active_cars;
-            if (t.mode) document.getElementById('dash-pill-mode').innerText = '● ' + t.mode + ' AI';
-            if (t.friction) {
-                const f = t.friction;
-                document.getElementById('dash-val-friction').innerText = f >= 0.9 ? '1.00 (Dry)' : (f >= 0.6 ? `${f} (Wet)` : `${f} (Storm Hydroplane)`);
-            }
+            if (t.safety_rate !== undefined) document.getElementById('dash-val-acc').textContent = t.safety_rate;
+            if (t.mean_reward !== undefined) document.getElementById('dash-val-reward').textContent = t.mean_reward;
+            if (t.total_crashes !== undefined) document.getElementById('dash-val-crashes').textContent = t.total_crashes;
+            if (t.active_cars !== undefined) document.getElementById('dash-val-cars').textContent = t.active_cars;
+            if (t.mode) document.getElementById('dash-pill-mode').textContent = `SIMULATION · ${t.mode}`;
         }
-
-        setInterval(() => {
-            fetch('/api/rl-telemetry')
-            .then(r => r.json())
-            .then(data => updateDashRLTelemetry(data))
-            .catch(e => {});
-        }, 2500);
     </script>
 </body>
 </html>

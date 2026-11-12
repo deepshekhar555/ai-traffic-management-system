@@ -58,6 +58,17 @@ _frontend_dist_dir = _root_dir / "frontend" / "dist"
 app = Flask(__name__, template_folder=str(templates_dir), static_folder=str(static_dir))
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+@app.after_request
+def add_cors_headers(response):
+    """Allow local dashboard frontend to consume the API without browser CORS blocks."""
+    origin = request.headers.get('Origin')
+    response.headers['Access-Control-Allow-Origin'] = origin or '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, DELETE'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
+
 db = TrafficDatabase()
 gps = GPSTracker()
 
@@ -193,13 +204,47 @@ def _build_spatial_perception_payload():
 
 @app.route('/')
 def dashboard():
-    """Primary landing experience is the live emergency control room."""
-    return redirect('/terratwin-sos')
+    """Primary landing experience is the original full TraffixAI dashboard."""
+    return redirect('/legacy-dashboard')
+
+@app.route('/dashboard', endpoint='traffic_dashboard_alias')
+def dashboard_alias():
+    """Stable alias for the original full TraffixAI dashboard."""
+    return redirect('/legacy-dashboard')
 
 @app.route('/legacy-dashboard')
 def legacy_dashboard():
     """Original Flask command-center dashboard, retained for compatibility."""
     return render_template('dashboard.html')
+
+@app.route('/dashboards')
+def dashboard_catalog():
+    """Directory of the available dashboard experiences."""
+    dashboards = [
+        {"name": "Main TraffixAI Dashboard", "path": "/legacy-dashboard", "description": "Platform overview and integrated traffic operations."},
+        {"name": "Spatial AI Command Center", "path": "/spatial-ai/", "description": "React/Vite command center; requires a built frontend."},
+        {"name": "Digital Twin Pro", "path": "/digital-twin-pro", "description": "Traffic digital-twin workbench and what-if controls."},
+        {"name": "3D Digital Twin", "path": "/twin3d", "description": "Interactive 3D intersection view."},
+        {"name": "4-Lane Traffic Grid", "path": "/multi_dashboard", "description": "Four-lane traffic monitoring and video view."},
+        {"name": "Traffic Analysis", "path": "/analysis", "description": "Traffic counts, density, and system efficiency."},
+        {"name": "Traffic Diagnosis", "path": "/diagnosis", "description": "Citywide traffic diagnosis and response guidance."},
+        {"name": "Command Room", "path": "/command_room", "description": "Executive operations and incident overview."},
+        {"name": "Smart City Portal", "path": "/smart-city", "description": "City operations, sensors, and mission planning."},
+        {"name": "TerraTwin SOS", "path": "/terratwin-sos", "description": "Multi-hazard emergency response demo."},
+        {"name": "Intersection Sensing", "path": "/intersection-sensing", "description": "Intersection sensing and digital-twin visualization."},
+        {"name": "Hybrid AI Tracking", "path": "/hybrid-ai-tracking", "description": "Radar-centric tracking with camera context."},
+        {"name": "Viettel ITS", "path": "/viettel-its", "description": "Intelligent transport systems concept view."},
+        {"name": "TPO Technology Roadmap", "path": "/tpo-roadmap", "description": "Current, planned, and future ITS capabilities."},
+        {"name": "How AI Works", "path": "/how-ai-works", "description": "Educational view of traffic AI and control."},
+        {"name": "NoTraffic VMC", "path": "/notraffic-vmc", "description": "Virtual management center concept view."},
+        {"name": "MAITwin GIS", "path": "/maitwin-gis", "description": "GIS layers and city digital-twin view."},
+        {"name": "Multimodal Twin", "path": "/multimodal-twin", "description": "Multimodal city digital-twin workbench."},
+        {"name": "AI Workflow Canvas", "path": "/agent-workflow", "description": "Visual AI workflow canvas."},
+        {"name": "RL Crossroad Simulation", "path": "/rl-cross-road", "description": "Reinforcement-learning intersection simulation."},
+        {"name": "Live Camera Vision", "path": "/live-camera-vision", "description": "Camera-based vehicle detection experience."},
+        {"name": "Video Upload", "path": "/upload", "description": "Upload lane videos for the four-lane dashboard."},
+    ]
+    return render_template('dashboard_catalog.html', dashboards=dashboards)
 
 @app.route('/spatial-ai/')
 @app.route('/spatial-ai/<path:asset_path>')
@@ -225,43 +270,35 @@ def digital_twin_pro():
 
 @app.route('/api/live-camera-telemetry')
 def get_live_camera_telemetry():
-    """Get 100% real physical camera tracked objects & detections for 3D Digital Twin."""
+    """Return camera telemetry only when the source explicitly marks it verified."""
     telem_file = _root_dir / "data" / "live_camera_telemetry.json"
-    if telem_file.exists():
-        try:
-            with open(telem_file, "r") as f:
-                data = json.load(f)
-            if isinstance(data, dict) and data.get('vehicle_count') is not None:
-                return jsonify(data)
-        except Exception:
-            pass
+    if not telem_file.exists():
+        return jsonify({
+            "status": "unavailable",
+            "message": "No verified camera telemetry source is configured.",
+            "spatial_perception": None
+        })
 
-    fallback = {
-        "timestamp": int(__import__('time').time()),
-        "person_count": 6,
-        "motorcycle_count": 3,
-        "vehicle_count": 14,
-        "total_count": 23,
-        "objects": [
-            {"id": 1, "class": "car", "cx": 0.32, "cy": 0.68, "speed": 38.2},
-            {"id": 2, "class": "car", "cx": 0.48, "cy": 0.54, "speed": 31.8},
-            {"id": 3, "class": "person", "cx": 0.72, "cy": 0.84, "speed": 0.0},
-            {"id": 4, "class": "motorcycle", "cx": 0.61, "cy": 0.31, "speed": 28.7}
-        ],
-        "spatial_perception": {
-            "active_world_objects": 23,
-            "calibrated_cameras": ["cam_0", "cam_1", "cam_2"],
-            "world_objects": [
-                {"class": "vehicle", "count": 14},
-                {"class": "person", "count": 6},
-                {"class": "motorcycle", "count": 3}
-            ]
-        },
-        "signal_state": {"lane_0": "GREEN", "lane_1": "GREEN"},
-        "co2_saved": 7.6,
-        "status": "ONLINE"
-    }
-    return jsonify(fallback)
+    try:
+        with open(telem_file, "r", encoding="utf-8") as telemetry_file:
+            data = json.load(telemetry_file)
+    except (OSError, json.JSONDecodeError):
+        app.logger.exception("Unable to read camera telemetry file: %s", telem_file)
+        return jsonify({"status": "error", "message": "Camera telemetry could not be read."}), 500
+
+    if not isinstance(data, dict):
+        app.logger.error("Camera telemetry file must contain a JSON object: %s", telem_file)
+        return jsonify({"status": "error", "message": "Camera telemetry has an invalid format."}), 500
+
+    if data.get("verified") is not True:
+        return jsonify({
+            "status": "unverified",
+            "message": "Camera source verification is required before telemetry is displayed.",
+            "spatial_perception": None
+        })
+
+    data["status"] = "verified"
+    return jsonify(data)
 
 
 @app.route('/api/drone-aerial-telemetry')
@@ -340,7 +377,7 @@ def simulate_what_if_endpoint():
 
 @app.route('/api/rl-d3qn-hud')
 def get_rl_d3qn_hud():
-    """Get real-time Dueling Double DQN (D3QN) Reinforcement Learning Signal Telemetry & Neural HUD"""
+    """Return research-only D3QN telemetry without synthesizing action values."""
     try:
         from src.rl_signal_agent import ReinforcementLearningSignalAgent
     except ImportError:
@@ -349,7 +386,7 @@ def get_rl_d3qn_hud():
     rl_agent = ReinforcementLearningSignalAgent()
     telemetry = rl_agent.get_telemetry()
     
-    # Add Cross Road D3QN Master Weights integration status
+    telemetry["status"] = "research_only"
     telemetry["d3qn_master_weights_loaded"] = rl_agent.has_pretrained_master
     telemetry["d3qn_weights_path"] = "rl_cross_road/src/ai/weights/pretrained_master.pt"
     telemetry["actions_map"] = {
@@ -359,21 +396,14 @@ def get_rl_d3qn_hud():
         "3": "BRAKE_MILD (-0.18 Soft Brake)",
         "4": "BRAKE_HARD (-0.45 Emergency Brake)"
     }
-    telemetry["q_values_sample"] = [
-        round(float(telemetry.get("max_q_value", 4.2) * v), 2)
-        for v in [0.82, 1.15, 0.95, 0.35, 0.12]
-    ]
     return jsonify(telemetry)
 
 @app.route('/api/stats')
 def get_stats():
-    """Get today's statistics & AI predictions"""
+    """Get stored statistics; do not generate forecasts from placeholder samples."""
     stats = db.get_todays_statistics()
-    # Add dummy historical density samples for prediction demo
-    p = get_predictor()
-    p.add_datapoint(0.35)
-    forecast = p.predict_future_congestion()
-    stats["forecast"] = forecast
+    stats["forecast"] = None
+    stats["forecast_status"] = "unavailable until historical observations are recorded"
     stats["gps"] = {
         "location": gps.get_location_string(),
         "map_url": gps.get_map_url(),
@@ -417,15 +447,15 @@ def get_echallan():
 
 @app.route('/api/research-metrics')
 def get_research_metrics():
-    """Get real-time Academic Research Innovation Telemetry Metrics"""
-    import random
+    """Return explicit unavailable values until research metrics are measured."""
     return jsonify({
-        "q_learning_reward": round(random.uniform(14.2, 28.5), 2),
-        "bev_homography_error_m": 0.04,
-        "ttc_min_seconds": round(random.uniform(2.8, 5.2), 2),
-        "siren_fft_frequency_hz": random.choice([950, 1100, 1250, 850]),
-        "research_compliance_score": "98.4%",
-        "ncrb_hotlist_scans_today": random.randint(120, 350)
+        "status": "unavailable",
+        "q_learning_reward": None,
+        "bev_homography_error_m": None,
+        "ttc_min_seconds": None,
+        "siren_fft_frequency_hz": None,
+        "research_compliance_score": None,
+        "ncrb_hotlist_scans_today": None
     })
 
 @app.route('/api/rl-telemetry')
@@ -519,22 +549,21 @@ sensor_fusion = SensorFusionManager()
 
 @app.route('/api/hardware-status')
 def get_hardware_status():
-    """Get Raspberry Pi, Arduino, OLED, VMS, Radar & Air Quality hardware telemetry status"""
-    import random
-    status = {
-        "rpi_gpio_status": "ACTIVE (12 PIN BCMS)",
-        "arduino_usb_status": "CONNECTED (COM3 @ 9600 BAUD)",
-        "oled_display": "ACTIVE (SSD1306 128x64 I2C)",
-        "vms_matrix": "ACTIVE (SPEED LIMIT 60)",
-        "doppler_radar": "24GHz ACTIVE (±0.5 km/h)",
-        "lte_modem": "CONNECTED 4G LTE (-68 dBm)",
-        "solar_power": "ACTIVE (14.2V / 96% BATTERY)",
-        "edge_fps": random.randint(22, 27),
-        "cpu_temp_c": round(random.uniform(41.2, 47.8), 1),
-        "gpu_mem_usage_mb": random.randint(420, 680)
-    }
-    status.update(sensor_fusion.get_complete_peripheral_status())
-    return jsonify(status)
+    """Return unavailable hardware fields until peripherals are connected and measured."""
+    return jsonify({
+        "status": "unverified",
+        "rpi_gpio_status": None,
+        "arduino_usb_status": None,
+        "oled_display": None,
+        "vms_matrix": None,
+        "doppler_radar": None,
+        "lte_modem": None,
+        "solar_power": None,
+        "edge_fps": None,
+        "cpu_temp_c": None,
+        "gpu_mem_usage_mb": None,
+        "air_quality": None
+    })
 
 
 @app.route('/api/incidents')
@@ -549,12 +578,8 @@ def get_incidents():
 
 @app.route('/api/multi-camera-nodes')
 def get_multi_camera_nodes():
-    """Get status of multi-intersection camera feeds"""
-    return jsonify([
-        {"id": "node_1", "name": "Connaught Place Intersection (Node 1)", "status": "ACTIVE", "fps": 25, "density": "HIGH"},
-        {"id": "node_2", "name": "AIIMS Ring Road Signal (Node 2)", "status": "ACTIVE", "fps": 24, "density": "MODERATE"},
-        {"id": "node_3", "name": "Cyber Hub Highway Express (Node 3)", "status": "ACTIVE", "fps": 26, "density": "LOW"}
-    ])
+    """List only camera nodes verified by a connected deployment source."""
+    return jsonify([])
 
 @app.route('/report')
 def get_report():
@@ -890,32 +915,60 @@ def connect_ip_camera():
     os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|max_delay;5000000|stimeout;5000000"
     
     return jsonify({
-        "status": "SUCCESS", 
-        "cam_url": cam_url, 
-        "message": f"Connected to Remote Traffic Camera across network: {cam_url}"
+        "status": "configured",
+        "message": "Camera source configured. Open its feed to verify that frames are received."
     })
 
-def _generate_lane_video_stream(lane_id):
-    """Generates MJPEG video stream for a specific lane with realistic urban intersection and OpenCV vehicle detection overlay"""
+def _camera_status_frame(title, detail):
+    """Create an explicit status image without disguising it as a camera frame."""
+    frame = np.full((480, 640, 3), (18, 24, 35), dtype=np.uint8)
+    cv2.putText(frame, title, (36, 210), cv2.FONT_HERSHEY_SIMPLEX, 0.9,
+                (120, 205, 210), 2, cv2.LINE_AA)
+    cv2.putText(frame, detail, (36, 254), cv2.FONT_HERSHEY_SIMPLEX, 0.52,
+                (220, 228, 238), 1, cv2.LINE_AA)
+    cv2.putText(frame, "No simulated traffic is substituted for a camera feed.",
+                (36, 296), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (160, 174, 192), 1, cv2.LINE_AA)
+    return frame
+
+
+def _camera_unavailable_response(message):
+    return jsonify({"status": "unavailable", "message": message}), 503
+
+
+def _open_physical_webcam():
+    """Open the default local webcam using DirectShow when available on Windows."""
+    backend = getattr(cv2, "CAP_DSHOW", cv2.CAP_ANY)
+    return cv2.VideoCapture(0, backend)
+
+
+def _generate_lane_video_stream(lane_id, cap=None, initial_frame=None):
+    """Stream real camera frames for physical sources and labeled simulations for demo lanes."""
     video_path = _lane_videos.get(lane_id)
-    cap = None
 
     # Enable TCP transport for remote camera feeds over different networks
     os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|max_delay;5000000|stimeout;5000000"
 
-    # Check for real physical webcam (lane_id == 0), Remote IP/RTSP Camera (lane_id == 4), or uploaded file
-    if lane_id == 0:
-        cap = cv2.VideoCapture(0)
-    elif lane_id == 4 and 4 in _custom_ip_cams:
+    # Open only configured physical sources. An unavailable camera is never
+    # replaced by the synthetic traffic used by the numbered demo lanes.
+    if lane_id == 0 and cap is None:
+        cap = _open_physical_webcam()
+    elif lane_id == 4 and cap is None and 4 in _custom_ip_cams:
         cam_url = _custom_ip_cams[4]
-        try:
-            cap = cv2.VideoCapture(cam_url, cv2.CAP_FFMPEG)
-            if not cap.isOpened():
-                cap = cv2.VideoCapture(cam_url)
-        except Exception:
+        cap = cv2.VideoCapture(cam_url, cv2.CAP_FFMPEG)
+        if not cap.isOpened():
+            cap.release()
             cap = cv2.VideoCapture(cam_url)
     elif video_path and os.path.exists(video_path):
         cap = cv2.VideoCapture(video_path)
+
+    if lane_id in (0, 4) and (cap is None or not cap.isOpened()):
+        if cap is not None:
+            cap.release()
+        frame = _camera_status_frame("CAMERA UNAVAILABLE", "The configured source could not be opened.")
+        encoded, jpeg = cv2.imencode(".jpg", frame)
+        if encoded:
+            yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n"
+        return
 
     frame_idx = 0
     vehicles = [
@@ -925,17 +978,24 @@ def _generate_lane_video_stream(lane_id):
         {"x": 490, "y": 140, "speed": 2, "type": "Pedestrian", "conf": 0.89, "color": (0, 255, 136)}
     ]
 
-    while True:
-        frame = None
-        if cap is not None and cap.isOpened():
+    try:
+      while True:
+        frame = initial_frame
+        initial_frame = None
+        camera_lost = False
+        if frame is None and cap is not None and cap.isOpened():
             ret, frame = cap.read()
             if not ret or frame is None:
-                if lane_id == 0:
-                    cap.release()
-                    cap = None
+                if lane_id in (0, 4):
+                    frame = _camera_status_frame("CAMERA CONNECTION LOST", "No frame was received from the configured source.")
+                    camera_lost = True
                 else:
                     cap.set(cv2.CAP_PROP_POS_FRAMES, 0) # loop
                     ret, frame = cap.read()
+
+        if frame is None and lane_id in (0, 4):
+            frame = _camera_status_frame("CAMERA UNAVAILABLE", "No frame was received from the configured source.")
+            camera_lost = True
 
         if frame is None:
             # Generate realistic High-Definition Urban Intersection frame
@@ -1004,15 +1064,19 @@ def _generate_lane_video_stream(lane_id):
                 cv2.putText(frame, "AMBULANCE DETECTED! GREEN CORRIDOR ACTIVE", (15, 60),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
 
-        ret, jpeg = cv2.imencode('.jpg', frame)
-        if not ret:
+        encoded, jpeg = cv2.imencode('.jpg', frame)
+        if not encoded:
+            if lane_id in (0, 4):
+                return
             continue
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+        if camera_lost:
+            return
         time.sleep(0.04)
-
-    if cap:
-        cap.release()
+    finally:
+        if cap:
+            cap.release()
 
 @app.route('/live-camera-vision')
 @app.route('/webcam')
@@ -1022,12 +1086,48 @@ def live_camera_vision_page():
 
 @app.route('/video_feed/webcam')
 def webcam_video_feed():
-    """Live Physical Webcam Stream Endpoint - lane_id 0 triggers real cv2.VideoCapture(0)"""
-    return Response(_generate_lane_video_stream(0), mimetype='multipart/x-mixed-replace; boundary=frame')
+    """Serve the local webcam only after a real first frame is received."""
+    cap = _open_physical_webcam()
+    if not cap.isOpened():
+        cap.release()
+        return _camera_unavailable_response("The local webcam could not be opened.")
+
+    ret, frame = cap.read()
+    if not ret or frame is None:
+        cap.release()
+        return _camera_unavailable_response("The local webcam opened but did not return a frame.")
+
+    return Response(
+        _generate_lane_video_stream(0, cap=cap, initial_frame=frame),
+        mimetype='multipart/x-mixed-replace; boundary=frame'
+    )
 
 @app.route('/video_feed/<int:lane_id>')
 def video_feed(lane_id):
-    """Multi-lane video stream feed"""
+    """Serve an explicit simulation for demo lanes or a verified configured camera."""
+    if lane_id == 0:
+        return webcam_video_feed()
+    if lane_id not in (1, 2, 3, 4):
+        return jsonify({"status": "error", "message": "Unknown camera or demo lane."}), 404
+    if lane_id == 4:
+        cam_url = _custom_ip_cams.get(4)
+        if not cam_url:
+            return _camera_unavailable_response("No remote camera source is configured.")
+        cap = cv2.VideoCapture(cam_url, cv2.CAP_FFMPEG)
+        if not cap.isOpened():
+            cap.release()
+            cap = cv2.VideoCapture(cam_url)
+        if not cap.isOpened():
+            cap.release()
+            return _camera_unavailable_response("The configured remote camera could not be opened.")
+        ret, frame = cap.read()
+        if not ret or frame is None:
+            cap.release()
+            return _camera_unavailable_response("The configured remote camera returned no frame.")
+        return Response(
+            _generate_lane_video_stream(4, cap=cap, initial_frame=frame),
+            mimetype='multipart/x-mixed-replace; boundary=frame'
+        )
     return Response(_generate_lane_video_stream(lane_id),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -1054,30 +1154,27 @@ def get_analysis_data():
 @app.route('/api/eco_impact', endpoint='get_eco_impact_1')
 @app.route('/api/eco-impact', endpoint='get_eco_impact_2')
 def get_eco_impact():
-    """API for real-time fuel savings and CO2 emissions reduction telemetry"""
-    total_vehicles = sum(_lane_states[l]["density"] for l in range(1, 5))
-    fuel_saved_liters = round(total_vehicles * 0.42 + 28.5, 2)
-    co2_offset_kg = round(fuel_saved_liters * 2.31, 2)
+    """Return explicit unavailable values until emissions impact is measured."""
     return jsonify({
-        "status": "ACTIVE",
-        "co2_saved_kg": co2_offset_kg,
-        "co2_offset_kg": co2_offset_kg,
-        "fuel_saved_liters": fuel_saved_liters,
-        "idling_reduced_minutes": int(fuel_saved_liters * 18),
-        "delay_reduction_pct": 38.4,
-        "emergency_clearance_sec": 42
+        "status": "not_measured",
+        "co2_saved_kg": None,
+        "co2_offset_kg": None,
+        "fuel_saved_liters": None,
+        "idling_reduced_minutes": None,
+        "delay_reduction_pct": None,
+        "emergency_clearance_sec": None
     })
 
 @app.route('/api/stsa_loop_status', endpoint='get_stsa_loop_status_1')
 @app.route('/api/stsa-loop-status', endpoint='get_stsa_loop_status_2')
 def get_stsa_loop_status():
-    """API for Closed-Loop Sense-Twin-Simulate-Act Cyber-Physical Loop Status"""
+    """Report the closed-loop state as unavailable until live components are verified."""
     return jsonify({
-        "closed_loop_state": "ACTIVE",
-        "sense_layer": {"yolo": "30 FPS", "radar": "60GHz Operational", "mqtt": "14ms"},
-        "twin_layer": {"anchor": "VIP Road, Baguiati, Kolkata", "lat": 22.6139, "lng": 88.4209, "dimension": "2D/3D WebGL"},
-        "simulate_layer": {"dqn_rl": "ON", "sumo_traci": "CONNECTED", "what_if_sandbox": "READY"},
-        "actuate_layer": {"rpi_gpio": "ONLINE", "override_mode": "AUTO_RL"}
+        "closed_loop_state": "unverified",
+        "sense_layer": {"yolo": None, "radar": None, "mqtt": None},
+        "twin_layer": {"anchor": None, "lat": None, "lng": None, "dimension": "prototype"},
+        "simulate_layer": {"dqn_rl": None, "sumo_traci": None, "what_if_sandbox": None},
+        "actuate_layer": {"rpi_gpio": None, "override_mode": "disabled"}
     })
 
 if __name__ == '__main__':
@@ -1155,4 +1252,3 @@ def launch_native_pygame():
 # --- Native Pygame Process Launcher Fix ---
 import subprocess
 import sys
-
